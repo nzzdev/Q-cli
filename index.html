@@ -1,0 +1,127 @@
+<!-- index.html to test what markup would look like locally (independent of target) -->
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Q Tool</title>
+    <meta name="description" content="">
+    <script src="https://rawgit.com/filamentgroup/loadCSS/master/src/loadCSS.js"></script> 
+    <script type="text/javascript" src="assets-definition.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <select id="fixtures-select" class="s-input-select" style="margin-bottom: 20px;"></select>
+      <div id="q-tool"></div>
+    </div>
+    <script>
+      fetch('http://localhost:3000/fixtures/data')
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error(response);
+        })
+        .then(fixtureData => {
+          let selectElement = document.getElementById('fixtures-select');
+          fixtureData.forEach((data, index) => {
+            let option = document.createElement('option');
+            option.text = data.title;
+            option.value = index;
+            selectElement.appendChild(option);
+          });
+          updateFixtureData(fixtureData, 0);
+          selectElement.addEventListener('change', () => {
+            updateFixtureData(fixtureData, selectElement.selectedIndex);
+          })
+        });
+
+      function loadAllScripts(scripts, index, callback) {
+        if (scripts[index] && scripts[index].url) {
+          loadJS(scripts[index].url, () => {
+            loadAllScripts(scripts, index + 1, callback)
+          })
+        } else {
+          callback();
+        }
+      }
+
+      // load sophie modules - change modules according to your needs in assets-definition.js -> sophie
+      function loadSophieModules() {
+        if (assets.sophie && assets.sophie.length > 0) {
+          let sophieUrl = 'https://service.sophie.nzz.ch/bundle/';
+          assets.sophie.forEach((moduleName, index) => {
+            sophieUrl += moduleName;
+            if (index < assets.sophie.length - 1) {
+              sophieUrl += ',';
+            }
+          })
+          sophieUrl += '.css';
+          loadCSS(sophieUrl);
+        }
+      }
+
+      // load context, e.g. nzz.ch assets, change url according to your needs in assets-definition.js -> context
+      function loadContext() {
+        if (assets.context && assets.context.length > 0) {
+          assets.context.forEach(url => {
+            loadCSS(url);
+          })
+        }
+      }
+
+      function updateFixtureData(fixtureData, index) {
+        fetch(`http://localhost:3000/rendering-info/html-static`, {
+          method: 'POST',
+          body: JSON.stringify({
+            item: fixtureData[index]
+          }),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(renderingInfoResponse => {
+          if (renderingInfoResponse.ok) {
+            return renderingInfoResponse.json();
+          }
+          throw new Error(renderingInfoResponse);
+        })
+        .then(data => {
+          loadSophieModules();
+          loadContext();
+
+          // load stylesheets from tool
+          data.stylesheets.forEach(stylesheet => {
+            if (stylesheet.name) {
+              stylesheet.url = `http://localhost:3000/stylesheet/${stylesheet.name}`
+            }
+            loadCSS(stylesheet.url)
+          })
+          document.getElementById('q-tool').innerHTML = data.markup;
+
+          // load scripts from tool
+          if (!data.scripts) {
+            return;
+          }
+          data.scripts = data.scripts
+            .map(script => {
+              if (script.name) {
+                script.url = `http://${window.location.hostname}:3000/script/${script.name}`
+              }
+              return script;
+            })
+          let urlScripts = data.scripts
+            .filter(script => script.url)
+          let contentScripts = data.scripts
+            .filter(script => script.content)
+          loadAllScripts(urlScripts, 0, () => {
+            contentScripts.forEach(script => {
+              let scriptElement = document.createElement('script');
+              scriptElement.innerHTML = script.content;
+              document.getElementById('quiz').appendChild(scriptElement);
+            })
+          })
+        })
+      }
+    </script>
+  </body>
+</html>
