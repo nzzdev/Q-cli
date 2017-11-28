@@ -7,6 +7,7 @@
     <meta name="description" content="">
     <script src="https://rawgit.com/filamentgroup/loadCSS/master/src/loadCSS.js"></script> 
     <script type="text/javascript" src="assets-definition.js"></script>
+    <script src="https://q-server.st.nzz.ch/files/system.js"></script>
   </head>
   <body>
     <div id="container">
@@ -71,10 +72,14 @@
       }
 
       function updateFixtureData(fixtureData, index) {
-        fetch(`http://localhost:3000/rendering-info/html-static`, {
+        console.log(fixtureData[index]);
+        fetch(`http://localhost:3000/rendering-info/html-js`, {
           method: 'POST',
           body: JSON.stringify({
-            item: fixtureData[index]
+            item: fixtureData[index],
+            toolRuntimeConfig: {
+              toolBaseUrl: 'http://localhost:3000'
+            }
           }),
           headers: {
             'Content-Type': 'application/json'
@@ -118,7 +123,7 @@
             contentScripts.forEach(script => {
               let scriptElement = document.createElement('script');
               scriptElement.innerHTML = script.content;
-              document.getElementById('quiz').appendChild(scriptElement);
+              document.getElementById('q-tool').appendChild(scriptElement);
             })
           })
         })
