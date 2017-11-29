@@ -72,7 +72,7 @@
       }
 
       function loadRenderingInfo(fixtureData, index) {
-        const pathEnds = ['html-static', 'html-js'];
+        const pathEnds = ['html-static', 'html-js', 'web'];
         let promises = [];
 
         pathEnds.forEach(pathEnd => {
@@ -120,12 +120,15 @@
             loadContext();
 
             // load stylesheets from tool
-            data.stylesheets.forEach(stylesheet => {
-              if (stylesheet.name) {
-                stylesheet.url = `http://localhost:3000/stylesheet/${stylesheet.name}`
-              }
-              loadCSS(stylesheet.url)
-            })
+            if (data.stylesheets) {
+              data.stylesheets.forEach(stylesheet => {
+                if (stylesheet.name) {
+                  stylesheet.url = `http://localhost:3000/stylesheet/${stylesheet.name}`
+                }
+                loadCSS(stylesheet.url)
+              })
+            }
+            
             document.getElementById('q-tool').innerHTML = data.markup;
 
             // load scripts from tool
