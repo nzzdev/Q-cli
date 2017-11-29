@@ -71,62 +71,86 @@
         }
       }
 
-      function updateFixtureData(fixtureData, index) {
-        console.log(fixtureData[index]);
-        fetch(`http://localhost:3000/rendering-info/html-js`, {
-          method: 'POST',
-          body: JSON.stringify({
-            item: fixtureData[index],
-            toolRuntimeConfig: {
-              toolBaseUrl: 'http://localhost:3000'
-            }
-          }),
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-        .then(renderingInfoResponse => {
-          if (renderingInfoResponse.ok) {
-            return renderingInfoResponse.json();
-          }
-          throw new Error(renderingInfoResponse);
-        })
-        .then(data => {
-          loadSophieModules();
-          loadContext();
+      function loadRenderingInfo(fixtureData, index) {
+        const pathEnds = ['html-static', 'html-js'];
+        let promises = [];
 
-          // load stylesheets from tool
-          data.stylesheets.forEach(stylesheet => {
-            if (stylesheet.name) {
-              stylesheet.url = `http://localhost:3000/stylesheet/${stylesheet.name}`
-            }
-            loadCSS(stylesheet.url)
-          })
-          document.getElementById('q-tool').innerHTML = data.markup;
-
-          // load scripts from tool
-          if (!data.scripts) {
-            return;
-          }
-          data.scripts = data.scripts
-            .map(script => {
-              if (script.name) {
-                script.url = `http://${window.location.hostname}:3000/script/${script.name}`
+        pathEnds.forEach(pathEnd => {
+          promises.push(
+            fetch(`http://localhost:3000/rendering-info/${pathEnd}`, {
+              method: 'POST',
+              body: JSON.stringify({
+                item: fixtureData[index],
+                toolRuntimeConfig: {
+                  toolBaseUrl: 'http://localhost:3000'
+                }
+              }),
+              headers: {
+                'Content-Type': 'application/json'
               }
-              return script;
             })
-          let urlScripts = data.scripts
-            .filter(script => script.url)
-          let contentScripts = data.scripts
-            .filter(script => script.content)
-          loadAllScripts(urlScripts, 0, () => {
-            contentScripts.forEach(script => {
-              let scriptElement = document.createElement('script');
-              scriptElement.innerHTML = script.content;
-              document.getElementById('q-tool').appendChild(scriptElement);
+            .then(response => {
+              if (response.ok) {
+                return response.json();
+              } 
+              throw new Error(response);
+            })
+            .catch(e => {
+              console.log(e);
+              // do nothing
+            })
+          )
+        })
+        return Promise.all(promises);
+      }
+
+      function updateFixtureData(fixtureData, index) {
+        loadRenderingInfo(fixtureData, index)
+          .then(responses => {
+            let renderingInfos = responses.filter(response => {
+              return response !== undefined;
+            })
+            if (renderingInfos.length > 0) {
+              return renderingInfos[0];
+            }
+            throw new Error('no rendering info available');
+          })
+          .then(data => {
+            loadSophieModules();
+            loadContext();
+
+            // load stylesheets from tool
+            data.stylesheets.forEach(stylesheet => {
+              if (stylesheet.name) {
+                stylesheet.url = `http://localhost:3000/stylesheet/${stylesheet.name}`
+              }
+              loadCSS(stylesheet.url)
+            })
+            document.getElementById('q-tool').innerHTML = data.markup;
+
+            // load scripts from tool
+            if (!data.scripts) {
+              return;
+            }
+            data.scripts = data.scripts
+              .map(script => {
+                if (script.name) {
+                  script.url = `http://${window.location.hostname}:3000/script/${script.name}`
+                }
+                return script;
+              })
+            let urlScripts = data.scripts
+              .filter(script => script.url)
+            let contentScripts = data.scripts
+              .filter(script => script.content)
+            loadAllScripts(urlScripts, 0, () => {
+              contentScripts.forEach(script => {
+                let scriptElement = document.createElement('script');
+                scriptElement.innerHTML = script.content;
+                document.getElementById('q-tool').appendChild(scriptElement);
+              })
             })
           })
-        })
       }
     </script>
   </body>
