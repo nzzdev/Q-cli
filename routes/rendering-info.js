@@ -9,7 +9,7 @@ const additionalRenderingInfo = require('../config/additionalRenderingInfo.js');
 const toolBaseUrl = process.env.TOOL_BASE_URL || 'http://localhost:3000';
 
 // try different endpoints to get the right one for the current tool
-function getRenderingInfo(item, queryString) {
+function getRenderingInfo(item, queryString, config) {
   let promises = [];
   const pathEnds = ['html-static', 'html-js', 'web'];
 
@@ -19,9 +19,7 @@ function getRenderingInfo(item, queryString) {
         method: 'POST',
         body: JSON.stringify({
           item: item,
-          toolRuntimeConfig: {
-            toolBaseUrl: toolBaseUrl
-          }
+          toolRuntimeConfig: config.toolRuntimeConfig
         }),
         headers: {
           'Content-Type': 'application/json'
@@ -78,7 +76,11 @@ module.exports = {
       }
       let queryString = querystring.stringify(query);
 
-      let responses = await getRenderingInfo(item, queryString);
+      let responses = await getRenderingInfo(item, queryString, {
+        toolRuntimeConfig: {
+          toolBaseUrl: request.server.info.uri + '/tools'
+        }
+      });
       let renderingInfo = responses.filter(response => response !== undefined)[0];
 
       // add target specific rendering info

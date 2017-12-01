@@ -59,9 +59,9 @@ module.exports = {
           throw new Error(fixtureDataResponse.status);
         }
   
-        const fixtureData = await response.json();
+        const fixtureData = await fixtureDataResponse.json();
         // appendItemToPayload = item id = index in fixtures data array
-        const item = fixtureData[request.query.appendItemToPayload];      
+        const item = fixtureData[request.query.appendItemToPayload];
         payload = {
           item: item
         };
@@ -75,7 +75,6 @@ module.exports = {
     options: {
       validate: {
         params: {
-          tool: Joi.string().required(),
           path: Joi.string().required()
         },
         query: {
@@ -96,7 +95,7 @@ module.exports = {
           throw new Error(fixtureDataResponse.status);
         }
   
-        const fixtureData = await response.json();
+        const fixtureData = await fixtureDataResponse.json();
         // appendItemToPayload = item id = index in fixtures data array
         const item = fixtureData[request.query.appendItemToPayload];
         request.payload.item = item;
