@@ -2,10 +2,10 @@
 
 const start = async function () {
   const server = require('./server.js');
-  // const plugins = require('./server-plugins.js');
+  const plugins = require('./server-plugins.js');
   const routes = require('./routes/routes.js');
   
-  // await server.register(plugins);
+  await server.register(plugins);
   
   server.route(routes);
   
