@@ -72,6 +72,8 @@ module.exports = {
       for (let queryParam of queryParams) {
         if (item.hasOwnProperty(queryParam) && item[queryParam]) {
           query[queryParam] = item[queryParam];
+        } else if (queryParam === '_id') {
+          query['_id'] = request.params.id;
         }
       }
       let queryString = querystring.stringify(query);
