@@ -10,7 +10,10 @@
   </head>
   <body>
     <div id="container">
-      <select id="fixtures-select" class="s-input-select" style="margin-bottom: 20px;"></select>
+      <div style="display: flex;">
+        <select id="fixtures-select" class="s-input-select" style="margin-bottom: 20px;"></select>
+        <button id="reload-button" type="button" class="s-button s-button--small">reload</button>
+      </div>
       <div id="q-tool"></div>
     </div>
     <script> 
@@ -36,6 +39,10 @@
 
           // as soon as another fixture data item is selected, update with its rendering info
           selectElement.addEventListener('change', () => {
+            updateRenderingInfoForItem(fixtureData, selectElement.selectedIndex);
+          });
+
+          document.getElementById('reload-button').addEventListener('click', () => {
             updateRenderingInfoForItem(fixtureData, selectElement.selectedIndex);
           })
         });
