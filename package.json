@@ -1,0 +1,28 @@
+{
+  "name": "q-tool-dev",
+  "version": "1.0.0",
+  "description": "Tool to test with dev view while developing Q tools",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nzzdev/Q-tool-dev.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nzzdev/Q-tool-dev/issues"
+  },
+  "homepage": "https://github.com/nzzdev/Q-tool-dev#readme",
+  "dependencies": {
+    "boom": "^7.1.1",
+    "deepmerge": "^2.0.1",
+    "hapi": "^17.1.1",
+    "joi": "^13.0.2",
+    "node-fetch": "^1.7.3",
+    "querystring": "^0.2.0",
+    "wreck": "^14.0.2"
+  }
+}

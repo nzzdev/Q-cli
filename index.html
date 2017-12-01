@@ -6,7 +6,6 @@
     <title>Q Tool</title>
     <meta name="description" content="">
     <script src="https://rawgit.com/filamentgroup/loadCSS/master/src/loadCSS.js"></script> 
-    <script type="text/javascript" src="assets-definition.js"></script>
     <script src="https://q-server.st.nzz.ch/files/system.js"></script>
   </head>
   <body>
@@ -15,7 +14,8 @@
       <div id="q-tool"></div>
     </div>
     <script> 
-      fetch('http://localhost:3000/fixtures/data')
+      // load fixture data and populate select element with titles
+      fetch('http://localhost:3001/tools/fixtures/data')
         .then(response => {
           if (response.ok) {
             return response.json();
@@ -31,12 +31,16 @@
             option.value = index;
             selectElement.appendChild(option);
           });
-          updateFixtureData(fixtureData, 0);
+          // init with rendering info for first item in select
+          updateRenderingInfoForItem(fixtureData, 0);
+
+          // as soon as another fixture data item is selected, update with its rendering info
           selectElement.addEventListener('change', () => {
-            updateFixtureData(fixtureData, selectElement.selectedIndex);
+            updateRenderingInfoForItem(fixtureData, selectElement.selectedIndex);
           })
         });
 
+      
       function loadAllScripts(scripts, index, callback) {
         if (scripts[index] && scripts[index].url) {
           loadJS(scripts[index].url, () => {
@@ -47,88 +51,43 @@
         }
       }
 
-      // load sophie modules - change modules according to your needs in assets-definition.js -> sophie
-      function loadSophieModules() {
-        if (assets.sophie && assets.sophie.length > 0) {
-          let sophieUrl = 'https://service.sophie.nzz.ch/bundle/';
-          assets.sophie.forEach((moduleName, index) => {
-            sophieUrl += moduleName;
-            if (index < assets.sophie.length - 1) {
-              sophieUrl += ',';
-            }
-          })
-          sophieUrl += '.css';
-          loadCSS(sophieUrl);
-        }
-      }
-
-      // load context, e.g. nzz.ch assets, change url according to your needs in assets-definition.js -> context
-      function loadContext() {
-        if (assets.context && assets.context.length > 0) {
-          assets.context.forEach(url => {
-            loadCSS(url);
-          })
-        }
-      }
-
       function loadRenderingInfo(fixtureData, index) {
-        const pathEnds = ['html-static', 'html-js', 'web'];
-        let promises = [];
-
-        pathEnds.forEach(pathEnd => {
-          promises.push(
-            fetch(`http://localhost:3000/rendering-info/${pathEnd}`, {
-              method: 'POST',
-              body: JSON.stringify({
-                item: fixtureData[index],
-                toolRuntimeConfig: {
-                  toolBaseUrl: 'http://localhost:3000'
-                }
-              }),
-              headers: {
-                'Content-Type': 'application/json'
-              }
-            })
-            .then(response => {
-              if (response.ok) {
-                return response.json();
-              } 
-              throw new Error(response);
-            })
-            .catch(e => {
-              console.log(e);
-              // do nothing
-            })
-          )
-        })
-        return Promise.all(promises);
+        // currently available targets - can be switched manually if needed
+        const target = 'nzz_ch'
+        // const target = 'nzzas'
+        
+        return fetch(`http://localhost:3001/rendering-info/${index}/${target}`)
+          .then(response => {
+            if (response.ok) {
+              return response.json();
+            } 
+            throw new Error(response);
+          })
+          .catch(e => {
+            console.log(e);
+            // do nothing
+          });
       }
 
-      function updateFixtureData(fixtureData, index) {
+      function updateRenderingInfoForItem(fixtureData, index) {
         loadRenderingInfo(fixtureData, index)
-          .then(responses => {
-            let renderingInfos = responses.filter(response => {
-              return response !== undefined;
-            })
-            if (renderingInfos.length > 0) {
-              return renderingInfos[0];
-            }
-            throw new Error('no rendering info available');
-          })
           .then(data => {
-            loadSophieModules();
-            loadContext();
+            // load background color if configured
+            if (data.background) {
+              document.getElementById('container').style.background = data.background.color;
+            }
 
             // load stylesheets from tool
             if (data.stylesheets) {
               data.stylesheets.forEach(stylesheet => {
                 if (stylesheet.name) {
-                  stylesheet.url = `http://localhost:3000/stylesheet/${stylesheet.name}`
+                  stylesheet.url = `http://localhost:3001/tools/stylesheet/${stylesheet.name}`
                 }
                 loadCSS(stylesheet.url)
               })
             }
             
+            // add markup
             document.getElementById('q-tool').innerHTML = data.markup;
 
             // load scripts from tool
@@ -138,7 +97,7 @@
             data.scripts = data.scripts
               .map(script => {
                 if (script.name) {
-                  script.url = `http://${window.location.hostname}:3000/script/${script.name}`
+                  script.url = `http://localhost:3001/tools/script/${script.name}`
                 }
                 return script;
               })
