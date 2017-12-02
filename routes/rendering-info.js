@@ -78,7 +78,7 @@ module.exports = {
 
       let responses = await getRenderingInfo(item, queryString, {
         toolRuntimeConfig: {
-          toolBaseUrl: request.server.info.uri + '/tools'
+          toolBaseUrl: request.server.info.protocol + '://' + request.server.info.address + ':' + request.server.info.port + '/tools'
         }
       });
       let renderingInfo = responses.filter(response => response !== undefined)[0];
