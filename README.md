@@ -1,6 +1,6 @@
-# Q Tool Dev
+# Q cli
 
-Is a little helper tool to make testing and developing Q tools a bit easier.
+run `npm install -g @nzz/q-cli` to install the `Q` cli helping you with developing Q tools.
 
 ## To start
 
@@ -10,7 +10,7 @@ npm install
 node index.js
 ```
 
-Default port of this node application is 3001 and can be overwritten by using `PORT` as environment variable when starting the node app: 
+Default port of this node application is 5000 and can be overwritten by using `PORT` as environment variable when starting the node app: 
 ```bash
 PORT=4001 node index.js
 ``` 
