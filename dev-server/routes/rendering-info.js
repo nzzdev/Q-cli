@@ -4,9 +4,11 @@ const fetch = require('node-fetch')
 const querystring = require('querystring')
 const deepmerge = require('deepmerge')
 
-const additionalRenderingInfo = require('../config/additionalRenderingInfo.js')
+const toolBaseUrl = process.env.TOOL_BASE_URL || 'http://localhost:3000';
+const configName = process.env.CONFIG || 'default.js';
 
-const toolBaseUrl = process.env.TOOL_BASE_URL || 'http://localhost:3000'
+const config = require(`../config/${configName}`);
+const target = process.env.TARGET || 'nzz_ch';
 
 // try different endpoints to get the right one for the current tool
 function getRenderingInfo (item, queryString, config) {
@@ -73,20 +75,29 @@ module.exports = {
       }
       let queryString = querystring.stringify(query)
 
+      // add tool specifc toolRuntimeConfig and toolBaseUrl to toolRuntimeConfig
+      const additionalToolRuntimeConfig = config[target].additionalRenderingInfo.toolRuntimeConfig;
+      const toolRuntimeConfig = Object.assign({
+        toolBaseUrl: request.server.info.protocol + '://' + request.server.info.address + ':' + request.server.info.port + '/tools'
+      }, additionalToolRuntimeConfig)
+
+
       let responses = await getRenderingInfo(item, queryString, {
-        toolRuntimeConfig: {
-          toolBaseUrl: request.server.info.protocol + '://' + request.server.info.address + ':' + request.server.info.port + '/tools'
-        }
+        toolRuntimeConfig: toolRuntimeConfig
       })
       let renderingInfo = responses.filter(response => response !== undefined)[0]
 
       // add target specific rendering info
-      let target = process.env.TARGET || 'nzz_ch';
-      renderingInfo = deepmerge(renderingInfo, additionalRenderingInfo(target, process.env.SOPHIE), {
+      renderingInfo = deepmerge(renderingInfo, config[target].additionalRenderingInfo, {
         arrayMerge: (destArr, srcArr) => {
           return srcArr.concat(destArr)
         }
-      })
+      });
+      renderingInfo = deepmerge(renderingInfo, config[target].context, {
+        arrayMerge: (destArr, srcArr) => {
+          return srcArr.concat(destArr)
+        }
+      });
 
       return h.response(renderingInfo)
     } catch (err) {

@@ -26,9 +26,9 @@ Q server -b http://localhost:4000
 Q server -t your_target
 ```
 
-- Per default all sophie modules configured per target are loaded. This can be overwritten by using `-s` or `--sophie` to specify a sophie url containing just the needed sophie modules.
+- Default config file is default.js. Tool/target specific stylesheets, scripts or toolRuntimeConfig can be specified there. Another config file name can be specified by using option `c` or `--config`. This config file has to be stored in `config` folder as well and should follow the same basic structure like `default.js`.
 ```bash
-Q server -s https://service.sophie.nzz.ch/bundle/sophie-q@1,sophie-font@1,sophie-color@1.css
+Q server -c config-file-name.js
 ``` 
 
 ## Creating new tool
