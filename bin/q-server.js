@@ -3,7 +3,8 @@ const path = require('path')
 const program = require('commander')
   .option('-p, --port [port]', 'the port to start the server on')
   .option('-t, --target [target]', 'the target being used for rendering info route')
-  .option('-b, --tool-base-url [toolBaseUrl]', 'the tool base url being set in rendering info route')
+  .option('-b, --tool-base-url [url]', 'the tool base url being set in rendering info route')
+  .option('-s, --sophie-url [url]', 'the sophie url being used to render data')
   .parse(process.argv)  
 
 if (program.port) {
@@ -16,6 +17,10 @@ if (program.target) {
 
 if (program.toolBaseUrl) {
   process.env.TOOL_BASE_URL = program.toolBaseUrl
+}
+
+if (program.sophieUrl) {
+  process.env.SOPHIE = program.sophieUrl
 }
 
 startServer()

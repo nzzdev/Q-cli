@@ -15,11 +15,14 @@ function getContextUrl (target) {
   return targetConfig[target].context
 }
 
-function getAdditionRenderingInfo (target) {
+function getAdditionRenderingInfo (target, sophieUrl) {
+  if (!sophieUrl) {
+    sophieUrl = getSophieUrl(target)
+  }
   return {
     stylesheets: [
       {
-        url: getSophieUrl(target)
+        url: sophieUrl
       },
       {
         url: getContextUrl(target)

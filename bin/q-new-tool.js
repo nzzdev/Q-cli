@@ -4,7 +4,7 @@ const path = require('path')
 const replaceInFile = require('replace-in-file')
 
 const program = require('commander')
-  .option('-d, --dir [path]', 'the base directory to bootstap the new tool in, defaults to the tools name')
+  .option('-d, --dir [path]', 'the base directory to bootstrap the new tool in, defaults to the tools name')
   .parse(process.argv)
 
 const toolname = program.args[0];
