@@ -1,14 +1,14 @@
 {
-  "name": "q-tool-dev",
+  "name": "q-cli",
   "version": "1.0.0",
-  "description": "Tool to test with dev view while developing Q tools",
+  "description": "Cli tool to setup new Q tools and start Q dev server to test developing Q tools",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nzzdev/Q-tool-dev.git"
+    "url": "git+https://github.com/nzzdev/Q-cli.git"
   },
   "bin": {
     "Q": "bin/q.js"
@@ -16,9 +16,9 @@
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/nzzdev/Q-tool-dev/issues"
+    "url": "https://github.com/nzzdev/Q-cli/issues"
   },
-  "homepage": "https://github.com/nzzdev/Q-tool-dev#readme",
+  "homepage": "https://github.com/nzzdev/Q-cli#readme",
   "dependencies": {
     "boom": "^7.1.1",
     "commander": "^2.12.2",

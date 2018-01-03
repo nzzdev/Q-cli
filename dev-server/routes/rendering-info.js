@@ -39,12 +39,11 @@ function getRenderingInfo (item, queryString, config) {
 
 module.exports = {
   method: 'GET',
-  path: '/rendering-info/{id}/{target}',
+  path: '/rendering-info/{id}',
   options: {
     validate: {
       params: {
         id: Joi.string().required(),
-        target: Joi.string().required()
       },
       options: {
         allowUnknown: true
@@ -82,7 +81,8 @@ module.exports = {
       let renderingInfo = responses.filter(response => response !== undefined)[0]
 
       // add target specific rendering info
-      renderingInfo = deepmerge(renderingInfo, additionalRenderingInfo(request.params.target), {
+      let target = process.env.TARGET || 'nzz_ch';
+      renderingInfo = deepmerge(renderingInfo, additionalRenderingInfo(target), {
         arrayMerge: (destArr, srcArr) => {
           return srcArr.concat(destArr)
         }

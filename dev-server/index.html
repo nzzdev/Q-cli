@@ -60,12 +60,8 @@
         }
       }
 
-      function loadRenderingInfo(fixtureData, index) {
-        // currently available targets - can be switched manually if needed
-        const target = 'nzz_ch'
-        // const target = 'nzzas'
-        
-        return fetch(`http://localhost:5000/rendering-info/${index}/${target}`)
+      function loadRenderingInfo(fixtureData, index) {        
+        return fetch(`http://localhost:5000/rendering-info/${index}`)
           .then(response => {
             if (response.ok) {
               return response.json();
