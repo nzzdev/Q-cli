@@ -82,7 +82,6 @@ module.exports = {
 
       // add target specific rendering info
       let target = process.env.TARGET || 'nzz_ch';
-      console.log(process.env.SOPHIE)
       renderingInfo = deepmerge(renderingInfo, additionalRenderingInfo(target, process.env.SOPHIE), {
         arrayMerge: (destArr, srcArr) => {
           return srcArr.concat(destArr)
