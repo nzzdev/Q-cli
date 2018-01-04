@@ -26,11 +26,15 @@ Q server -b http://localhost:4000
 Q server -t your_target
 ```
 
-- Default config file is default.js. Tool/target specific stylesheets, scripts or toolRuntimeConfig can be specified there. Another config file name can be specified by using option `c` or `--config`. 
+- Default config file is default.js. Another config file name can be specified by using option `c` or `--config`. 
 ```bash
 Q server -c config-file-name.js
 ``` 
-This config file has to be stored in `config` folder as well and should follow the same basic structure like `default.js`:
+The config file has to be stored in `config` folder and should export an async function returning a config object. The config object can contain 
+- tool specific additionalRenderingInfo like additional stylesheets and scripts to load
+- a target specific context which can also contain stylesheets, scripts or background information
+- toolRuntimeConfig containing information which a tool might need at runtime
+Config file example:
 ```js
 module.exports = {
   nzz_ch: { // target name

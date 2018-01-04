@@ -6,8 +6,8 @@ const deepmerge = require('deepmerge')
 
 const toolBaseUrl = process.env.TOOL_BASE_URL || 'http://localhost:3000';
 const configName = process.env.CONFIG || 'default.js';
+const getConfig = require(`../config/${configName}`);
 
-const config = require(`../config/${configName}`);
 const target = process.env.TARGET || 'nzz_ch';
 
 // try different endpoints to get the right one for the current tool
@@ -74,6 +74,8 @@ module.exports = {
         }
       }
       let queryString = querystring.stringify(query)
+
+      const config = await getConfig();
 
       // add tool specifc toolRuntimeConfig and toolBaseUrl to toolRuntimeConfig
       const additionalToolRuntimeConfig = config[target].additionalRenderingInfo.toolRuntimeConfig;
