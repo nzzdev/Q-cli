@@ -26,10 +26,40 @@ Q server -b http://localhost:4000
 Q server -t your_target
 ```
 
-- Default config file is default.js. Tool/target specific stylesheets, scripts or toolRuntimeConfig can be specified there. Another config file name can be specified by using option `c` or `--config`. This config file has to be stored in `config` folder as well and should follow the same basic structure like `default.js`.
+- Default config file is default.js. Tool/target specific stylesheets, scripts or toolRuntimeConfig can be specified there. Another config file name can be specified by using option `c` or `--config`. 
 ```bash
 Q server -c config-file-name.js
 ``` 
+This config file has to be stored in `config` folder as well and should follow the same basic structure like `default.js`:
+```js
+module.exports = {
+  target_name: { 
+    additionalRenderingInfo: { // additionalRenderingInfo is tool based
+      stylesheets: [
+        {
+          url: 'https://service.sophie.nzz.ch/bundle/sophie-q@1,sophie-font@1,sophie-color@1,sophie-viz-color@1,sophie-input@1.css'
+        }
+      ]
+    },
+    context: { // context is target based
+      stylesheets: [
+        {
+          url: 'https://context-service.st.nzz.ch/stylesheet/all/nzz.ch.css'
+        }
+      ],
+      background: {
+        color: '#fff'
+      }
+    },
+    toolRuntimeConfig: {
+      displayOptions: {
+        hideTitle: true
+      }
+    }
+  }
+}
+
+```
 
 ## Creating new tool
 
