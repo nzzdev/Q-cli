@@ -26,7 +26,7 @@ Q server -b http://localhost:4000
 Q server -t your_target
 ```
 
-- Default config file is default.js. Another config file name can be specified by using option `c` or `--config`. 
+- Default config file name is default.js. Another config file name can be specified by using option `-c` or `--config`. 
 ```bash
 Q server -c config-file-name.js
 ``` 
