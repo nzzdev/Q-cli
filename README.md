@@ -26,43 +26,46 @@ Q server -b http://localhost:4000
 Q server -t your_target
 ```
 
-- Default config file name is default.js. Another config file name can be specified by using option `-c` or `--config`. 
+- Config file name defaults to `default.js`. Another config file name can be specified by using option `-c` or `--config`. 
 ```bash
 Q server -c config-file-name.js
 ``` 
-The config file has to be stored in `config` folder and should export an async function returning a config object. The config object can contain 
+The config file has to be stored in `config` folder and should export an async function returning a config object. The config object has to contain an object for each target. Target objects can contain 
 - tool specific additionalRenderingInfo like additional stylesheets and scripts to load
 - a target specific context which can also contain stylesheets, scripts or background information
 - toolRuntimeConfig containing information which a tool might need at runtime
 Config file example:
 ```js
-module.exports = {
-  nzz_ch: { // target name
-    additionalRenderingInfo: { // additionalRenderingInfo is tool based
-      stylesheets: [
-        {
-          url: 'https://service.sophie.nzz.ch/bundle/sophie-q@1,sophie-font@1,sophie-color@1,sophie-viz-color@1,sophie-input@1.css'
+async function getConfig() {
+  return {
+    nzz_ch: { // target name
+      additionalRenderingInfo: { // additionalRenderingInfo is tool based
+        stylesheets: [
+          {
+            url: 'https://service.sophie.nzz.ch/bundle/sophie-q@1,sophie-font@1,sophie-color@1,sophie-viz-color@1,sophie-input@1.css'
+          }
+        ]
+      },
+      context: { // context is target based
+        stylesheets: [
+          {
+            url: 'https://context-service.st.nzz.ch/stylesheet/all/nzz.ch.css'
+          }
+        ],
+        background: {
+          color: '#fff'
         }
-      ]
-    },
-    context: { // context is target based
-      stylesheets: [
-        {
-          url: 'https://context-service.st.nzz.ch/stylesheet/all/nzz.ch.css'
+      },
+      toolRuntimeConfig: {
+        displayOptions: {
+          hideTitle: true
         }
-      ],
-      background: {
-        color: '#fff'
-      }
-    },
-    toolRuntimeConfig: {
-      displayOptions: {
-        hideTitle: true
       }
     }
   }
 }
 
+module.exports = getConfig;
 ```
 
 ## Creating new tool
