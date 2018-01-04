@@ -1,4 +1,5 @@
-const path = require('path')
+const path = require('path');
+const Nunjucks = require('nunjucks');
 
 const program = require('commander')
   .option('-p, --port [port]', 'the port to start the server on')
@@ -36,6 +37,25 @@ async function startServer() {
   const routes = require(path.join(__dirname, '../dev-server/routes/routes.js'))
 
   await server.register(plugins)
+
+  server.views({
+    engines: {
+      html: {
+        compile: (src, options) => {
+          const template = Nunjucks.compile(src, options.environment);
+          return (context) => {
+            return template.render(context);
+          };
+        },
+
+        prepare: (options, next) => {
+          options.compileOptions.environment = Nunjucks.configure(options.path, { watch: false });
+          return next();
+        }
+      }
+    },
+    path: `${path.join(__dirname, '../dev-server/views')}`
+  });
 
   server.route(routes)
 

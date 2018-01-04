@@ -19,8 +19,10 @@
       <!-- </div> -->
     </div>
     <script> 
+      const port = {{ port }};
+      console.log('Port: ' + port)
       // load fixture data and populate select element with titles
-      fetch('http://localhost:5000/tools/fixtures/data')
+      fetch(`http://localhost:${port}/tools/fixtures/data`)
         .then(response => {
           if (response.ok) {
             return response.json();
@@ -61,7 +63,7 @@
       }
 
       function loadRenderingInfo(fixtureData, index) {        
-        return fetch(`http://localhost:5000/rendering-info/${index}`)
+        return fetch(`http://localhost:${port}/rendering-info/${index}`)
           .then(response => {
             if (response.ok) {
               return response.json();
@@ -87,7 +89,7 @@
             if (data.stylesheets) {
               data.stylesheets.forEach(stylesheet => {
                 if (stylesheet.name) {
-                  stylesheet.url = `http://localhost:5000/tools/stylesheet/${stylesheet.name}`
+                  stylesheet.url = `http://localhost:${port}/tools/stylesheet/${stylesheet.name}`
                 }
                 loadCSS(stylesheet.url)
               })
@@ -103,7 +105,7 @@
             data.scripts = data.scripts
               .map(script => {
                 if (script.name) {
-                  script.url = `http://localhost:5000/tools/script/${script.name}`
+                  script.url = `http://localhost:${port}/tools/script/${script.name}`
                 }
                 return script;
               })

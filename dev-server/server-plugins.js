@@ -1,3 +1,4 @@
 module.exports = [
-  require('inert')
+  require('inert'),
+  require('vision')
 ]
