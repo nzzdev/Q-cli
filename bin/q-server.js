@@ -20,7 +20,11 @@ if (program.toolBaseUrl) {
 }
 
 if (program.config) {
-  process.env.CONFIG = program.config
+  if (path.isAbsolute(program.config)) {
+    process.env.CONFIG = program.config;
+  } else {
+    process.env.CONFIG = path.join(process.cwd(), program.config);
+  }
 }
 
 startServer()
@@ -40,4 +44,7 @@ async function startServer() {
   console.log('Server running at: ', server.info.uri)
   console.log(`Target being used: ${process.env.TARGET || 'nzz_ch'}`)
   console.log(`Tool base url being used: ${process.env.TOOL_BASE_URL || 'http://localhost:3000'}`)
+  if (process.env.CONFIG) {
+    console.log(`Config module will be loaded from: ${process.env.CONFIG}`);
+  }
 }

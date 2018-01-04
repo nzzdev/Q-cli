@@ -26,11 +26,11 @@ Q server -b http://localhost:4000
 Q server -t your_target
 ```
 
-- Config file name defaults to `default.js`. Another config file name can be specified by using option `-c` or `--config`. 
+- One can optionally specify a path to a config file by using option `-c` or `--config`, e.g. 
 ```bash
-Q server -c config-file-name.js
+Q server -c ./config-file-name.js
 ``` 
-The config file has to be stored in `config` folder and should export an async function returning a config object. The config object has to contain an object for each target. Target objects can contain 
+A config file should export an async function returning a config object. The config object has to contain an object for each target. Target objects can contain 
 - tool specific additionalRenderingInfo like additional stylesheets and scripts to load
 - a target specific context which can also contain stylesheets, scripts or background information
 - toolRuntimeConfig containing information which a tool might need at runtime

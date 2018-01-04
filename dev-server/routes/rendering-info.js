@@ -5,9 +5,6 @@ const querystring = require('querystring')
 const deepmerge = require('deepmerge')
 
 const toolBaseUrl = process.env.TOOL_BASE_URL || 'http://localhost:3000';
-const configName = process.env.CONFIG || 'default.js';
-const getConfig = require(`../config/${configName}`);
-
 const target = process.env.TARGET || 'nzz_ch';
 
 // try different endpoints to get the right one for the current tool
@@ -73,33 +70,44 @@ module.exports = {
           query['_id'] = request.params.id
         }
       }
-      let queryString = querystring.stringify(query)
+      let queryString = querystring.stringify(query);
 
-      const config = await getConfig();
-
-      // add tool specifc toolRuntimeConfig and toolBaseUrl to toolRuntimeConfig
-      const additionalToolRuntimeConfig = config[target].additionalRenderingInfo.toolRuntimeConfig;
-      const toolRuntimeConfig = Object.assign({
+      let toolRuntimeConfig = {
         toolBaseUrl: request.server.info.protocol + '://' + request.server.info.address + ':' + request.server.info.port + '/tools'
-      }, additionalToolRuntimeConfig)
+      };
 
+      let config;
+      if (process.env.CONFIG) {
+        const getConfig = require(process.env.CONFIG);
+        config = await getConfig();
+        // add tool specifc toolRuntimeConfig if it exists
+        if (config[target].additionalRenderingInfo && config[target].additionalRenderingInfo.toolRuntimeConfig) {
+          const additionalToolRuntimeConfig = config[target].additionalRenderingInfo.toolRuntimeConfig;
+          toolRuntimeConfig = Object.assign(toolRuntimeConfig, additionalToolRuntimeConfig)
+        }
+      }
 
       let responses = await getRenderingInfo(item, queryString, {
         toolRuntimeConfig: toolRuntimeConfig
       })
       let renderingInfo = responses.filter(response => response !== undefined)[0]
 
-      // add target specific rendering info
-      renderingInfo = deepmerge(renderingInfo, config[target].additionalRenderingInfo, {
-        arrayMerge: (destArr, srcArr) => {
-          return srcArr.concat(destArr)
-        }
-      });
-      renderingInfo = deepmerge(renderingInfo, config[target].context, {
-        arrayMerge: (destArr, srcArr) => {
-          return srcArr.concat(destArr)
-        }
-      });
+      // add target/tool specific additional rendering info to rendering info if it exists
+      if (config && config[target].additionalRenderingInfo) {
+        renderingInfo = deepmerge(renderingInfo, config[target].additionalRenderingInfo, {
+          arrayMerge: (destArr, srcArr) => {
+            return srcArr.concat(destArr)
+          }
+        });
+      }
+      // add target specific context info to rendering info if it exists
+      if (config && config[target].context) {
+        renderingInfo = deepmerge(renderingInfo, config[target].context, {
+          arrayMerge: (destArr, srcArr) => {
+            return srcArr.concat(destArr)
+          }
+        });
+      }
 
       return h.response(renderingInfo)
     } catch (err) {
