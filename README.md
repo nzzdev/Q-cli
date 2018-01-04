@@ -33,7 +33,7 @@ Q server -c config-file-name.js
 This config file has to be stored in `config` folder as well and should follow the same basic structure like `default.js`:
 ```js
 module.exports = {
-  target_name: { 
+  nzz_ch: { // target name
     additionalRenderingInfo: { // additionalRenderingInfo is tool based
       stylesheets: [
         {
