@@ -101,14 +101,6 @@ module.exports = {
           }
         });
       }
-      // add target specific context info to rendering info if it exists
-      if (config && config[target].context) {
-        renderingInfo = deepmerge(renderingInfo, config[target].context, {
-          arrayMerge: (destArr, srcArr) => {
-            return srcArr.concat(destArr)
-          }
-        });
-      }
 
       return h.response(renderingInfo)
     } catch (err) {
