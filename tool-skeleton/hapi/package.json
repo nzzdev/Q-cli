@@ -1,0 +1,27 @@
+{
+  "name": "tool-skeleton",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "rm -rf styles && mkdir styles && node tasks/build.js",
+    "test": "standard && lab -a code -c -P tests --verbose --leaks"
+  },
+  "author": "",
+  "license": "",
+  "dependencies": {
+    "autoprefixer": "^7.2.4",
+    "boom": "^7.1.1",
+    "code": "^5.1.2",
+    "cssnano": "^3.10.0",
+    "hapi": "^17.2.0",
+    "joi": "^13.0.2",
+    "lab": "^15.1.2",
+    "node-sass": "^4.7.2",
+    "postcss": "^6.0.15",
+    "postcss-import": "^11.0.0"
+  },
+  "devDependencies": {
+    "standard": "^10.0.3"
+  }
+}
