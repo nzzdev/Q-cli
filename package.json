@@ -1,5 +1,5 @@
 {
-  "name": "q-cli",
+  "name": "@nzz/q-cli",
   "version": "1.0.0",
   "description": "Cli tool to setup new Q tools and start Q dev server to test developing Q tools",
   "main": "index.js",
