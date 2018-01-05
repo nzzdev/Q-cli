@@ -7,12 +7,90 @@
     <meta name="description" content="">
     <script src="https://rawgit.com/filamentgroup/loadCSS/master/src/loadCSS.js"></script> 
     <script src="https://q-server.st.nzz.ch/files/system.js"></script>
+    <!-- if context is given load stylesheets and scripts if available -->
+    {%- if context.stylesheets %}
+      {%- for stylesheet in context.stylesheets %}
+        {%- if stylesheet.url %}
+          <link rel="stylesheet" href="{{ stylesheet.url }}">
+        {%- endif %}
+        {%- if stylesheet.content %}
+          <style>
+            {{ stylesheet.content }}
+          </style>
+        {%- endif %}
+      {%- endfor %}
+    {%- endif %}
+    {%- if context.scripts %}
+      {%- for script in context.scripts %}
+        {%- if script.url %}
+          <script src="{{ script.url }}"></script>
+        {%- endif %}
+        {%- if script.content %}
+          <script>
+            {{ script.content }}
+          </script>
+        {%- endif %}
+      {%- endfor %}
+    {%- endif %}
+
+    <!-- if context background is given set color and background color of container -->
+    {%- if context.background %}
+      <style>
+          #container {
+            background-color: {{ context.background.color }};
+            color: {{ context.background.color }}
+          }
+      </style>
+    {%- endif %}
+
+    <!-- style select and button (independent of sophie) -->
+    <style>
+      #fixtures-select {
+        font-family: nzz-sans-serif,Helvetica,Arial;
+        font-size: 13px;
+        font-weight: 500;
+        height: 30px;
+        line-height: 30px;
+        width: 100%;
+        padding: 0px 10px;
+        margin: 0 10px 20px 0;
+        outline: none;
+        border-radius: 0;
+        border: 1px solid transparent;
+        color: #fff;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-color: #13175f;
+        background-position: calc(100% - 10px) 11px;
+        background-repeat: no-repeat;
+        background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTFweCIgaGVpZ2h0PSI3cHgiIHZpZXdCb3g9IjAgMCAxMSA3IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPg0KICAgIDxnIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPg0KICAgICAgICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNjAyLCAtMTIyNikiIGZpbGw9IiNGRkYiPg0KICAgICAgICAgICAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNDY4LCAxMjA3KSI+DQogICAgICAgICAgICAgICAgPHBvbHlnb24gcG9pbnRzPSIxMzUuMDU5IDE5IDEzNCAyMC4wNjQgMTM5LjA3NCAyNS4xMjEgMTQ0LjEyMSAyMC4wOTEgMTQzLjA2MyAxOS4wMjggMTM5LjA3NCAyMy4wMDQiPjwvcG9seWdvbj4NCiAgICAgICAgICAgIDwvZz4NCiAgICAgICAgPC9nPg0KICAgIDwvZz4NCjwvc3ZnPg==');
+      }
+      #fixtures-select:hover {
+        background-color: #2c32bd
+      }
+      #reload-button {
+        font-size: 13px;
+        font-family: nzz-sans-serif,Helvetica,Arial;
+        font-weight: 500;
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+        height: 30px;
+        padding: 0 10px;
+        color: #fff;
+        background-color: #13175f;
+        border-width: 0px;
+        border-radius: 0px;
+      }
+    </style>
   </head>
   <body>
     <div id="container">
       <div style="display: flex;">
-        <select id="fixtures-select" class="s-input-select" style="margin-bottom: 20px;"></select>
-        <button id="reload-button" type="button" class="s-button s-button--small">reload</button>
+        <select id="fixtures-select" ></select>
+        <button id="reload-button" type="button">reload</button>
       </div>
       <!-- <div class="content" style="padding: 5px;"> -->
         <div id="q-tool"></div>
@@ -20,7 +98,7 @@
     </div>
     <script> 
       const port = {{ port }};
-      console.log('Port: ' + port)
+      const target = '{{ target }}';
       // load fixture data and populate select element with titles
       fetch(`http://localhost:${port}/tools/fixtures/data`)
         .then(response => {
@@ -63,7 +141,7 @@
       }
 
       function loadRenderingInfo(fixtureData, index) {        
-        return fetch(`http://localhost:${port}/rendering-info/${index}`)
+        return fetch(`http://localhost:${port}/rendering-info/${index}/${target}`)
           .then(response => {
             if (response.ok) {
               return response.json();
@@ -79,12 +157,6 @@
       function updateRenderingInfoForItem(fixtureData, index) {
         loadRenderingInfo(fixtureData, index)
           .then(data => {
-            // load background color if configured
-            if (data.background) {
-              document.getElementById('container').style.background = data.background.color;
-              document.getElementById('container').style.color = data.background.color;
-            }
-
             // load stylesheets from tool
             if (data.stylesheets) {
               data.stylesheets.forEach(stylesheet => {

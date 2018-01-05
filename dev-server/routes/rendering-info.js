@@ -5,7 +5,6 @@ const querystring = require('querystring')
 const deepmerge = require('deepmerge')
 
 const toolBaseUrl = process.env.TOOL_BASE_URL || 'http://localhost:3000';
-const target = process.env.TARGET || 'nzz_ch';
 
 // try different endpoints to get the right one for the current tool
 function getRenderingInfo (item, queryString, config) {
@@ -38,11 +37,12 @@ function getRenderingInfo (item, queryString, config) {
 
 module.exports = {
   method: 'GET',
-  path: '/rendering-info/{id}',
+  path: '/rendering-info/{id}/{target}',
   options: {
     validate: {
       params: {
         id: Joi.string().required(),
+        target: Joi.string().required()
       },
       options: {
         allowUnknown: true
@@ -53,6 +53,7 @@ module.exports = {
   handler: async function (request, h) {
     try {
       // fetch item with id from array of fixture data
+      const target = request.params.target;
       const fixtureDataResponse = await fetch(`${toolBaseUrl}/fixtures/data`)
       if (!fixtureDataResponse.ok) {
         throw new Error(fixtureDataResponse.status)
