@@ -67,10 +67,20 @@ async function getConfig() {
 
 module.exports = getConfig;
 ```
+## Creating new Q server implementation
+
+Once `Q` cli is installed one can create the skeleton of a Q server implementation by executing
+```bash
+Q new-server my-server-name
+```
+- The directory name where the server implementation is being created defaults to the server name and can be overwritten by using option `-d` or `--dir`
+```bash
+Q new-server my-server-name -d my-server-directory
+```
 
 ## Creating new tool
 
-Once `Q` cli installed one can create the skeleton of a new tool by executing
+Once `Q` cli is installed one can create the skeleton of a new tool by executing
 ```bash
 Q new-tool my-tool-name
 ```
