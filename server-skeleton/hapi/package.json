@@ -1,0 +1,22 @@
+{
+  "name": "server-skeleton",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "",
+  "dependencies": {
+    "@nzz/q-server": "^3.2.3",
+    "boom": "^7.1.1",
+    "confidence": "^3.0.2",
+    "hapi": "^17.2.0",
+    "hapi-auth-bearer-token": "^6.0.1",
+    "hapi-swagger": "^9.0.2",
+    "joi": "^13.1.0",
+    "nano": "^6.4.2",
+    "node-fetch": "^1.7.3"
+  }
+}
