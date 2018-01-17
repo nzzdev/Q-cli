@@ -87,15 +87,10 @@ module.exports = {
         const getConfig = require(process.env.CONFIG);
         config = await getConfig();
         // add tool specifc toolRuntimeConfig if it exists
-        if (
-          config[target].additionalRenderingInfo &&
-          config[target].additionalRenderingInfo.toolRuntimeConfig
-        ) {
-          const additionalToolRuntimeConfig =
-            config[target].additionalRenderingInfo.toolRuntimeConfig;
+        if (config[target].toolRuntimeConfig) {
           toolRuntimeConfig = Object.assign(
             toolRuntimeConfig,
-            additionalToolRuntimeConfig
+            config[target].toolRuntimeConfig
           );
         }
       }
