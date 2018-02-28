@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
 const program = require("commander");
+const version = require("../package.json").version;
 
 program
-  .version("1.0.0")
+  .version(version)
   .description("Q Toolbox cli")
   .command("new-tool", "bootstrap a new tool")
   .command("new-server", "bootstrap a new Q server implementation")
