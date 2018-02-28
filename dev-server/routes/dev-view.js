@@ -1,9 +1,9 @@
 module.exports = {
-  method: 'GET',
-  path: '/dev',
+  method: "GET",
+  path: "/dev",
   handler: async (request, h) => {
-    const target = process.env.TARGET || 'nzz_ch';
-    
+    const target = process.env.TARGET || "nzz_ch";
+
     // add target and port
     const viewData = {
       port: process.env.PORT || 5000,
@@ -20,6 +20,6 @@ module.exports = {
       }
     }
 
-    return h.view('dev', viewData);
+    return h.view("dev", viewData);
   }
-}
+};

@@ -1,12 +1,12 @@
-const Joi = require('joi');
-const Boom = require('boom');
-const fetch = require('node-fetch');
-const nano = require('nano');
+const Joi = require("joi");
+const Boom = require("boom");
+const fetch = require("node-fetch");
+const nano = require("nano");
 
 module.exports = [
   {
-    path: '/authenticate',
-    method: 'POST',
+    path: "/authenticate",
+    method: "POST",
     options: {
       validate: {
         payload: {
@@ -19,20 +19,22 @@ module.exports = [
       }
     },
     handler: async (request, h) => {
-      if (request.payload.username === 'demo-user'
-       || request.payload.username === 'demo-expert'
-       || request.payload.username === 'demo-poweruser') {
+      if (
+        request.payload.username === "demo-user" ||
+        request.payload.username === "demo-expert" ||
+        request.payload.username === "demo-poweruser"
+      ) {
         return {
           access_token: request.payload.username
-        }
-      };
+        };
+      }
     }
   },
   {
-    path: '/user',
-    method: 'GET',
+    path: "/user",
+    method: "GET",
     config: {
-      auth: 'q-auth',
+      auth: "q-auth",
       cors: {
         credentials: true
       }
@@ -44,34 +46,37 @@ module.exports = [
 
       const user = {
         username: request.auth.credentials.name,
-        department: 'Politics',
-        publication: 'pub1',
-        initials: '🤖'
-      }
+        department: "Politics",
+        publication: "pub1",
+        initials: "🤖"
+      };
 
-      if (user.username === 'demo-expert' || user.username === 'demo-poweruser') {
+      if (
+        user.username === "demo-expert" ||
+        user.username === "demo-poweruser"
+      ) {
         user.roles = [
-          'expert-election-executive',
-          'expert-election-votes',
-          'expert-election-seats',
-          'expert-map',
-          'expert-chart',
-          'expert-coalition-calculation'
-        ]
+          "expert-election-executive",
+          "expert-election-votes",
+          "expert-election-seats",
+          "expert-map",
+          "expert-chart",
+          "expert-coalition-calculation"
+        ];
       }
 
-      if (user.username === 'demo-poweruser') {
-        user.roles.push('poweruser');
+      if (user.username === "demo-poweruser") {
+        user.roles.push("poweruser");
       }
 
       return user;
     }
   },
   {
-    path: '/user',
-    method: 'PUT',
+    path: "/user",
+    method: "PUT",
     config: {
-      auth: 'q-auth',
+      auth: "q-auth",
       validate: {
         payload: {
           username: Joi.string().required()
@@ -85,7 +90,7 @@ module.exports = [
       }
     },
     handler: async (request, h) => {
-      return 'ok';
+      return "ok";
     }
   }
 ];
