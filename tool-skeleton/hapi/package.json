@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "rm -rf styles && mkdir styles && node tasks/build.js",
-    "test": "standard && lab -a code -c -P tests --verbose --leaks"
+    "test": "lab -a code -c -P tests --verbose --leaks"
   },
   "author": "",
   "license": "",
@@ -21,8 +21,5 @@
     "node-sass": "^4.7.2",
     "postcss": "^6.0.15",
     "postcss-import": "^11.0.0"
-  },
-  "devDependencies": {
-    "standard": "^10.0.3"
   }
 }
