@@ -4,6 +4,7 @@ const base = {
   cache: {
     cacheControl: {
       // these are the default cache-control headers used for the tool-default route in case a tool is not responding with it's own directives.
+      public: true,
       maxAge: {
         $filter: "env",
         local: 1,
