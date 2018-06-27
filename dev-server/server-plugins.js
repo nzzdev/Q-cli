@@ -1,4 +1,1 @@
-module.exports = [
-  require('inert'),
-  require('vision')
-]
+module.exports = [require("inert"), require("vision")];
