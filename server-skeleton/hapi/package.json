@@ -10,7 +10,6 @@
   "license": "",
   "dependencies": {
     "@nzz/q-server": "5.0.0",
-    "amqplib": "^0.5.2",
     "boom": "^7.2.0",
     "bounce": "^1.2.0",
     "brok": "^3.0.0",
