@@ -12,6 +12,10 @@ const editorConfig = {
     {
       key: "de",
       label: "de"
+    },
+    {
+      key: "fr",
+      label: "fr"
     }
   ],
   departments: ["Economics", "Politics"],
@@ -54,6 +58,35 @@ const editorConfig = {
       m: "",
       q: "",
       bondTheme: ""
+    }
+  },
+  previewSizes: {
+    small: {
+      value: 290,
+      min_height: 568,
+      label_locales: {
+        de: "Mobile",
+        en: "Mobile",
+        fr: "Mobile"
+      }
+    },
+    medium: {
+      value: 560,
+      min_height: 768,
+      label_locales: {
+        de: "Artikelbreite",
+        en: "Content",
+        fr: "Content"
+      }
+    },
+    large: {
+      value: 800,
+      min_height: 768,
+      label_locales: {
+        de: "Volle Breite",
+        en: "Full",
+        fr: "Complet"
+      }
     }
   }
 };
