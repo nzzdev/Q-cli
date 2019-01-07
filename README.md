@@ -1,5 +1,7 @@
 # Q cli
 
+**Maintainer**: [manuelroth](https://github.com/manuelroth)
+
 run `npm install -g @nzz/q-cli` to install the `Q` cli helping you with developing Q tools.
 
 ## Q dev server
