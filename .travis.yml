@@ -1,0 +1,11 @@
+dist: trusty
+sudo: true
+language: node_js
+node_js:
+- '10'
+install:
+- cd tool-skeleton/hapi
+- npm install
+script:
+- npm run build
+- npm run test
