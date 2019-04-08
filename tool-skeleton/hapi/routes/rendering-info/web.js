@@ -15,9 +15,6 @@ const schemaString = JSON.parse(
 const Ajv = require("ajv");
 const ajv = new Ajv();
 
-// add draft-04 support explicit
-ajv.addMetaSchema(require("ajv/lib/refs/json-schema-draft-04.json"));
-
 const validate = ajv.compile(schemaString);
 function validateAgainstSchema(item, options) {
   if (validate(item)) {
