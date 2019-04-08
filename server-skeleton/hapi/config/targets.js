@@ -1,8 +1,7 @@
 const Confidence = require("confidence");
 
-const targets = [
-  {
-    key: "target1",
+const targets = {
+  target1: {
     label: "Target 1",
     type: "web",
     context: {
@@ -16,7 +15,7 @@ const targets = [
       }
     }
   }
-];
+};
 
 const env = process.env.APP_ENV || "local";
 const store = new Confidence.Store(targets);
