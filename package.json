@@ -1,6 +1,6 @@
 {
   "name": "@nzz/q-cli",
-  "version": "1.3.4",
+  "version": "1.3.5",
   "description": "Cli tool to setup new Q tools, new Q server implementations and start Q dev server to test developing Q tools",
   "main": "index.js",
   "scripts": {
@@ -29,6 +29,7 @@
     "joi": "^14.3.1",
     "node-fetch": "^2.3.0",
     "nunjucks": "^3.2.0",
+    "path": "^0.12.7",
     "querystring": "^0.2.0",
     "replace-in-file": "^3.4.4",
     "vision": "^5.4.4",
