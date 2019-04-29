@@ -19,7 +19,7 @@ body {
   height: 30px;
   width: 100%;
   top: 0;
-  z-index: 1;
+  z-index: 1000;
 }
 .fixtures__select {
   font-family: nzz-sans-serif, Helvetica, Arial;
