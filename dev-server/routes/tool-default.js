@@ -1,5 +1,5 @@
-const Joi = require("joi");
-const Wreck = require("wreck");
+const Joi = require("@hapi/joi");
+const Wreck = require("@hapi/wreck");
 const querystring = require("querystring");
 const fetch = require("node-fetch");
 

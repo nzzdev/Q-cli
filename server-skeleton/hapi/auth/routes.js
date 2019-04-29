@@ -1,5 +1,5 @@
-const Joi = require("joi");
-const Boom = require("boom");
+const Joi = require("@hapi/joi");
+const Boom = require("@hapi/boom");
 const fetch = require("node-fetch");
 const nano = require("nano");
 

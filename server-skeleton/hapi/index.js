@@ -1,4 +1,4 @@
-const Hapi = require("hapi");
+const Hapi = require("@hapi/hapi");
 const Pack = require("./package.json");
 
 const plugins = [
