@@ -116,24 +116,35 @@
               // add markup
               document.querySelector("#container").innerHTML = data.markup;
               // load resources
-              data.scripts.map(script => {
-                if(script.name) {
-                  script.url = `http://localhost:${port}/tools/script/${script.name}`;
-                }
-              });
-              data.stylesheets.map(stylesheet => {
-                if (stylesheet.name) {
-                  stylesheet.url = `http://localhost:${port}/tools/stylesheet/${stylesheet.name}`
-                }
-              });
+              let scriptUrls = [];
+              if(data.scripts) {
+                data.scripts.map(script => {
+                  if(script.name) {
+                    script.url = `http://localhost:${port}/tools/script/${script.name}`;
+                  }
+                });
+                scriptUrls = data.scripts.filter(script => script.url).map(script => script.url);
+              }
 
-              const urlResources = [...data.scripts.filter(script => script.url).map(script => script.url), ...data.stylesheets.filter(stylesheet => stylesheet.url).map(stylesheet => stylesheet.url)];
+              let stylesheetUrls = [];
+              if(data.stylesheets) {
+                data.stylesheets.map(stylesheet => {
+                  if (stylesheet.name) {
+                    stylesheet.url = `http://localhost:${port}/tools/stylesheet/${stylesheet.name}`
+                  }
+                });
+                stylesheetUrls = data.stylesheets.filter(stylesheet => stylesheet.url).map(stylesheet => stylesheet.url);
+              }
+
+              const urlResources = [...scriptUrls, ...stylesheetUrls];
               loadjs(urlResources, {
                 success: () => {
-                  for(const script of data.scripts.filter(script => script.content)) {
-                    const scriptElement = document.createElement('script');
-                    scriptElement.innerHTML = script.content;
-                    document.querySelector("#container").appendChild(scriptElement);
+                  if(data.scripts) {
+                    for(const script of data.scripts.filter(script => script.content)) {
+                      const scriptElement = document.createElement('script');
+                      scriptElement.innerHTML = script.content;
+                      document.querySelector("#container").appendChild(scriptElement);
+                    }
                   }
                 },
                 before: (path, scriptElement) => {
