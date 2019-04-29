@@ -14,11 +14,11 @@
     "url": "https://github.com/github/tool-skeleton.git"
   },
   "dependencies": {
-    "ajv": "^6.10.0",
-    "boom": "^7.3.0",
-    "hapi": "^18.1.0",
-    "inert": "^5.1.3",
-    "joi": "^14.3.1"
+    "@hapi/hapi": "^18.3.1",
+    "@hapi/boom": "^7.4.2",
+    "@hapi/inert": "^5.2.0",
+    "@hapi/joi": "^14.4.1",
+    "ajv": "^6.10.0"
   },
   "devDependencies": {
     "autoprefixer": "^9.5.1",
@@ -26,8 +26,8 @@
     "cssnano": "^4.1.10",
     "glob": "^7.1.3",
     "lab": "^18.0.2",
-    "node-sass": "^4.11.0",
     "postcss": "^7.0.14",
-    "postcss-import": "^12.0.1"
+    "postcss-import": "^12.0.1",
+    "sass": "^1.19.0"
   }
 }

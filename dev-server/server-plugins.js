@@ -1,1 +1,1 @@
-module.exports = [require("inert"), require("vision")];
+module.exports = [require("@hapi/inert"), require("@hapi/vision")];
