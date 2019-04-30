@@ -2,10 +2,16 @@ dist: trusty
 sudo: true
 language: node_js
 node_js:
-  - "10"
+- '10'
+cache:
+  directories:
+  - node_modules
 install:
-  - cd tool-skeleton/hapi
-  - npm install
+- cd tool-skeleton/hapi
+- npm install
 script:
-  - npm run build
-  - npm run test
+- npm run build
+- npm run test
+notfications:
+  slack:
+    secure: cpd8v7VZ14SE1//jmd6mP+Gndo+htGzleW3E6RdnsEgz1ttAJLvIkx9HxtN2ppwwhQJTv3g4rZUGU2vXyyneRQAMak80tWK8zrhdShg0Yry47M1R24LZsPiwOUCaMLD8O26irSlWgAuwno1LUReiJLnssRDGj0CSW3o+ISp11G9Q338u9PzULhjFnD3lT4pv4u7RAPbTB6MLVjWe7eRxyXATn92HQCtKH5YdVjItbDS/HEZwZOHV+lwrQNu/w/wBqHoEDX4XCJnQdzTdUZdlXmSz/5AS10IlDw05U9P9YEO9toOMWQJunDaslpIhl7kuSkqYrWzb0X+wLVNyLVfA0vf8wQG31WHs5T+Ul2P/O9zm4NzgTCT2khfQaynUpE2Zh9p1asnUSYGN75M+GPYKOkHHdj6KKmZ2APsuggC42vyI7FrsOy0Af9wnaoKxsBfaM/XNxx0hoblRQaQ4RaUaNQ4cF1WwUg6ZOlfewjpFnDLmC+XJS8t6PSlIKgHdTsaJB9wA4xlYPU4JFGMVYGd15tRpGDz9mgQbIkKhAFsFF6PiuemTHSO17Zpij7WKFVZuyAcs6NLZieXNIUwjKrfEzaUV03mPuw2dlxIlzm2TbZrKE97SzNIND2XJ2HTfmIoJ/jL3OKwc3WdE76ypoUl9E5sqg7zRrU+wgZMBM1U4ytY=
