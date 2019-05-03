@@ -35,6 +35,8 @@ if (program.config) {
   } else {
     process.env.CONFIG = path.join(process.cwd(), program.config);
   }
+} else {
+  process.env.CONFIG = path.join(__dirname, "../dev-server/config/default.js");
 }
 
 startServer();
