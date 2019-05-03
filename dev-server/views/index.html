@@ -90,7 +90,7 @@
           updateRenderingInfoForItem(fixtureData, 0);
 
           // as soon as another fixture data item is selected, update with its rendering info
-          selectElement.addEventListener('change', () => {
+          selectElement.addEventListener('change', (event) => {
             updateRenderingInfoForItem(fixtureData, selectElement.selectedIndex);
           });
 
