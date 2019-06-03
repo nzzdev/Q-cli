@@ -150,6 +150,14 @@
                       document.querySelector("#container").appendChild(scriptElement);
                     }
                   }
+                  if(data.stylesheets) {
+                    for(const stylesheet of data.stylesheets.filter(stylesheet => stylesheet.content)) {
+                      const styleElement = document.createElement('style');
+                      styleElement.type = "text/css";
+                      styleElement.appendChild(document.createTextNode(stylesheet.content));
+                      document.querySelector("#container").appendChild(styleElement);
+                    }
+                  }
                 },
                 before: (path, scriptElement) => {
                   document.querySelector("#container").appendChild(scriptElement);
