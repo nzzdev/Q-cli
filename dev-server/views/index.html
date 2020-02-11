@@ -40,6 +40,9 @@
     {%- endif %}
     <link rel="stylesheet" href="http://localhost:5000/style.css" />
   </head>
+  <!-- we have four different article templates, since the article itself has the same structure in each template 
+		we can use either of these classes: regular, longformstandard, regular, opinion 
+		if one changes the class attached to body tag one should change the class in section tag accordingly (maybe further adjustments needed too) -->
   <body class="regular">
     <div class="fixtures__container">
       <select class="fixtures__select"></select>
