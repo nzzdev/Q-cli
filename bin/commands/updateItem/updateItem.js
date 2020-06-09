@@ -42,18 +42,44 @@ module.exports = async function () {
 
     const QServerAccessToken = config.get("QServerAccessToken");
     const QServerBaseUrl = config.get("QServerBaseUrl");
-    //await helpers.checkValidityOfAccessToken(QServerBaseUrl, QServerAccessToken);
+    const isAccessTokenValid = await helpers.checkValidityOfAccessToken(
+      QServerBaseUrl,
+      QServerAccessToken
+    );
+
+    // Get a new access token in case its not valid anymore
+    if (!isAccessTokenValid) {
+      const username = await promptly.prompt("Enter your username: ");
+      const password = await promptly.password("Enter your password: ", {
+        replace: "*",
+      });
+      const QServerAccessToken = await helpers.getQServerAccessToken(
+        QServerBaseUrl,
+        username,
+        password.trim()
+      );
+      config.set("QServerAccessToken", QServerAccessToken);
+    }
 
     const QConfigPath = `${process.cwd()}/q.config.json`;
     if (fs.existsSync(QConfigPath)) {
       const qConfig = JSON.parse(fs.readFileSync(QConfigPath));
-      if (qConfig.items) {
+      const isValidConfig = helpers.validateConfig(qConfig);
+      if (isValidConfig) {
         for (const item of qConfig.items) {
           await updateItem(QServerBaseUrl, QServerAccessToken, item);
         }
       }
+    } else {
+      console.log(
+        "Couldn't find config file named q.config.json in the current diretory"
+      );
     }
   } catch (error) {
-    console.log(error);
+    console.log(
+      `An unexpected error occured. Please check the entered information and try again. ${JSON.stringify(
+        error
+      )}`
+    );
   }
 };
