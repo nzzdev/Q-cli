@@ -15,9 +15,7 @@ async function getQServerAccessToken(QServerBaseUrl, username, password) {
     const body = await response.json();
     return body.access_token;
   } else {
-    console.log(
-      "An unexpected error occured. Please check the entered information and try again."
-    );
+    logUnexpectedError();
   }
 }
 
@@ -38,6 +36,8 @@ async function getItem(QServerBaseUrl, QServerAccessToken, id) {
   });
   if (response.ok) {
     return await response.json();
+  } else {
+    logUnexpectedError();
   }
 }
 
@@ -53,7 +53,15 @@ async function saveItem(QServerBaseUrl, QServerAccessToken, item) {
   });
   if (response.ok) {
     return await response.json();
+  } else {
+    logUnexpectedError();
   }
+}
+
+function logUnexpectedError() {
+  console.log(
+    "An unexpected error occured. Please check the entered information and try again."
+  );
 }
 
 function getCurrentDirectoryBase() {
@@ -77,4 +85,5 @@ module.exports = {
   checkValidityOfAccessToken: checkValidityOfAccessToken,
   getCurrentDirectoryBase: getCurrentDirectoryBase,
   validateConfig: validateConfig,
+  logUnexpectedError: logUnexpectedError,
 };

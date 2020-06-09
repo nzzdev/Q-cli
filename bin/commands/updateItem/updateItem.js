@@ -17,12 +17,19 @@ async function updateItem(QServerBaseUrl, QServerAccessToken, item) {
   });
 
   await helpers.saveItem(QServerBaseUrl, QServerAccessToken, newItem);
+  console.log(`Successfully updated item with id ${item.metadata.id}`);
 }
 
-module.exports = async function () {
+module.exports = async function (command) {
   try {
+    if (command.clear) {
+      config.clear();
+    }
+
     if (!config.get("QServerBaseUrl")) {
-      const QServerBaseUrl = await promptly.prompt("Enter the Q-Server url: ");
+      const QServerBaseUrl = new URL(
+        await promptly.prompt("Enter the Q-Server url: ")
+      ).toString();
       config.set("QServerBaseUrl", QServerBaseUrl);
     }
 
@@ -34,7 +41,7 @@ module.exports = async function () {
       });
       const QServerAccessToken = await helpers.getQServerAccessToken(
         QServerBaseUrl,
-        username,
+        username.trim(),
         password.trim()
       );
       config.set("QServerAccessToken", QServerAccessToken);
@@ -77,9 +84,8 @@ module.exports = async function () {
     }
   } catch (error) {
     console.log(
-      `An unexpected error occured. Please check the entered information and try again. ${JSON.stringify(
-        error
-      )}`
+      "An unexpected error occured. Please check the entered information and try again."
     );
+    console.log(JSON.stringify(error));
   }
 };

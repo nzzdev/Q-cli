@@ -66,8 +66,9 @@ async function main() {
   program
     .command("update-item")
     .description("update q item")
-    .action(async () => {
-      await updateItem();
+    .option("-c, --clear", "clears stored configuration properties")
+    .action(async (command) => {
+      await updateItem(command);
     });
 
   await program.parseAsync(process.argv);
