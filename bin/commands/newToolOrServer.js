@@ -3,11 +3,11 @@ const path = require("path");
 const replaceInFile = require("replace-in-file");
 
 module.exports = async function (type, name, basedir) {
-  try {
-    fs.mkdirSync(basedir);
-  } catch (err) {
+  if (fs.existsSync(basedir)) {
     console.error(`directory ${basedir} already exists or is not writable`);
     process.exit(1);
+  } else {
+    fs.mkdirSync(basedir);
   }
 
   const replaceOptions = {

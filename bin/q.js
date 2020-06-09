@@ -4,7 +4,7 @@ const { program } = require("commander");
 const version = require("../package.json").version;
 const runServer = require("./commands/server.js");
 const newToolOrServer = require("./commands/newToolOrServer.js");
-const updateItem = require("./commands/updateItem.js");
+const updateItem = require("./commands/updateItem/updateItem.js");
 
 async function main() {
   program.version(version).description("Q Toolbox cli");
