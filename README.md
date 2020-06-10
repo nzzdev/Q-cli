@@ -189,6 +189,10 @@ The configuration object has a property `items` which contains an object for eac
 
 - Stored configuration properties like Q-Server url or access tokens can be cleared by using option `-c` or `--clear`
 
+```bash
+Q update-item -c
+```
+
 [to the top](#table-of-contents)
 
 ## License
