@@ -6,7 +6,7 @@ async function getConfig() {
         stylesheets: [
           {
             url:
-              "https://service.sophie.nzz.ch/bundle/sophie-q@1,sophie-font@1,sophie-color@1,sophie-viz-color@1,sophie-input@1.css"
+              "https://service.sophie.nzz.ch/bundle/sophie-q@1,sophie-font@1,sophie-color@1,sophie-viz-color@1,sophie-legend@1,sophie-input@1.css"
           }
         ]
       },
