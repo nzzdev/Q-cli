@@ -81,27 +81,27 @@ async function getConfig() {
         stylesheets: [
           {
             url:
-              "https://service.sophie.nzz.ch/bundle/sophie-q@1,sophie-font@1,sophie-color@1,sophie-viz-color@1,sophie-input@1.css"
-          }
-        ]
+              "https://service.sophie.nzz.ch/bundle/sophie-q@1,sophie-font@1,sophie-color@1,sophie-viz-color@1,sophie-input@1.css",
+          },
+        ],
       },
       context: {
         // context is target based
         stylesheets: [
           {
-            url: "https://context-service.st.nzz.ch/stylesheet/all/nzz.ch.css"
-          }
+            url: "https://context-service.st.nzz.ch/stylesheet/all/nzz.ch.css",
+          },
         ],
         background: {
-          color: "#fff"
-        }
+          color: "#fff",
+        },
       },
       toolRuntimeConfig: {
         displayOptions: {
-          hideTitle: true
-        }
-      }
-    }
+          hideTitle: true,
+        },
+      },
+    },
   };
 }
 
@@ -136,10 +136,67 @@ Q new-tool my-tool-name
 Q new-tool my-tool-name -d my-tool-directory
 ```
 
+### Updating existing Q items
+
+Once `Q` cli installed one can update one or many Q items by executing:
+
+```bash
+Q update-item
+```
+
+The `update-item` command expects a config file called `q.config.json` located in the same directory as the cli-command is executed. The config file has to follow [this json-schema](./bin/commands/updateItem/schema.json). Here an example:
+
+```json
+{
+  // An array of Q items
+  "items": [
+    {
+      // Metadata relevant for this Q item
+      "metadata": {
+        // Environment of Q item
+        "environment": "staging",
+        // Id of Q item
+        "id": "6dcf203a5c5f74b61aeea0cb0ef2ca9f"
+      },
+      // Object with the data of the Q item
+      // The structure of the data can vary between each graphic type (chart, map, table ect.).
+      "item": {
+        "title": "Der Konsum in der Schweiz springt wieder an",
+        "subtitle": "Wöchentliche Ausgaben mittels Bankkarten in Mio. Fr. im Jahr 2020, zum Vergleich 2019",
+        "data": [
+          ["Datum", "2020", "2019"],
+          ["2020-01-06", "690004302", "641528028"],
+          ["2020-01-13", "662122373", "617653790"],
+          ["2020-01-20", "688208667", "654303249"]
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "environment": "production",
+        "id": "6dcf203a5c5f74b61aeea0cb0ef2edea"
+      },
+      "item": {
+        "title": "Der Lastwagenverkehr in Deutschland nimmt wieder zu",
+        "subtitle": "Täglicher Lkw-Maut-Fahrleistungsindex (2015 = 100, saison- und kalenderbereinigt) im Jahr 2020, zum Vergleich 2019\t\t",
+        "data": [
+          ["Datum", "2020", "2019"],
+          ["2020-01-07", "105.9", "112.1"],
+          ["2020-01-08", "108.9", "111.4"],
+          ["2020-01-09", "112.2", "113.5"]
+        ]
+      }
+    }
+  ]
+}
+```
+
+- Stored configuration properties like Q-Server url or access tokens can be cleared by using option `-c` or `--clear`
+
 [to the top](#table-of-contents)
 
 ## License
 
-Copyright (c) 2019 Neue Zürcher Zeitung.
+Copyright (c) 2020 Neue Zürcher Zeitung.
 
 This software is licensed under the [MIT](LICENSE) License.
