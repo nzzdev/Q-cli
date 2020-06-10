@@ -13,12 +13,16 @@
           "metadata": {
             "type": "object",
             "properties": {
+              "environment": {
+                "type": "string",
+                "description": "Environment of Q item"
+              },
               "id": {
                 "type": "string",
                 "description": "Id of Q item"
               }
             },
-            "required": ["id"]
+            "required": ["id", "environment"]
           },
           "item": {
             "type": "object"
