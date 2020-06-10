@@ -197,6 +197,6 @@ The `update-item` command expects a config file called `q.config.json` located i
 
 ## License
 
-Copyright (c) 2020 Neue Zürcher Zeitung.
+Copyright (c) Neue Zürcher Zeitung.
 
 This software is licensed under the [MIT](LICENSE) License.
