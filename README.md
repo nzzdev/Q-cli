@@ -148,18 +148,12 @@ The `update-item` command expects a config file called `q.config.json` located i
 
 ```json
 {
-  // An array of Q items
   "items": [
     {
-      // Metadata relevant for this Q item
       "metadata": {
-        // Environment of Q item
         "environment": "staging",
-        // Id of Q item
         "id": "6dcf203a5c5f74b61aeea0cb0ef2ca9f"
       },
-      // Object with the data of the Q item
-      // The structure of the data can vary between each graphic type (chart, map, table ect.).
       "item": {
         "title": "Der Konsum in der Schweiz springt wieder an",
         "subtitle": "Wöchentliche Ausgaben mittels Bankkarten in Mio. Fr. im Jahr 2020, zum Vergleich 2019",
@@ -190,6 +184,8 @@ The `update-item` command expects a config file called `q.config.json` located i
   ]
 }
 ```
+
+The configuration object has a property `items` which contains an object for each Q item. A Q item has a property `metadata` and `item`. The `metadata` object contains a property `environment` and `id`. The `item` contains the data of the Q item. The structure of the item can vary between each graphic type (chart, map, table ect.).
 
 - Stored configuration properties like Q-Server url or access tokens can be cleared by using option `-c` or `--clear`
 
