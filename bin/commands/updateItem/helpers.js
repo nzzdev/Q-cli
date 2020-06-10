@@ -97,10 +97,15 @@ async function setupConfig(qConfig, clearConfig) {
 
     if (!config.get(`${environment}.accessToken`)) {
       const qServer = config.get(`${environment}.qServer`);
-      const username = await promptly.prompt("Enter your username: ");
-      const password = await promptly.password("Enter your password: ", {
-        replace: "*",
-      });
+      const username = await promptly.prompt(
+        `Enter your username on ${environment} environment: `
+      );
+      const password = await promptly.password(
+        `Enter your password on ${environment} environment: `,
+        {
+          replace: "*",
+        }
+      );
       const accessToken = await getAccessToken(
         qServer,
         username.trim(),
