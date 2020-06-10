@@ -59,10 +59,6 @@ function logUnexpectedError(error) {
   console.log(JSON.stringify(error));
 }
 
-function getCurrentDirectoryBase() {
-  return path.basename(process.cwd());
-}
-
 function validateConfig(config) {
   const isValid = ajv.validate(require("./schema.json"), config);
   return {
@@ -166,10 +162,6 @@ async function checkValidityOfAccessToken(qServer, accessToken) {
 
 module.exports = {
   updateItem: updateItem,
-  getItem: getItem,
-  saveItem: saveItem,
-  getCurrentDirectoryBase: getCurrentDirectoryBase,
   setupConfig: setupConfig,
   validateConfig: validateConfig,
-  logUnexpectedError: logUnexpectedError,
 };

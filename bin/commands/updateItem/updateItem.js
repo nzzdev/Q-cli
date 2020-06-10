@@ -3,9 +3,9 @@ const fs = require("fs");
 
 module.exports = async function (command) {
   try {
-    const QConfigPath = `${process.cwd()}/q.config.json`;
-    if (fs.existsSync(QConfigPath)) {
-      const qConfig = JSON.parse(fs.readFileSync(QConfigPath));
+    const qConfigPath = `${process.cwd()}/q.config.json`;
+    if (fs.existsSync(qConfigPath)) {
+      const qConfig = JSON.parse(fs.readFileSync(qConfigPath));
       const result = helpers.validateConfig(qConfig);
       if (result.isValid) {
         const config = await helpers.setupConfig(qConfig, command.clear);
