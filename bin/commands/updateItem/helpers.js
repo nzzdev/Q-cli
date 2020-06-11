@@ -1,6 +1,5 @@
 const fetch = require("node-fetch");
 const deepmerge = require("deepmerge");
-const path = require("path");
 const Ajv = require("ajv");
 const ajv = new Ajv();
 const promptly = require("promptly");
@@ -30,8 +29,6 @@ async function getItem(qServer, accessToken, id) {
   });
   if (response.ok) {
     return await response.json();
-  } else {
-    logUnexpectedError();
   }
 }
 
@@ -47,16 +44,7 @@ async function saveItem(qServer, accessToken, item) {
   });
   if (response.ok) {
     return await response.json();
-  } else {
-    logUnexpectedError();
   }
-}
-
-function logUnexpectedError(error) {
-  console.log(
-    "An unexpected error occured. Please check the entered information and try again."
-  );
-  console.log(JSON.stringify(error));
 }
 
 function validateConfig(config) {
@@ -83,30 +71,21 @@ async function setupConfig(qConfig, clearConfig) {
   const environments = getEnvironments(qConfig);
   for (const environment of environments) {
     if (!config.get(`${environment}.qServer`)) {
-      const qServer = new URL(
-        await promptly.prompt(
-          `Enter the Q-Server url for ${environment} environment: `
-        )
-      ).toString();
+      const qServer = await promptly.prompt(
+        `Enter the Q-Server url for ${environment} environment: `,
+        {
+          validator: (qServer) => {
+            return new URL(qServer).toString();
+          },
+          retry: true,
+        }
+      );
       config.set(`${environment}.qServer`, qServer);
     }
 
     if (!config.get(`${environment}.accessToken`)) {
       const qServer = config.get(`${environment}.qServer`);
-      const username = await promptly.prompt(
-        `Enter your username on ${environment} environment: `
-      );
-      const password = await promptly.password(
-        `Enter your password on ${environment} environment: `,
-        {
-          replace: "*",
-        }
-      );
-      const accessToken = await getAccessToken(
-        qServer,
-        username.trim(),
-        password.trim()
-      );
+      const accessToken = await authenticate(environment, qServer);
       config.set(`${environment}.accessToken`, accessToken);
     }
 
@@ -119,20 +98,42 @@ async function setupConfig(qConfig, clearConfig) {
 
     // Get a new access token in case its not valid anymore
     if (!isAccessTokenValid) {
-      const username = await promptly.prompt("Enter your username: ");
-      const password = await promptly.password("Enter your password: ", {
-        replace: "*",
-      });
-      const accessToken = await getAccessToken(
-        qServer,
-        username,
-        password.trim()
-      );
+      const qServer = config.get(`${environment}.qServer`);
+      const accessToken = await authenticate(environment, qServer);
       config.set(`${environment}.accessToken`, accessToken);
     }
   }
 
   return config;
+}
+
+async function authenticate(environment, qServer) {
+  const username = await promptly.prompt(
+    `Enter your username on ${environment} environment: `,
+    { validator: (username) => username.trim() }
+  );
+  const password = await promptly.password(
+    `Enter your password on ${environment} environment: `,
+    {
+      validator: async (password) => password.trim(),
+      replace: "*",
+    }
+  );
+
+  let accessToken = await getAccessToken(qServer, username, password);
+
+  while (!accessToken) {
+    console.log(
+      "A problem occured while authenticating. Please check your credentials and try again."
+    );
+    accessToken = await authenticate(environment, qServer);
+
+    if (accessToken) {
+      break;
+    }
+  }
+
+  return accessToken;
 }
 
 async function getAccessToken(qServer, username, password) {
@@ -146,9 +147,8 @@ async function getAccessToken(qServer, username, password) {
   if (response.ok) {
     const body = await response.json();
     return body.access_token;
-  } else {
-    logUnexpectedError();
   }
+  return false;
 }
 
 async function checkValidityOfAccessToken(qServer, accessToken) {

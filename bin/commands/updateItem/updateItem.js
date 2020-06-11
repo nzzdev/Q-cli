@@ -21,10 +21,5 @@ module.exports = async function (command) {
         "Couldn't find config file named q.config.json in the current diretory"
       );
     }
-  } catch (error) {
-    console.log(
-      "An unexpected error occured. Please check the entered information and try again."
-    );
-    console.log(JSON.stringify(error));
-  }
+  } catch (error) {}
 };
