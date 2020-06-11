@@ -144,7 +144,19 @@ Once `Q` cli installed one can update one or many Q items by executing:
 Q update-item
 ```
 
-The `update-item` command expects a config file called `q.config.json` located in the same directory as the cli-command is executed. The config file has to follow [this json-schema](./bin/commands/updateItem/schema.json). Here an example:
+- Stored configuration properties like Q-Server url or access tokens can be reset by using option `-r` or `--reset`
+
+```bash
+Q update-item -r
+```
+
+- The path to the config file can be set by using option `-c` or `--config`. By default the `update-item` command will look for a config file called `q.config.json` in the current directory
+
+```bash
+Q update-item -c <path>
+```
+
+The config file has to follow [this json-schema](./bin/commands/updateItem/schema.json). Here an example:
 
 ```json
 {
@@ -186,12 +198,6 @@ The `update-item` command expects a config file called `q.config.json` located i
 ```
 
 The configuration object has a property `items` which contains an object for each Q item. A Q item has a property `metadata` and `item`. The `metadata` object contains a property `environment` and `id`. The `item` contains the data of the Q item. The structure of the item can vary between each graphic type (chart, map, table ect.).
-
-- Stored configuration properties like Q-Server url or access tokens can be cleared by using option `-c` or `--clear`
-
-```bash
-Q update-item -c
-```
 
 [to the top](#table-of-contents)
 

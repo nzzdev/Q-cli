@@ -49,7 +49,7 @@ async function main() {
   program
     .command("new-tool")
     .option(
-      "-d, --dir [path]",
+      "-d, --dir <path>",
       "the base directory to bootstrap the new tool in, defaults to the tools name"
     )
     .description("bootstrap a new tool")
@@ -66,7 +66,12 @@ async function main() {
   program
     .command("update-item")
     .description("update q item")
-    .option("-c, --clear", "clears stored configuration properties")
+    .option(
+      "-c, --config <path>",
+      "set config path which defines the q items to be updated. defaults to ./q.config.json",
+      `${process.cwd()}/q.config.json`
+    )
+    .option("-r, --reset", "reset stored configuration properties")
     .action(async (command) => {
       await updateItem(command);
     });

@@ -78,8 +78,8 @@ function getEnvironments(qConfig) {
   return Array.from(environments);
 }
 
-async function setupConfig(qConfig, clearConfig) {
-  if (clearConfig) {
+async function setupConfig(qConfig, reset) {
+  if (reset) {
     config.clear();
   }
   const environments = getEnvironments(qConfig);

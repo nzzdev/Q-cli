@@ -3,12 +3,11 @@ const fs = require("fs");
 
 module.exports = async function (command) {
   try {
-    const qConfigPath = `${process.cwd()}/q.config.json`;
-    if (fs.existsSync(qConfigPath)) {
-      const qConfig = JSON.parse(fs.readFileSync(qConfigPath));
+    if (fs.existsSync(command.config)) {
+      const qConfig = JSON.parse(fs.readFileSync(command.config));
       const validationResult = helpers.validateConfig(qConfig);
       if (validationResult.isValid) {
-        const config = await helpers.setupConfig(qConfig, command.clear);
+        const config = await helpers.setupConfig(qConfig, command.reset);
         for (const item of qConfig.items) {
           const result = await helpers.updateItem(item, config);
           if (result) {
@@ -25,7 +24,7 @@ module.exports = async function (command) {
       }
     } else {
       console.log(
-        "Couldn't find config file named q.config.json in the current directory"
+        "Couldn't find config file named q.config.json in the current directory. Create a config file in the current directory or pass the path to the config file with the option -c <path>"
       );
     }
   } catch (error) {}
