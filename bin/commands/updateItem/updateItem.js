@@ -6,19 +6,26 @@ module.exports = async function (command) {
     const qConfigPath = `${process.cwd()}/q.config.json`;
     if (fs.existsSync(qConfigPath)) {
       const qConfig = JSON.parse(fs.readFileSync(qConfigPath));
-      const result = helpers.validateConfig(qConfig);
-      if (result.isValid) {
+      const validationResult = helpers.validateConfig(qConfig);
+      if (validationResult.isValid) {
         const config = await helpers.setupConfig(qConfig, command.clear);
         for (const item of qConfig.items) {
-          await helpers.updateItem(item, config);
+          const result = await helpers.updateItem(item, config);
+          if (result) {
+            console.log(
+              `Successfully updated item with id ${item.metadata.id} on ${item.metadata.environment} environment`
+            );
+          }
         }
       } else {
-        console.log(result.errorsText);
+        console.log(
+          `A problem occured while validating the config file: ${validationResult.errorsText}`
+        );
         process.exit(1);
       }
     } else {
       console.log(
-        "Couldn't find config file named q.config.json in the current diretory"
+        "Couldn't find config file named q.config.json in the current directory"
       );
     }
   } catch (error) {}

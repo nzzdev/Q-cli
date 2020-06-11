@@ -14,36 +14,50 @@ async function updateItem(item, config) {
   const newItem = deepmerge(existingItem, item.item, {
     arrayMerge: (destArr, srcArr) => srcArr,
   });
-
-  await saveItem(qServer, accessToken, newItem);
-  console.log(
-    `Successfully updated item with id ${item.metadata.id} on ${item.metadata.environment} environment`
-  );
+  return await saveItem(qServer, accessToken, newItem);
 }
 
 async function getItem(qServer, accessToken, id) {
-  const response = await fetch(`${qServer}item/${id}`, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
-  if (response.ok) {
-    return await response.json();
+  try {
+    const response = await fetch(`${qServer}item/${id}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new Error(
+        `A problem occured while getting item with id ${item.metadata.id} on ${item.metadata.environment} environment. Please check your connection and try again.`
+      );
+    }
+  } catch (error) {
+    console.log(error.message);
+    process.exit(1);
   }
 }
 
 async function saveItem(qServer, accessToken, item) {
-  delete item.updatedDate;
-  const response = await fetch(`${qServer}item`, {
-    method: "PUT",
-    body: JSON.stringify(item),
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-  });
-  if (response.ok) {
-    return await response.json();
+  try {
+    delete item.updatedDate;
+    const response = await fetch(`${qServer}item`, {
+      method: "PUT",
+      body: JSON.stringify(item),
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new Error(
+        `A problem occured while saving item with id ${item.metadata.id} on ${item.metadata.environment} environment. Please check your connection and try again.`
+      );
+    }
+  } catch (error) {
+    console.log(error.message);
+    process.exit(1);
   }
 }
 
@@ -92,6 +106,7 @@ async function setupConfig(qConfig, clearConfig) {
     const accessToken = config.get(`${environment}.accessToken`);
     const qServer = config.get(`${environment}.qServer`);
     const isAccessTokenValid = await checkValidityOfAccessToken(
+      environment,
       qServer,
       accessToken
     );
@@ -120,7 +135,12 @@ async function authenticate(environment, qServer) {
     }
   );
 
-  let accessToken = await getAccessToken(qServer, username, password);
+  let accessToken = await getAccessToken(
+    environment,
+    qServer,
+    username,
+    password
+  );
 
   while (!accessToken) {
     console.log(
@@ -136,28 +156,42 @@ async function authenticate(environment, qServer) {
   return accessToken;
 }
 
-async function getAccessToken(qServer, username, password) {
-  const response = await fetch(`${qServer}authenticate`, {
-    method: "POST",
-    body: JSON.stringify({
-      username: username,
-      password: password,
-    }),
-  });
-  if (response.ok) {
-    const body = await response.json();
-    return body.access_token;
+async function getAccessToken(environment, qServer, username, password) {
+  try {
+    const response = await fetch(`${qServer}authenticate`, {
+      method: "POST",
+      body: JSON.stringify({
+        username: username,
+        password: password,
+      }),
+    });
+    if (response.ok) {
+      const body = await response.json();
+      return body.access_token;
+    }
+    return false;
+  } catch (error) {
+    console.log(
+      `A problem occured while authenticating on ${environment} environment. Please check your connection and try again.`
+    );
+    process.exit(1);
   }
-  return false;
 }
 
-async function checkValidityOfAccessToken(qServer, accessToken) {
-  const response = await fetch(`${qServer}user`, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
-  return response.ok;
+async function checkValidityOfAccessToken(environment, qServer, accessToken) {
+  try {
+    const response = await fetch(`${qServer}user`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return response.ok;
+  } catch (error) {
+    console.log(
+      `A problem occured while checking the validity of your access token on ${environment} environment. Please check your connection and try again.`
+    );
+    process.exit(1);
+  }
 }
 
 module.exports = {
