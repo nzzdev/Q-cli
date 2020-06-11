@@ -3,6 +3,8 @@ const deepmerge = require("deepmerge");
 const Ajv = require("ajv");
 const ajv = new Ajv();
 const promptly = require("promptly");
+const chalk = require("chalk");
+const errorColor = chalk.red;
 const Configstore = require("configstore");
 const package = require("../../../package.json");
 const config = new Configstore(package.name, {});
@@ -32,7 +34,7 @@ async function getItem(qServer, accessToken, id) {
       );
     }
   } catch (error) {
-    console.log(error.message);
+    console.error(errorColor(error.message));
     process.exit(1);
   }
 }
@@ -56,7 +58,7 @@ async function saveItem(qServer, accessToken, item) {
       );
     }
   } catch (error) {
-    console.log(error.message);
+    console.error(errorColor(error.message));
     process.exit(1);
   }
 }
@@ -143,8 +145,10 @@ async function authenticate(environment, qServer) {
   );
 
   while (!accessToken) {
-    console.log(
-      "A problem occured while authenticating. Please check your credentials and try again."
+    console.error(
+      errorColor(
+        "A problem occured while authenticating. Please check your credentials and try again."
+      )
     );
     accessToken = await authenticate(environment, qServer);
 
@@ -171,8 +175,10 @@ async function getAccessToken(environment, qServer, username, password) {
     }
     return false;
   } catch (error) {
-    console.log(
-      `A problem occured while authenticating on ${environment} environment. Please check your connection and try again.`
+    console.error(
+      errorColor(
+        `A problem occured while authenticating on ${environment} environment. Please check your connection and try again.`
+      )
     );
     process.exit(1);
   }
@@ -187,8 +193,10 @@ async function checkValidityOfAccessToken(environment, qServer, accessToken) {
     });
     return response.ok;
   } catch (error) {
-    console.log(
-      `A problem occured while checking the validity of your access token on ${environment} environment. Please check your connection and try again.`
+    console.error(
+      errorColor(
+        `A problem occured while checking the validity of your access token on ${environment} environment. Please check your connection and try again.`
+      )
     );
     process.exit(1);
   }

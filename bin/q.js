@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
 const { program } = require("commander");
+const chalk = require("chalk");
+const errorColor = chalk.red;
 const version = require("../package.json").version;
 const runServer = require("./commands/server.js");
 const newToolOrServer = require("./commands/newToolOrServer.js");
@@ -39,7 +41,7 @@ async function main() {
     .action(async () => {
       const name = program.args[1];
       if (!name) {
-        console.error("no servername given");
+        console.error(errorColor("no servername given"));
         process.exit(1);
       }
       const baseDir = program.dir || name;
@@ -56,7 +58,7 @@ async function main() {
     .action(async () => {
       const name = program.args[1];
       if (!name) {
-        console.error("no toolname given");
+        console.error(errorColor("no toolname given"));
         process.exit(1);
       }
       const baseDir = program.dir || name;

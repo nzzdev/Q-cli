@@ -27,6 +27,7 @@
     "@hapi/vision": "^5.5.2",
     "@hapi/wreck": "^15.0.1",
     "ajv": "^6.12.2",
+    "chalk": "^4.1.0",
     "commander": "^5.1.0",
     "configstore": "^5.0.1",
     "deepmerge": "^4.2.2",

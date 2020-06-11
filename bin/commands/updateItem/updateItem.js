@@ -1,5 +1,8 @@
 const helpers = require("./helpers.js");
 const fs = require("fs");
+const chalk = require("chalk");
+const errorColor = chalk.red;
+const successColor = chalk.green;
 
 module.exports = async function (command) {
   try {
@@ -12,19 +15,25 @@ module.exports = async function (command) {
           const result = await helpers.updateItem(item, config);
           if (result) {
             console.log(
-              `Successfully updated item with id ${item.metadata.id} on ${item.metadata.environment} environment`
+              successColor(
+                `Successfully updated item with id ${item.metadata.id} on ${item.metadata.environment} environment`
+              )
             );
           }
         }
       } else {
-        console.log(
-          `A problem occured while validating the config file: ${validationResult.errorsText}`
+        console.error(
+          errorColor(
+            `A problem occured while validating the config file: ${validationResult.errorsText}`
+          )
         );
         process.exit(1);
       }
     } else {
-      console.log(
-        "Couldn't find config file named q.config.json in the current directory. Create a config file in the current directory or pass the path to the config file with the option -c <path>"
+      console.error(
+        errorColor(
+          "Couldn't find config file named q.config.json in the current directory. Create a config file in the current directory or pass the path to the config file with the option -c <path>"
+        )
       );
     }
   } catch (error) {}
