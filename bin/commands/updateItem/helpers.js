@@ -8,15 +8,19 @@ const errorColor = chalk.red;
 const Configstore = require("configstore");
 const package = require("../../../package.json");
 const config = new Configstore(package.name, {});
+const resourcesHelpers = require("./resourcesHelpers.js");
 
 async function updateItem(item, config) {
   const qServer = config.get(`${item.metadata.environment}.qServer`);
   const accessToken = config.get(`${item.metadata.environment}.accessToken`);
   const existingItem = await getItem(qServer, accessToken, item.metadata.id);
-  const newItem = deepmerge(existingItem, item.item, {
-    arrayMerge: (destArr, srcArr) => srcArr,
-  });
-  return await saveItem(qServer, accessToken, newItem);
+  const updatedItem = await getUpdatedItem(
+    qServer,
+    accessToken,
+    existingItem,
+    item
+  );
+  return await saveItem(qServer, accessToken, updatedItem);
 }
 
 async function getItem(qServer, accessToken, id) {
@@ -37,6 +41,28 @@ async function getItem(qServer, accessToken, id) {
     console.error(errorColor(error.message));
     process.exit(1);
   }
+}
+
+async function getUpdatedItem(qServer, accessToken, existingItem, item) {
+  if (item.metadata.resources) {
+    const toolSchema = await resourcesHelpers.getToolSchema(
+      qServer,
+      item.metadata.tool
+    );
+    const defaultItem = resourcesHelpers.getDefaultItem(toolSchema);
+    for (const resource of item.metadata.resources) {
+      item = await resourcesHelpers.getResourceMetadata(
+        qServer,
+        accessToken,
+        resource,
+        item,
+        defaultItem
+      );
+    }
+  }
+  return deepmerge(existingItem, item.item, {
+    arrayMerge: (destArr, srcArr) => srcArr,
+  });
 }
 
 async function saveItem(qServer, accessToken, item) {
