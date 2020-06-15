@@ -1,7 +1,8 @@
 const fetch = require("node-fetch");
 const deepmerge = require("deepmerge");
 const Ajv = require("ajv");
-const ajv = new Ajv();
+const ajv = new Ajv({ schemaId: "auto" });
+ajv.addMetaSchema(require("ajv/lib/refs/json-schema-draft-04.json"));
 const promptly = require("promptly");
 const chalk = require("chalk");
 const errorColor = chalk.red;
@@ -44,25 +45,39 @@ async function getItem(qServer, accessToken, id) {
 }
 
 async function getUpdatedItem(qServer, accessToken, existingItem, item) {
-  if (item.metadata.resources) {
+  try {
     const toolSchema = await resourcesHelpers.getToolSchema(
       qServer,
       item.metadata.tool
     );
-    const defaultItem = resourcesHelpers.getDefaultItem(toolSchema);
-    for (const resource of item.metadata.resources) {
-      item = await resourcesHelpers.getResourceMetadata(
-        qServer,
-        accessToken,
-        resource,
-        item,
-        defaultItem
+    if (item.metadata.resources) {
+      const defaultItem = resourcesHelpers.getDefaultItem(toolSchema);
+      for (const resource of item.metadata.resources) {
+        item = await resourcesHelpers.getResourceMetadata(
+          qServer,
+          accessToken,
+          resource,
+          item,
+          defaultItem
+        );
+      }
+    }
+    const updatedItem = deepmerge(existingItem, item.item, {
+      arrayMerge: (destArr, srcArr) => srcArr,
+    });
+
+    const validationResult = validateItem(toolSchema, updatedItem);
+    if (validationResult.isValid) {
+      return updatedItem;
+    } else {
+      throw new Error(
+        `A problem occured while validating item with id ${item.metadata.id} on ${item.metadata.environment} environment: ${validationResult.errorsText}`
       );
     }
+  } catch (error) {
+    console.error(errorColor(error.message));
+    process.exit(1);
   }
-  return deepmerge(existingItem, item.item, {
-    arrayMerge: (destArr, srcArr) => srcArr,
-  });
 }
 
 async function saveItem(qServer, accessToken, item) {
@@ -103,6 +118,14 @@ function getItems(qConfig, environment) {
 
 function validateConfig(config) {
   const isValid = ajv.validate(require("./schema.json"), config);
+  return {
+    isValid: isValid,
+    errorsText: ajv.errorsText(),
+  };
+}
+
+function validateItem(schema, item) {
+  const isValid = ajv.validate(schema, item);
   return {
     isValid: isValid,
     errorsText: ajv.errorsText(),

@@ -36,10 +36,6 @@ async function getToolSchema(qServer, tool) {
   }
 }
 
-function getDefaultItem(toolSchema) {
-  return generateFromSchema(toolSchema);
-}
-
 function getDefaultOrNull(schema) {
   if (schema.hasOwnProperty("default")) {
     if (typeof schema.default === "object") {
@@ -50,12 +46,13 @@ function getDefaultOrNull(schema) {
   return null;
 }
 
-function generateFromSchema(schema) {
+function getDefaultItem(schema) {
+  schema = JSON.parse(JSON.stringify(schema));
   if (schema.type === "array") {
     let array = [];
     schema.minItems = 1;
     for (let i = 0; i < schema.minItems; i++) {
-      let value = generateFromSchema(schema.items);
+      let value = getDefaultItem(schema.items);
       if (value) {
         if (
           schema["Q:type"] &&
@@ -86,7 +83,7 @@ function generateFromSchema(schema) {
     let object = {};
     Object.keys(schema.properties).forEach((propertyName) => {
       const property = schema.properties[propertyName];
-      let value = generateFromSchema(property);
+      let value = getDefaultItem(property);
       if (value !== undefined) {
         object[propertyName] = value;
       } else if (

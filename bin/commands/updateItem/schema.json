@@ -17,12 +17,16 @@
                 "type": "string",
                 "description": "Environment of Q item"
               },
+              "tool": {
+                "type": "string",
+                "description": "Name of Q tool"
+              },
               "id": {
                 "type": "string",
                 "description": "Id of Q item"
               }
             },
-            "required": ["id", "environment"]
+            "required": ["environment", "tool", "id"]
           },
           "item": {
             "type": "object"
