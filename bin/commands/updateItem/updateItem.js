@@ -10,8 +10,12 @@ module.exports = async function (command) {
       const qConfig = JSON.parse(fs.readFileSync(command.config));
       const validationResult = helpers.validateConfig(qConfig);
       if (validationResult.isValid) {
-        const config = await helpers.setupConfig(qConfig, command.reset);
-        for (const item of qConfig.items) {
+        const config = await helpers.setupConfig(
+          qConfig,
+          command.environment,
+          command.reset
+        );
+        for (const item of helpers.getItems(qConfig, command.environment)) {
           const result = await helpers.updateItem(item, config);
           if (result) {
             console.log(

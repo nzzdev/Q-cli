@@ -89,6 +89,18 @@ async function saveItem(qServer, accessToken, item) {
   }
 }
 
+function getItems(qConfig, environment) {
+  const items = qConfig.items.filter((item) => {
+    if (environment) {
+      return item.metadata.environment === environment;
+    }
+
+    return true;
+  });
+
+  return items;
+}
+
 function validateConfig(config) {
   const isValid = ajv.validate(require("./schema.json"), config);
   return {
@@ -97,21 +109,26 @@ function validateConfig(config) {
   };
 }
 
-function getEnvironments(qConfig) {
+function getEnvironments(qConfig, environment) {
   const environments = new Set();
   for (const item of qConfig.items) {
-    environments.add(item.metadata.environment);
+    if (environment) {
+      if (environment === item.metadata.environment) {
+        environments.add(item.metadata.environment);
+      }
+    } else {
+      environments.add(item.metadata.environment);
+    }
   }
 
   return Array.from(environments);
 }
 
-async function setupConfig(qConfig, reset) {
+async function setupConfig(qConfig, environmentFilter, reset) {
   if (reset) {
     config.clear();
   }
-  const environments = getEnvironments(qConfig);
-  for (const environment of environments) {
+  for (const environment of getEnvironments(qConfig, environmentFilter)) {
     if (!config.get(`${environment}.qServer`)) {
       const qServer = await promptly.prompt(
         `Enter the Q-Server url for ${environment} environment: `,
@@ -231,5 +248,6 @@ async function checkValidityOfAccessToken(environment, qServer, accessToken) {
 module.exports = {
   updateItem: updateItem,
   setupConfig: setupConfig,
+  getItems: getItems,
   validateConfig: validateConfig,
 };
