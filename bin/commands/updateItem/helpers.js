@@ -50,18 +50,15 @@ async function getUpdatedItem(qServer, accessToken, existingItem, item) {
       qServer,
       item.metadata.tool
     );
-    if (item.metadata.resources) {
-      const defaultItem = resourcesHelpers.getDefaultItem(toolSchema);
-      for (const resource of item.metadata.resources) {
-        item = await resourcesHelpers.getResourceMetadata(
-          qServer,
-          accessToken,
-          resource,
-          item,
-          defaultItem
-        );
-      }
-    }
+    const defaultItem = resourcesHelpers.getDefaultItem(toolSchema);
+    item.item = await resourcesHelpers.handleResources(
+      qServer,
+      accessToken,
+      item.item,
+      defaultItem,
+      "path"
+    );
+
     const updatedItem = deepmerge(existingItem, item.item, {
       arrayMerge: (destArr, srcArr) => srcArr,
     });

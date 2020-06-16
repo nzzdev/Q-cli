@@ -138,49 +138,57 @@ async function uploadResource(qServer, accessToken, resourcePath) {
   }
 }
 
-async function getResourceMetadata(
+async function handleResources(
   qServer,
   accessToken,
-  resource,
   item,
-  defaultItem
+  defaultItem,
+  searchKey
 ) {
-  const defaultResource = defaultItem[resource.property];
-  if (Array.isArray(item.item[resource.property])) {
-    const defaultResourceProperty =
-      defaultResource[0][resource.resourceProperty];
-    delete defaultResource[0][resource.resourceProperty];
-    for (let [index, resourceProperty] of item.item[
-      resource.property
-    ].entries()) {
-      const resourcePath = path.join(process.cwd(), resourceProperty.path);
-      const metadata = await uploadResource(qServer, accessToken, resourcePath);
-      const statistic = await stat(resourcePath);
-      metadata.size = statistic.size;
-      metadata.type = mimos.path(resourcePath).type;
-
-      if (defaultResourceProperty.name) {
-        metadata[defaultResourceProperty.name] = path.basename(resourcePath);
+  for (let key of Object.keys(item)) {
+    if (typeof item[key] === "object") {
+      let defaultItemSubtree;
+      if (Number.isInteger(parseInt(key)) && key > 0) {
+        defaultItemSubtree = defaultItem[0];
+      } else {
+        defaultItemSubtree = defaultItem[key];
       }
-      if (defaultResourceProperty.width && defaultResourceProperty.height) {
-        const dimensions = imageSize(resourcePath);
-        metadata[defaultResourceProperty.width] = dimensions.width;
-        metadata[defaultResourceProperty.height] = dimensions.height;
-      }
-
-      delete resourceProperty.path;
-      resourceProperty[resource.resourceProperty] = metadata;
-      item.item[resource.property][index] = {
-        ...defaultResource[0],
-        ...resourceProperty,
-      };
+      item[key] = await handleResources(
+        qServer,
+        accessToken,
+        item[key],
+        defaultItemSubtree,
+        searchKey
+      );
+    } else if (key === searchKey) {
+      item = await handleResource(qServer, accessToken, item[key], defaultItem);
     }
   }
+
   return item;
 }
 
+async function handleResource(qServer, accessToken, resource, defaultProps) {
+  const resourcePath = path.join(process.cwd(), resource);
+  resource = await uploadResource(qServer, accessToken, resourcePath);
+  const statistic = await stat(resourcePath);
+  resource.size = statistic.size;
+  resource.type = mimos.path(resourcePath).type;
+
+  if (defaultProps.name) {
+    resource[defaultProps.name] = path.basename(resourcePath);
+  }
+  if (defaultProps.width && defaultProps.height) {
+    const dimensions = imageSize(resourcePath);
+    resource[defaultProps.width] = dimensions.width;
+    resource[defaultProps.height] = dimensions.height;
+  }
+
+  return resource;
+}
+
 module.exports = {
-  getResourceMetadata: getResourceMetadata,
+  handleResources: handleResources,
   getDefaultItem: getDefaultItem,
   getToolSchema: getToolSchema,
 };
