@@ -12,16 +12,16 @@ const config = new Configstore(package.name, {});
 async function updateItem(item, config) {
   const qServer = config.get(`${item.metadata.environment}.qServer`);
   const accessToken = config.get(`${item.metadata.environment}.accessToken`);
-  const existingItem = await getItem(qServer, accessToken, item.metadata.id);
+  const existingItem = await getItem(qServer, accessToken, item);
   const newItem = deepmerge(existingItem, item.item, {
     arrayMerge: (destArr, srcArr) => srcArr,
   });
   return await saveItem(qServer, accessToken, newItem);
 }
 
-async function getItem(qServer, accessToken, id) {
+async function getItem(qServer, accessToken, item) {
   try {
-    const response = await fetch(`${qServer}item/${id}`, {
+    const response = await fetch(`${qServer}item/${item.metadata.id}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -30,7 +30,7 @@ async function getItem(qServer, accessToken, id) {
       return await response.json();
     } else {
       throw new Error(
-        `A problem occured while getting item with id ${item.metadata.id} on ${item.metadata.environment} environment. Please check your connection and try again.`
+        `A problem occured while getting item with id ${item.metadata.id} on ${item.metadata.environment} environment. Please make sure that the id is correct, you have an internet connection and try again.`
       );
     }
   } catch (error) {
