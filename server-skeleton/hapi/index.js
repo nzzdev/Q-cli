@@ -1,44 +1,45 @@
 const Hapi = require("@hapi/hapi");
+const Joi = require("@hapi/joi");
 const Pack = require("./package.json");
 
 const plugins = [
   {
     plugin: require("@nzz/q-server/plugins/core/base"),
-    options: require("./config/base.js")
+    options: require("./config/base.js"),
   },
   {
     plugin: require("@nzz/q-server/plugins/core/db"),
-    options: require("./config/db.js")
+    options: require("./config/db.js"),
   },
   {
     plugin: require("@nzz/q-server/plugins/core/editor"),
     options: {
-      editorConfig: require("./config/editor.js").get("")
-    }
+      editorConfig: require("./config/editor.js").get(""),
+    },
   },
   {
     plugin: require("@nzz/q-server/plugins/core/rendering-info"),
-    options: require("./config/rendering-info.js")
+    options: require("./config/rendering-info.js"),
   },
   {
-    plugin: require("@nzz/q-server/plugins/statistics")
+    plugin: require("@nzz/q-server/plugins/statistics"),
   },
   {
-    plugin: require("@nzz/q-server/plugins/fixtures")
+    plugin: require("@nzz/q-server/plugins/fixtures"),
   },
   {
     plugin: require("@nzz/q-server/plugins/screenshot"),
-    options: require("./config/screenshot.js").get("")
+    options: require("./config/screenshot.js").get(""),
   },
   {
     plugin: require("hapi-swagger"),
     options: {
       info: {
         title: "Q Server API",
-        version: Pack.version
-      }
-    }
-  }
+        version: Pack.version,
+      },
+    },
+  },
 ];
 
 let server;
@@ -54,14 +55,15 @@ async function start() {
       load: { sampleInterval: 1000 },
       app: {
         tools: toolsConfig,
-        targets: require("./config/targets.js")
+        targets: require("./config/targets.js"),
       },
       routes: {
-        cors: true
-      }
+        cors: true,
+      },
     };
 
     server = Hapi.server(hapiOptions);
+    server.validator(Joi);
 
     await server.register(require("hapi-auth-bearer-token"));
     server.auth.strategy(
@@ -84,7 +86,7 @@ start()
   .then(() => {
     console.log("hapi server running");
   })
-  .catch(err => {
+  .catch((err) => {
     console.log(err, err.stack);
     process.exit(1);
   });
