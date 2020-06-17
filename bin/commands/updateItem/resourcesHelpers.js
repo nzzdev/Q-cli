@@ -46,6 +46,10 @@ function getDefaultOrNull(schema) {
   return null;
 }
 
+// Returns a default item based on the tool schema
+// The default item is used to derive the file properties of a certain file type
+// These file properties are specified by the tool and are specific to the file type
+// For example an image file has height/width file properties
 function getDefaultItem(schema) {
   schema = JSON.parse(JSON.stringify(schema));
   if (schema.type === "array") {
@@ -106,6 +110,63 @@ function getDefaultItem(schema) {
   return undefined;
 }
 
+// Recursively traverses the item object
+// If a property called "path" is found, the resource is uploaded
+// and the metadata of that resource is inserted at that place in the item object
+async function handleResources(qServer, accessToken, item, defaultItem) {
+  for (let key of Object.keys(item)) {
+    if (typeof item[key] === "object") {
+      let defaultItemSubtree;
+      if (defaultItem && Number.isInteger(parseInt(key)) && key > 0) {
+        defaultItemSubtree = defaultItem[0];
+      } else if (defaultItem && defaultItem[key]) {
+        defaultItemSubtree = defaultItem[key];
+      }
+      item[key] = await handleResources(
+        qServer,
+        accessToken,
+        item[key],
+        defaultItemSubtree
+      );
+    } else if (key === "path") {
+      const resourcePath = item[key];
+      item = await getResourceMetadata(
+        qServer,
+        accessToken,
+        resourcePath,
+        defaultItem
+      );
+    }
+  }
+
+  return item;
+}
+
+// Uploads the resource and returns the metadata based on the file properties
+async function getResourceMetadata(
+  qServer,
+  accessToken,
+  resource,
+  fileProperties
+) {
+  const resourcePath = path.resolve(process.cwd(), resource);
+  resource = await uploadResource(qServer, accessToken, resourcePath);
+  const statistic = await stat(resourcePath);
+  resource.size = statistic.size;
+  resource.type = mimos.path(resourcePath).type;
+
+  if (fileProperties.name) {
+    resource[fileProperties.name] = path.basename(resourcePath);
+  }
+  if (fileProperties.width && fileProperties.height) {
+    const dimensions = imageSize(resourcePath);
+    resource[fileProperties.width] = dimensions.width;
+    resource[fileProperties.height] = dimensions.height;
+  }
+
+  return resource;
+}
+
 async function uploadResource(qServer, accessToken, resourcePath) {
   try {
     if (fs.existsSync(resourcePath)) {
@@ -136,55 +197,6 @@ async function uploadResource(qServer, accessToken, resourcePath) {
     console.error(errorColor(error.message));
     process.exit(1);
   }
-}
-
-async function handleResources(
-  qServer,
-  accessToken,
-  item,
-  defaultItem,
-  searchKey
-) {
-  for (let key of Object.keys(item)) {
-    if (typeof item[key] === "object") {
-      let defaultItemSubtree;
-      if (defaultItem && Number.isInteger(parseInt(key)) && key > 0) {
-        defaultItemSubtree = defaultItem[0];
-      } else if (defaultItem && defaultItem[key]) {
-        defaultItemSubtree = defaultItem[key];
-      }
-      item[key] = await handleResources(
-        qServer,
-        accessToken,
-        item[key],
-        defaultItemSubtree,
-        searchKey
-      );
-    } else if (key === searchKey) {
-      item = await handleResource(qServer, accessToken, item[key], defaultItem);
-    }
-  }
-
-  return item;
-}
-
-async function handleResource(qServer, accessToken, resource, defaultProps) {
-  const resourcePath = path.resolve(process.cwd(), resource);
-  resource = await uploadResource(qServer, accessToken, resourcePath);
-  const statistic = await stat(resourcePath);
-  resource.size = statistic.size;
-  resource.type = mimos.path(resourcePath).type;
-
-  if (defaultProps.name) {
-    resource[defaultProps.name] = path.basename(resourcePath);
-  }
-  if (defaultProps.width && defaultProps.height) {
-    const dimensions = imageSize(resourcePath);
-    resource[defaultProps.width] = dimensions.width;
-    resource[defaultProps.height] = dimensions.height;
-  }
-
-  return resource;
 }
 
 module.exports = {

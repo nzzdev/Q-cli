@@ -55,8 +55,7 @@ async function getUpdatedItem(qServer, accessToken, existingItem, item) {
       qServer,
       accessToken,
       item.item,
-      defaultItem,
-      "path"
+      defaultItem
     );
 
     const updatedItem = deepmerge(existingItem, item.item, {
