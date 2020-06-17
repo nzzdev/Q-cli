@@ -148,9 +148,9 @@ async function handleResources(
   for (let key of Object.keys(item)) {
     if (typeof item[key] === "object") {
       let defaultItemSubtree;
-      if (Number.isInteger(parseInt(key)) && key > 0) {
+      if (defaultItem && Number.isInteger(parseInt(key)) && key > 0) {
         defaultItemSubtree = defaultItem[0];
-      } else {
+      } else if (defaultItem && defaultItem[key]) {
         defaultItemSubtree = defaultItem[key];
       }
       item[key] = await handleResources(
@@ -169,7 +169,7 @@ async function handleResources(
 }
 
 async function handleResource(qServer, accessToken, resource, defaultProps) {
-  const resourcePath = path.join(process.cwd(), resource);
+  const resourcePath = path.resolve(process.cwd(), resource);
   resource = await uploadResource(qServer, accessToken, resourcePath);
   const statistic = await stat(resourcePath);
   resource.size = statistic.size;
