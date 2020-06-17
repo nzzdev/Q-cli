@@ -22,12 +22,9 @@ module.exports = async function (type, name, basedir) {
   };
 
   try {
-    await fs.copySync(
-      path.join(__dirname, `../../${type}-skeleton`, "hapi"),
-      basedir
-    );
+    await fs.copySync(path.join(__dirname, `../../${type}-skeleton`), basedir);
     await replaceInFile(replaceOptions);
-    console.log(successColor(`Q ${type} is now bootstraped in ${basedir}`));
+    console.log(successColor(`Q ${type} is now bootstrapped in ${basedir}`));
   } catch (error) {
     console.error(
       errorColor(
