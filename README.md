@@ -136,6 +136,20 @@ Q new-tool my-tool-name
 Q new-tool my-tool-name -d my-tool-directory
 ```
 
+### Creating new custom code project
+
+Once `Q` cli is installed one can create the skeleton of a new custom code project by executing
+
+```bash
+Q new-custom-code my-project-name
+```
+
+- The directory name where the new custom-code project is being created defaults to the project name and can be overwritten by using option `-d` or `--dir`
+
+```bash
+Q new-custom-code my-project-name -d my-project-directory
+```
+
 ### Updating existing Q items
 
 Once `Q` cli installed one can update one or many Q items by executing:
