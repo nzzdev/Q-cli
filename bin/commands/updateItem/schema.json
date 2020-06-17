@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Q Config",
+  "description": "Config used by the Q CLI to update items",
+  "type": "object",
+  "properties": {
+    "items": {
+      "description": "Array of Q items",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "environment": {
+                "type": "string",
+                "description": "Environment of Q item"
+              },
+              "id": {
+                "type": "string",
+                "description": "Id of Q item"
+              }
+            },
+            "required": ["id", "environment"]
+          },
+          "item": {
+            "type": "object"
+          }
+        },
+        "required": ["metadata", "item"]
+      }
+    }
+  },
+  "required": ["items"]
+}

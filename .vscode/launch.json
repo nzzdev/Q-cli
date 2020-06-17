@@ -7,8 +7,30 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch Program",
-      "program": "${workspaceFolder}/tool-skeleton/hapi/test/e2e-tests.js"
+      "name": "Debug server command",
+      "program": "${workspaceFolder}/bin/q.js",
+      "args": ["server"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug new-server command",
+      "program": "${workspaceFolder}/bin/q.js",
+      "args": ["new-server", "test-server"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug new-tool command",
+      "program": "${workspaceFolder}/bin/q.js",
+      "args": ["new-tool", "test-tool"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug update-item command",
+      "program": "${workspaceFolder}/bin/q.js",
+      "args": ["update-item"]
     }
   ]
 }
