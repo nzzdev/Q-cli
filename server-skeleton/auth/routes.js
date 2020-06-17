@@ -1,7 +1,5 @@
 const Joi = require("@hapi/joi");
 const Boom = require("@hapi/boom");
-const fetch = require("node-fetch");
-const nano = require("nano");
 
 module.exports = [
   {
@@ -11,12 +9,12 @@ module.exports = [
       validate: {
         payload: {
           username: Joi.string().required(),
-          password: Joi.string().required()
-        }
+          password: Joi.string().required(),
+        },
       },
       cors: {
-        credentials: true
-      }
+        credentials: true,
+      },
     },
     handler: async (request, h) => {
       if (
@@ -25,10 +23,10 @@ module.exports = [
         request.payload.username === "demo-poweruser"
       ) {
         return {
-          access_token: request.payload.username
+          access_token: request.payload.username,
         };
       }
-    }
+    },
   },
   {
     path: "/user",
@@ -36,8 +34,8 @@ module.exports = [
     config: {
       auth: "q-auth",
       cors: {
-        credentials: true
-      }
+        credentials: true,
+      },
     },
     handler: (request, h) => {
       if (!request.auth.isAuthenticated) {
@@ -48,7 +46,7 @@ module.exports = [
         username: request.auth.credentials.name,
         department: "Politics",
         publication: "pub1",
-        initials: "🤖"
+        initials: "🤖",
       };
 
       if (
@@ -61,7 +59,7 @@ module.exports = [
           "expert-election-seats",
           "expert-map",
           "expert-chart",
-          "expert-coalition-calculation"
+          "expert-coalition-calculation",
         ];
       }
 
@@ -70,7 +68,7 @@ module.exports = [
       }
 
       return user;
-    }
+    },
   },
   {
     path: "/user",
@@ -79,18 +77,18 @@ module.exports = [
       auth: "q-auth",
       validate: {
         payload: {
-          username: Joi.string().required()
+          username: Joi.string().required(),
         },
         options: {
-          allowUnknown: true
-        }
+          allowUnknown: true,
+        },
       },
       cors: {
-        credentials: true
-      }
+        credentials: true,
+      },
     },
     handler: async (request, h) => {
       return "ok";
-    }
-  }
+    },
+  },
 ];
