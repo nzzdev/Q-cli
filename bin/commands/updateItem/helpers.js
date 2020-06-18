@@ -48,7 +48,7 @@ async function getUpdatedItem(qServer, accessToken, existingItem, item) {
   try {
     const toolSchema = await resourcesHelpers.getToolSchema(
       qServer,
-      item.item.tool
+      existingItem.tool
     );
     const defaultItem = resourcesHelpers.getDefaultItem(toolSchema);
     item.item = await resourcesHelpers.handleResources(
