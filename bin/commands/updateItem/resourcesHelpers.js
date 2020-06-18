@@ -124,32 +124,42 @@ function getDefaultItem(schema) {
 // If a property called "path" is found, the resource is uploaded
 // and the metadata of that resource is inserted at that place in the item object
 async function handleResources(qServer, accessToken, item, defaultItem) {
-  for (let key of Object.keys(item)) {
-    if (typeof item[key] === "object") {
-      let defaultItemSubtree;
-      if (defaultItem && Number.isInteger(parseInt(key)) && key > 0) {
-        defaultItemSubtree = defaultItem[0];
-      } else if (defaultItem && defaultItem[key]) {
-        defaultItemSubtree = defaultItem[key];
+  try {
+    for (let key of Object.keys(item)) {
+      if (typeof item[key] === "object") {
+        let defaultItemSubtree;
+        if (defaultItem && Number.isInteger(parseInt(key)) && key > 0) {
+          defaultItemSubtree = defaultItem[0];
+        } else if (defaultItem && defaultItem[key]) {
+          defaultItemSubtree = defaultItem[key];
+        }
+        item[key] = await handleResources(
+          qServer,
+          accessToken,
+          item[key],
+          defaultItemSubtree
+        );
+      } else if (key === "path") {
+        const resourcePath = item[key];
+        if (defaultItem) {
+          item = await getResourceMetadata(
+            qServer,
+            accessToken,
+            resourcePath,
+            defaultItem
+          );
+        } else {
+          throw new Error(
+            `Error occured while uploading the resource at ${resourcePath}. Please make sure the config structure matches the schema of the tool and try again. `
+          );
+        }
       }
-      item[key] = await handleResources(
-        qServer,
-        accessToken,
-        item[key],
-        defaultItemSubtree
-      );
-    } else if (key === "path") {
-      const resourcePath = item[key];
-      item = await getResourceMetadata(
-        qServer,
-        accessToken,
-        resourcePath,
-        defaultItem
-      );
     }
+    return item;
+  } catch (error) {
+    console.error(errorColor(error.message));
+    process.exit(1);
   }
-
-  return item;
 }
 
 // Uploads the resource and returns the metadata based on the file properties
