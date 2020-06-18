@@ -72,7 +72,7 @@ function getDefaultItem(schema) {
     }
 
     const defaultValue = getDefaultOrNull(schema);
-    if (defaultValue !== null) {
+    if (array === null && defaultValue !== null) {
       array = defaultValue;
     }
     return array;
@@ -81,6 +81,16 @@ function getDefaultItem(schema) {
     if (defaultValue !== null) {
       return defaultValue;
     }
+
+    if (
+      schema["Q:type"] &&
+      schema["Q:type"] === "files" &&
+      schema["Q:options"] &&
+      schema["Q:options"].fileProperties
+    ) {
+      return schema["Q:options"].fileProperties;
+    }
+
     if (!schema.hasOwnProperty("properties")) {
       return undefined;
     }
