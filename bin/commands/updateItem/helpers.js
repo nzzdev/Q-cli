@@ -14,19 +14,19 @@ const resourcesHelpers = require("./resourcesHelpers.js");
 async function updateItem(item, config) {
   const qServer = config.get(`${item.metadata.environment}.qServer`);
   const accessToken = config.get(`${item.metadata.environment}.accessToken`);
-  const existingItem = await getItem(qServer, accessToken, item.metadata.id);
+  const existingItem = await getItem(qServer, accessToken, item);
   const updatedItem = await getUpdatedItem(
     qServer,
     accessToken,
     existingItem,
     item
   );
-  return await saveItem(qServer, accessToken, updatedItem);
+  return await saveItem(qServer, accessToken, updatedItem, item);
 }
 
-async function getItem(qServer, accessToken, id) {
+async function getItem(qServer, accessToken, item) {
   try {
-    const response = await fetch(`${qServer}item/${id}`, {
+    const response = await fetch(`${qServer}item/${item.metadata.id}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -76,12 +76,12 @@ async function getUpdatedItem(qServer, accessToken, existingItem, item) {
   }
 }
 
-async function saveItem(qServer, accessToken, item) {
+async function saveItem(qServer, accessToken, updatedItem, item) {
   try {
-    delete item.updatedDate;
+    delete updatedItem.updatedDate;
     const response = await fetch(`${qServer}item`, {
       method: "PUT",
-      body: JSON.stringify(item),
+      body: JSON.stringify(updatedItem),
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
