@@ -1,0 +1,54 @@
+{
+  "items": [
+    {
+      "metadata": {
+        "environment": "staging",
+        "id": ""
+      },
+      "item": {
+        "files": [
+          {
+            "loadSyncBeforeInit": true,
+            "file": {
+              "path": "./public/bundle.js"
+            }
+          },
+          {
+            "loadSyncBeforeInit": true,
+            "file": {
+              "path": "./public/bundle.css"
+            }
+          }
+        ],
+        "markup": "<div id=\"{{id}}_{{random}}root_element\"></div>",
+        "script": "(function () {\n  var target = document.querySelector(\"#{{id}}_{{random}}root_element\");\n  target.innerHTML = \"\";\n  new window._{{id}}.App({\n    target: target,\n    props: {\n      name: \"custom-code-skeleton\",\n    }\n  });\n})();",
+        "sophieModules": [
+          {
+            "submodules": [],
+            "nameVersion": "sophie-font@^1"
+          },
+          {
+            "submodules": [],
+            "nameVersion": "sophie-color@^1"
+          },
+          {
+            "submodules": [],
+            "nameVersion": "sophie-viz-color@^1"
+          }
+        ],
+        "polyfills": [
+          "Map,URL,Promise,fetch,URLSearchParams,Array.prototype.find,Array.prototype.findIndex,Object.entries,Array.prototype.includes,CustomEvent,Array.from,String.prototype.startsWith"
+        ],
+        "trackingComponent": {
+          "componentInfo": {
+            "componentName": "custom-code-skeleton"
+          },
+          "category": {
+            "componentType": "storytelling",
+            "componentSubType1": "Q graphic"
+          }
+        }
+      }
+    }
+  ]
+}

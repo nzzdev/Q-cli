@@ -11,18 +11,18 @@ function getRenderingInfo(item, queryString, config) {
   let promises = [];
   const pathEnds = ["html-static", "html-js", "web"];
 
-  pathEnds.forEach(pathEnd => {
+  pathEnds.forEach((pathEnd) => {
     promises.push(
       fetch(`${toolBaseUrl}/rendering-info/${pathEnd}?${queryString}`, {
         method: "POST",
         body: JSON.stringify({
           item: item,
-          toolRuntimeConfig: config.toolRuntimeConfig
+          toolRuntimeConfig: config.toolRuntimeConfig,
         }),
         headers: {
-          "Content-Type": "application/json"
-        }
-      }).then(response => {
+          "Content-Type": "application/json",
+        },
+      }).then((response) => {
         if (response.ok) {
           return response.json();
         } else {
@@ -41,15 +41,15 @@ module.exports = {
     validate: {
       params: {
         id: Joi.string().required(),
-        target: Joi.string().required()
+        target: Joi.string().required(),
       },
       options: {
-        allowUnknown: true
-      }
+        allowUnknown: true,
+      },
     },
-    cors: true
+    cors: true,
   },
-  handler: async function(request, h) {
+  handler: async function (request, h) {
     try {
       // fetch item with id from array of fixture data
       const target = request.params.target;
@@ -79,7 +79,7 @@ module.exports = {
           request.server.info.address +
           ":" +
           request.server.info.port +
-          "/tools"
+          "/tools",
       };
 
       let config;
@@ -96,10 +96,10 @@ module.exports = {
       }
 
       let responses = await getRenderingInfo(item, queryString, {
-        toolRuntimeConfig: toolRuntimeConfig
+        toolRuntimeConfig: toolRuntimeConfig,
       });
       let renderingInfo = responses.filter(
-        response => response !== undefined
+        (response) => response !== undefined
       )[0];
 
       // add target/tool specific additional rendering info to rendering info if it exists
@@ -110,7 +110,7 @@ module.exports = {
           {
             arrayMerge: (destArr, srcArr) => {
               return srcArr.concat(destArr);
-            }
+            },
           }
         );
       }
@@ -127,5 +127,5 @@ module.exports = {
         return Boom.serverUnavailable(err.message);
       }
     }
-  }
+  },
 };
