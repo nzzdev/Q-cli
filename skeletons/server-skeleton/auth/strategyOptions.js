@@ -1,10 +1,8 @@
-const fetch = require("node-fetch");
-
 module.exports = {
   allowQueryToken: false, // optional, true by default
   allowMultipleHeaders: false, // optional, false by default
   accessTokenName: "access_token", // optional, 'access_token' by default
-  validate: async function(request, token, h) {
+  validate: async function (request, token, h) {
     const user = {};
 
     if (token.includes("demo-user")) {
@@ -15,7 +13,7 @@ module.exports = {
       user.name = "demo-poweruser";
     } else {
       return {
-        isValid: false
+        isValid: false,
       };
     }
 
@@ -24,7 +22,7 @@ module.exports = {
 
     return {
       isValid: true,
-      credentials: user
+      credentials: user,
     };
-  }
+  },
 };

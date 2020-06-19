@@ -5,7 +5,7 @@ const chalk = require("chalk");
 const errorColor = chalk.red;
 const version = require("../package.json").version;
 const runServer = require("./commands/server.js");
-const newToolOrServer = require("./commands/newToolOrServer.js");
+const bootstrap = require("./commands/bootstrap.js");
 const updateItem = require("./commands/updateItem/updateItem.js");
 
 async function main() {
@@ -44,8 +44,8 @@ async function main() {
         console.error(errorColor("no servername given"));
         process.exit(1);
       }
-      const baseDir = command.dir || name;
-      await newToolOrServer("server", name, baseDir);
+      const baseDir = program.dir || name;
+      await bootstrap("server", name, baseDir);
     });
 
   program
@@ -61,8 +61,25 @@ async function main() {
         console.error(errorColor("no toolname given"));
         process.exit(1);
       }
-      const baseDir = command.dir || name;
-      await newToolOrServer("tool", name, baseDir);
+      const baseDir = program.dir || name;
+      await bootstrap("tool", name, baseDir);
+    });
+
+  program
+    .command("new-custom-code")
+    .option(
+      "-d, --dir <path>",
+      "the base directory to bootstrap the new tool in, defaults to the tools name"
+    )
+    .description("bootstrap a new custom code project")
+    .action(async () => {
+      const name = program.args[1];
+      if (!name) {
+        console.error(errorColor("no custom-code projectname given"));
+        process.exit(1);
+      }
+      const baseDir = program.dir || name;
+      await bootstrap("custom-code", name, baseDir);
     });
 
   program
