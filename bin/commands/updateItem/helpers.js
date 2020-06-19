@@ -14,19 +14,19 @@ const resourcesHelpers = require("./resourcesHelpers.js");
 async function updateItem(item, config) {
   const qServer = config.get(`${item.metadata.environment}.qServer`);
   const accessToken = config.get(`${item.metadata.environment}.accessToken`);
-  const existingItem = await getItem(qServer, accessToken, item.metadata.id);
+  const existingItem = await getItem(qServer, accessToken, item);
   const updatedItem = await getUpdatedItem(
     qServer,
     accessToken,
     existingItem,
     item
   );
-  return await saveItem(qServer, accessToken, updatedItem);
+  return await saveItem(qServer, accessToken, updatedItem, item);
 }
 
-async function getItem(qServer, accessToken, id) {
+async function getItem(qServer, accessToken, item) {
   try {
-    const response = await fetch(`${qServer}item/${id}`, {
+    const response = await fetch(`${qServer}item/${item.metadata.id}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -35,7 +35,7 @@ async function getItem(qServer, accessToken, id) {
       return await response.json();
     } else {
       throw new Error(
-        `A problem occured while getting item with id ${item.metadata.id} on ${item.metadata.environment} environment. Please check your connection and try again.`
+        `A problem occured while getting item with id ${item.metadata.id} on ${item.metadata.environment} environment. Please make sure that the id is correct, you have an internet connection and try again.`
       );
     }
   } catch (error) {
@@ -48,15 +48,14 @@ async function getUpdatedItem(qServer, accessToken, existingItem, item) {
   try {
     const toolSchema = await resourcesHelpers.getToolSchema(
       qServer,
-      item.metadata.tool
+      existingItem.tool
     );
     const defaultItem = resourcesHelpers.getDefaultItem(toolSchema);
     item.item = await resourcesHelpers.handleResources(
       qServer,
       accessToken,
       item.item,
-      defaultItem,
-      "path"
+      defaultItem
     );
 
     const updatedItem = deepmerge(existingItem, item.item, {
@@ -77,12 +76,12 @@ async function getUpdatedItem(qServer, accessToken, existingItem, item) {
   }
 }
 
-async function saveItem(qServer, accessToken, item) {
+async function saveItem(qServer, accessToken, updatedItem, item) {
   try {
-    delete item.updatedDate;
+    delete updatedItem.updatedDate;
     const response = await fetch(`${qServer}item`, {
       method: "PUT",
-      body: JSON.stringify(item),
+      body: JSON.stringify(updatedItem),
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",

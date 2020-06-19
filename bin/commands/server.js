@@ -50,24 +50,24 @@ async function startServer() {
   }
 }
 
-module.exports = async function (program) {
-  if (program.port) {
-    process.env.PORT = program.port;
+module.exports = async function (command) {
+  if (command.port) {
+    process.env.PORT = command.port;
   }
 
-  if (program.target) {
-    process.env.TARGET = program.target;
+  if (command.target) {
+    process.env.TARGET = command.target;
   }
 
-  if (program.toolBaseUrl) {
-    process.env.TOOL_BASE_URL = program.toolBaseUrl;
+  if (command.toolBaseUrl) {
+    process.env.TOOL_BASE_URL = command.toolBaseUrl;
   }
 
-  if (program.config) {
-    if (path.isAbsolute(program.config)) {
-      process.env.CONFIG = program.config;
+  if (command.config) {
+    if (path.isAbsolute(command.config)) {
+      process.env.CONFIG = command.config;
     } else {
-      process.env.CONFIG = path.join(process.cwd(), program.config);
+      process.env.CONFIG = path.join(process.cwd(), command.config);
     }
   } else {
     process.env.CONFIG = path.join(

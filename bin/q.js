@@ -27,8 +27,8 @@ async function main() {
       "the config file name in which additional rendering info and tool runtime config is specified"
     )
     .description("start a simple server mocking a Q server for development")
-    .action(async () => {
-      await runServer(program);
+    .action(async (command) => {
+      await runServer(command);
     });
 
   program
@@ -38,8 +38,8 @@ async function main() {
       "the base directory to bootstrap the new Q server implementation in, defaults to the name of Q server implementation"
     )
     .description("bootstrap a new Q server implementation")
-    .action(async () => {
-      const name = program.args[1];
+    .action(async (command) => {
+      const name = command.args[0];
       if (!name) {
         console.error(errorColor("no servername given"));
         process.exit(1);
@@ -55,8 +55,8 @@ async function main() {
       "the base directory to bootstrap the new tool in, defaults to the tools name"
     )
     .description("bootstrap a new tool")
-    .action(async () => {
-      const name = program.args[1];
+    .action(async (command) => {
+      const name = command.args[0];
       if (!name) {
         console.error(errorColor("no toolname given"));
         process.exit(1);
