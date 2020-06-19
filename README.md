@@ -144,16 +144,22 @@ Once `Q` cli installed one can update one or many Q items by executing:
 Q update-item
 ```
 
+- The path to the config file can be set by using option `-c` or `--config`. By default the `update-item` command will look for a config file called `q.config.json` in the current directory
+
+```bash
+Q update-item -c [path]
+```
+
+- Items of a specified environment can be updated by using the option `-e` or `--environment`. By default the `update-item` command updates all item specified in the config file
+
+```bash
+Q update-item -e [env]
+```
+
 - Stored configuration properties like Q-Server url or access tokens can be reset by using option `-r` or `--reset`
 
 ```bash
 Q update-item -r
-```
-
-- The path to the config file can be set by using option `-c` or `--config`. By default the `update-item` command will look for a config file called `q.config.json` in the current directory
-
-```bash
-Q update-item -c <path>
 ```
 
 The config file has to follow [this json-schema](./bin/commands/updateItem/schema.json). Here an example:

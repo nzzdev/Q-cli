@@ -1,22 +1,27 @@
 const fetch = require("node-fetch");
 const deepmerge = require("deepmerge");
 const Ajv = require("ajv");
-const ajv = new Ajv();
+const ajv = new Ajv({ schemaId: "auto" });
+ajv.addMetaSchema(require("ajv/lib/refs/json-schema-draft-04.json"));
 const promptly = require("promptly");
 const chalk = require("chalk");
 const errorColor = chalk.red;
 const Configstore = require("configstore");
 const package = require("../../../package.json");
 const config = new Configstore(package.name, {});
+const resourcesHelpers = require("./resourcesHelpers.js");
 
 async function updateItem(item, config) {
   const qServer = config.get(`${item.metadata.environment}.qServer`);
   const accessToken = config.get(`${item.metadata.environment}.accessToken`);
   const existingItem = await getItem(qServer, accessToken, item);
-  const newItem = deepmerge(existingItem, item.item, {
-    arrayMerge: (destArr, srcArr) => srcArr,
-  });
-  return await saveItem(qServer, accessToken, newItem);
+  const updatedItem = await getUpdatedItem(
+    qServer,
+    accessToken,
+    existingItem,
+    item
+  );
+  return await saveItem(qServer, accessToken, updatedItem, item);
 }
 
 async function getItem(qServer, accessToken, item) {
@@ -39,12 +44,44 @@ async function getItem(qServer, accessToken, item) {
   }
 }
 
-async function saveItem(qServer, accessToken, item) {
+async function getUpdatedItem(qServer, accessToken, existingItem, item) {
   try {
-    delete item.updatedDate;
+    const toolSchema = await resourcesHelpers.getToolSchema(
+      qServer,
+      existingItem.tool
+    );
+    const defaultItem = resourcesHelpers.getDefaultItem(toolSchema);
+    item.item = await resourcesHelpers.handleResources(
+      qServer,
+      accessToken,
+      item.item,
+      defaultItem
+    );
+
+    const updatedItem = deepmerge(existingItem, item.item, {
+      arrayMerge: (destArr, srcArr) => srcArr,
+    });
+
+    const validationResult = validateItem(toolSchema, updatedItem);
+    if (validationResult.isValid) {
+      return updatedItem;
+    } else {
+      throw new Error(
+        `A problem occured while validating item with id ${item.metadata.id} on ${item.metadata.environment} environment: ${validationResult.errorsText}`
+      );
+    }
+  } catch (error) {
+    console.error(errorColor(error.message));
+    process.exit(1);
+  }
+}
+
+async function saveItem(qServer, accessToken, updatedItem, item) {
+  try {
+    delete updatedItem.updatedDate;
     const response = await fetch(`${qServer}item`, {
       method: "PUT",
-      body: JSON.stringify(item),
+      body: JSON.stringify(updatedItem),
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
@@ -63,6 +100,18 @@ async function saveItem(qServer, accessToken, item) {
   }
 }
 
+function getItems(qConfig, environment) {
+  const items = qConfig.items.filter((item) => {
+    if (environment) {
+      return item.metadata.environment === environment;
+    }
+
+    return true;
+  });
+
+  return items;
+}
+
 function validateConfig(config) {
   const isValid = ajv.validate(require("./schema.json"), config);
   return {
@@ -71,21 +120,34 @@ function validateConfig(config) {
   };
 }
 
-function getEnvironments(qConfig) {
+function validateItem(schema, item) {
+  const isValid = ajv.validate(schema, item);
+  return {
+    isValid: isValid,
+    errorsText: ajv.errorsText(),
+  };
+}
+
+function getEnvironments(qConfig, environment) {
   const environments = new Set();
   for (const item of qConfig.items) {
-    environments.add(item.metadata.environment);
+    if (environment) {
+      if (environment === item.metadata.environment) {
+        environments.add(item.metadata.environment);
+      }
+    } else {
+      environments.add(item.metadata.environment);
+    }
   }
 
   return Array.from(environments);
 }
 
-async function setupConfig(qConfig, reset) {
+async function setupConfig(qConfig, environmentFilter, reset) {
   if (reset) {
     config.clear();
   }
-  const environments = getEnvironments(qConfig);
-  for (const environment of environments) {
+  for (const environment of getEnvironments(qConfig, environmentFilter)) {
     if (!config.get(`${environment}.qServer`)) {
       const qServer = await promptly.prompt(
         `Enter the Q-Server url for ${environment} environment: `,
@@ -205,5 +267,6 @@ async function checkValidityOfAccessToken(environment, qServer, accessToken) {
 module.exports = {
   updateItem: updateItem,
   setupConfig: setupConfig,
+  getItems: getItems,
   validateConfig: validateConfig,
 };

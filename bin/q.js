@@ -69,9 +69,13 @@ async function main() {
     .command("update-item")
     .description("update q item")
     .option(
-      "-c, --config <path>",
+      "-c, --config [path]",
       "set config path which defines the q items to be updated. defaults to ./q.config.json",
       `${process.cwd()}/q.config.json`
+    )
+    .option(
+      "-e, --environment [env]",
+      "set environment which should be updated, defaults to update all items of all environments defined in config"
     )
     .option("-r, --reset", "reset stored configuration properties")
     .action(async (command) => {

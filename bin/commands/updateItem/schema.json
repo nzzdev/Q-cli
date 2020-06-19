@@ -22,7 +22,7 @@
                 "description": "Id of Q item"
               }
             },
-            "required": ["id", "environment"]
+            "required": ["environment", "id"]
           },
           "item": {
             "type": "object"
