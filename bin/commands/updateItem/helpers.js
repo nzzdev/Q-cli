@@ -11,7 +11,7 @@ const package = require("../../../package.json");
 const config = new Configstore(package.name, {});
 const resourcesHelpers = require("./resourcesHelpers.js");
 
-async function updateItem(item, config) {
+async function updateItem(item, config, qConfigPath) {
   const qServer = config.get(`${item.metadata.environment}.qServer`);
   const accessToken = config.get(`${item.metadata.environment}.accessToken`);
   const existingItem = await getItem(qServer, accessToken, item);
@@ -19,7 +19,8 @@ async function updateItem(item, config) {
     qServer,
     accessToken,
     existingItem,
-    item
+    item,
+    qConfigPath
   );
   return await saveItem(qServer, accessToken, updatedItem, item);
 }
@@ -44,7 +45,13 @@ async function getItem(qServer, accessToken, item) {
   }
 }
 
-async function getUpdatedItem(qServer, accessToken, existingItem, item) {
+async function getUpdatedItem(
+  qServer,
+  accessToken,
+  existingItem,
+  item,
+  qConfigPath
+) {
   try {
     const toolSchema = await resourcesHelpers.getToolSchema(
       qServer,
@@ -55,7 +62,8 @@ async function getUpdatedItem(qServer, accessToken, existingItem, item) {
       qServer,
       accessToken,
       item.item,
-      defaultItem
+      defaultItem,
+      qConfigPath
     );
 
     const updatedItem = deepmerge(existingItem, item.item, {

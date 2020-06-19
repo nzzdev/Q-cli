@@ -123,7 +123,13 @@ function getDefaultItem(schema) {
 // Recursively traverses the item object
 // If a property called "path" is found, the resource is uploaded
 // and the metadata of that resource is inserted at that place in the item object
-async function handleResources(qServer, accessToken, item, defaultItem) {
+async function handleResources(
+  qServer,
+  accessToken,
+  item,
+  defaultItem,
+  qConfigPath
+) {
   try {
     if (item) {
       for (let key of Object.keys(item)) {
@@ -138,7 +144,8 @@ async function handleResources(qServer, accessToken, item, defaultItem) {
             qServer,
             accessToken,
             item[key],
-            defaultItemSubtree
+            defaultItemSubtree,
+            qConfigPath
           );
         } else if (key === "path") {
           const resourcePath = item[key];
@@ -147,7 +154,8 @@ async function handleResources(qServer, accessToken, item, defaultItem) {
               qServer,
               accessToken,
               resourcePath,
-              defaultItem
+              defaultItem,
+              qConfigPath
             );
           } else {
             throw new Error(
@@ -169,9 +177,10 @@ async function getResourceMetadata(
   qServer,
   accessToken,
   resource,
-  fileProperties
+  fileProperties,
+  qConfigPath
 ) {
-  const resourcePath = path.resolve(process.cwd(), resource);
+  const resourcePath = path.resolve(qConfigPath, resource);
   resource = await uploadResource(qServer, accessToken, resourcePath);
   const statistic = await stat(resourcePath);
   resource.size = statistic.size;
