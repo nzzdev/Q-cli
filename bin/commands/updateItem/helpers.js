@@ -129,18 +129,29 @@ function validateItem(schema, item) {
 }
 
 function getEnvironments(qConfig, environment) {
-  const environments = new Set();
-  for (const item of qConfig.items) {
-    if (environment) {
-      if (environment === item.metadata.environment) {
+  try {
+    const environments = new Set();
+    for (const item of qConfig.items) {
+      if (environment) {
+        if (environment === item.metadata.environment) {
+          environments.add(item.metadata.environment);
+        }
+      } else {
         environments.add(item.metadata.environment);
       }
-    } else {
-      environments.add(item.metadata.environment);
     }
-  }
 
-  return Array.from(environments);
+    if (environments.size > 0) {
+      return Array.from(environments);
+    } else {
+      throw new Error(
+        `No items with environment ${environment} found. Please check your configuration and try again.`
+      );
+    }
+  } catch (error) {
+    console.error(errorColor(error.message));
+    process.exit(1);
+  }
 }
 
 async function setupConfig(qConfig, environmentFilter, reset) {
