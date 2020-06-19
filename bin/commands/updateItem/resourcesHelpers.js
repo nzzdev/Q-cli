@@ -125,33 +125,35 @@ function getDefaultItem(schema) {
 // and the metadata of that resource is inserted at that place in the item object
 async function handleResources(qServer, accessToken, item, defaultItem) {
   try {
-    for (let key of Object.keys(item)) {
-      if (typeof item[key] === "object") {
-        let defaultItemSubtree;
-        if (defaultItem && Number.isInteger(parseInt(key)) && key > 0) {
-          defaultItemSubtree = defaultItem[0];
-        } else if (defaultItem && defaultItem[key]) {
-          defaultItemSubtree = defaultItem[key];
-        }
-        item[key] = await handleResources(
-          qServer,
-          accessToken,
-          item[key],
-          defaultItemSubtree
-        );
-      } else if (key === "path") {
-        const resourcePath = item[key];
-        if (defaultItem) {
-          item = await getResourceMetadata(
+    if (item) {
+      for (let key of Object.keys(item)) {
+        if (typeof item[key] === "object") {
+          let defaultItemSubtree;
+          if (defaultItem && Number.isInteger(parseInt(key)) && key > 0) {
+            defaultItemSubtree = defaultItem[0];
+          } else if (defaultItem && defaultItem[key]) {
+            defaultItemSubtree = defaultItem[key];
+          }
+          item[key] = await handleResources(
             qServer,
             accessToken,
-            resourcePath,
-            defaultItem
+            item[key],
+            defaultItemSubtree
           );
-        } else {
-          throw new Error(
-            `Error occured while uploading the resource at ${resourcePath}. Please make sure the config structure matches the schema of the tool and try again. `
-          );
+        } else if (key === "path") {
+          const resourcePath = item[key];
+          if (defaultItem) {
+            item = await getResourceMetadata(
+              qServer,
+              accessToken,
+              resourcePath,
+              defaultItem
+            );
+          } else {
+            throw new Error(
+              `Error occured while uploading the resource at ${resourcePath}. Please make sure the config structure matches the schema of the tool and try again. `
+            );
+          }
         }
       }
     }
