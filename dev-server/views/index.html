@@ -1,38 +1,32 @@
 <!-- index.html to test what markup would look like locally (independent of target) -->
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
     <title>Q Tool</title>
-    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="width=device-width" />
     <script src="https://cdn.jsdelivr.net/gh/muicss/loadjs@3.6.1/dist/loadjs.min.js"></script>
     <script src="https://q-server.st.nzz.ch/files/system.js"></script>
     <!-- if context is given load stylesheets and scripts if available -->
-    {%- if context.stylesheets %}
-      {%- for stylesheet in context.stylesheets %}
-        {%- if stylesheet.url %}
-          <link rel="stylesheet" href="{{ stylesheet.url }}">
-        {%- endif %}
-        {%- if stylesheet.content %}
-          <style>
-            {{ stylesheet.content }}
-          </style>
-        {%- endif %}
-      {%- endfor %}
-    {%- endif %}
-    {%- if context.scripts %}
-      {%- for script in context.scripts %}
-        {%- if script.url %}
-          <script src="{{ script.url }}"></script>
-        {%- endif %}
-        {%- if script.content %}
-          <script>
-            {{ script.content }}
-          </script>
-        {%- endif %}
-      {%- endfor %}
-    {%- endif %}
-    {%- if context.background %}
+    {%- if context.stylesheets %} {%- for stylesheet in context.stylesheets %}
+    {%- if stylesheet.url %}
+    <link rel="stylesheet" href="{{ stylesheet.url }}" />
+    {%- endif %} {%- if stylesheet.content %}
+    <style>
+      {{ stylesheet.content }}
+    </style>
+    {%- endif %} {%- endfor %} {%- endif %} {%- if context.scripts %} {%- for
+    script in context.scripts %} {%- if script.url %}
+    <script src="{{ script.url }}"></script>
+    {%- endif %} {%- if script.content %}
+    <script>
+      {
+        {
+          script.content;
+        }
+      }
+    </script>
+    {%- endif %} {%- endfor %} {%- endif %} {%- if context.background %}
     <style>
       body {
         background-color: {{ context.background.color }};
@@ -44,29 +38,45 @@
       }
     </style>
     {%- endif %}
-    <link rel="stylesheet" href="http://localhost:5000/style.css">
+    <link rel="stylesheet" href="http://localhost:5000/style.css" />
   </head>
-  <body class="page page--reportage livingdocs--article">
+  <!-- we have four different article templates, since the article itself has the same structure in each template 
+		we can use either of these classes: regular, longformstandard, regular, opinion 
+		if one changes the class attached to body tag one should change the class in section tag accordingly (maybe further adjustments needed too) -->
+  <body class="regular">
     <div class="fixtures__container">
       <select class="fixtures__select"></select>
       <button class="fixtures__reload-button" type="button">Reload</button>
     </div>
-    <div class="l--main" id="l--main">
-      <div class="l--holder">
-        <div class="l--wrapper">
-          <article class="content">
-            <main class="content__main">
-              <div class="widget widget--qembed regwalled">
-                <div>
-                  <div class="s-q-item" id="container"></div>
+    <div id="__nzz">
+      <div id="__layout">
+        <div class="page--article-id">
+          <div class="pageholder">
+            <div class="nzz-container">
+              <div class="nzz-page-transition">
+                <div class="article">
+                  <!-- also here change layout--{template} accordingly -->
+                  <section class="container container--article layout--regular">
+                    <!-- default = content width, for fullwidth, small left/right one has to add one of 
+                        the following classes accordingly: widget--fullwidth, widget--left, widget--right-->
+                    <div
+                      class="articlecomponent q-embed widget--qembed regwalled"
+                    >
+                      <div>
+                        <div class="s-q-item" id="container"></div>
+                        <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Map,URL,Promise,fetch,URLSearchParams,Array.prototype.find,Array.prototype.findIndex,Object.entries,Array.prototype.includes,CustomEvent,Array.from,String.prototype.startsWith&flags=gated&unknown=polyfill"></script>
+                      </div>
+                    </div>
+                  </section>
                 </div>
               </div>
-            </main>
-          </article>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <script> 
+
+    <script>
       const port = {{ port }};
       const target = '{{ target }}';
       // load fixture data and populate select element with titles
@@ -99,12 +109,12 @@
           })
         });
 
-      function loadRenderingInfo(fixtureData, index) {        
+      function loadRenderingInfo(fixtureData, index) {
         return fetch(`http://localhost:${port}/rendering-info/${index}/${target}`)
           .then(response => {
             if (response.ok) {
               return response.json();
-            } 
+            }
             throw new Error(response);
           })
           .catch(e => {

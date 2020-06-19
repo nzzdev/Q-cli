@@ -35,7 +35,7 @@ async function getItem(qServer, accessToken, item) {
       return await response.json();
     } else {
       throw new Error(
-        `A problem occured while getting item with id ${item.metadata.id} on ${item.metadata.environment} environment. Please check your connection and try again.`
+        `A problem occured while getting item with id ${item.metadata.id} on ${item.metadata.environment} environment. Please make sure that the id is correct, you have an internet connection and try again.`
       );
     }
   } catch (error) {
