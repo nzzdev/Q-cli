@@ -7,22 +7,33 @@
     "items": {
       "description": "Array of Q items",
       "type": "array",
+      "minItems": 1,
       "items": {
         "type": "object",
         "properties": {
           "metadata": {
             "type": "object",
             "properties": {
-              "environment": {
-                "type": "string",
-                "description": "Environment of Q item"
-              },
-              "id": {
-                "type": "string",
-                "description": "Id of Q item"
+              "environments": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "environment": {
+                      "type": "string",
+                      "description": "Environment of Q item"
+                    },
+                    "id": {
+                      "type": "string",
+                      "description": "Id of Q item"
+                    }
+                  },
+                  "required": ["environment", "id"]
+                }
               }
             },
-            "required": ["environment", "id"]
+            "required": ["environments"]
           },
           "item": {
             "type": "object"
