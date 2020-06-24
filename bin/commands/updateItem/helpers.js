@@ -224,10 +224,15 @@ async function setupConfig(qConfig, environmentFilter, reset) {
 }
 
 async function authenticate(environment, qServer) {
-  const username = await promptly.prompt(
-    `Enter your username on ${environment} environment: `,
-    { validator: (username) => username.trim() }
-  );
+  let username = config.get(`${environment}.username`);
+  if (!username) {
+    username = await promptly.prompt(
+      `Enter your username on ${environment} environment: `,
+      { validator: (username) => username.trim() }
+    );
+    config.set(`${environment}.username`, username);
+  }
+
   const password = await promptly.password(
     `Enter your password on ${environment} environment: `,
     {
