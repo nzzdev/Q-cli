@@ -2,15 +2,27 @@
   "items": [
     {
       "metadata": {
-        "environment": "staging",
-        "id": ""
+        "environments": [
+          {
+            "environment": "test",
+            "id": ""
+          },
+          {
+            "environment": "staging",
+            "id": ""
+          },
+          {
+            "environment": "production",
+            "id": ""
+          }
+        ]
       },
       "item": {
         "files": [
           {
             "loadSyncBeforeInit": true,
             "file": {
-              "path": "./public/bundle.js"
+              "path": "./public/bundle-{id}.js"
             }
           },
           {
