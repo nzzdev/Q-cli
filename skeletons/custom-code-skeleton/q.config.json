@@ -1,22 +1,20 @@
 {
   "items": [
     {
-      "metadata": {
-        "environments": [
-          {
-            "environment": "test",
-            "id": ""
-          },
-          {
-            "environment": "staging",
-            "id": ""
-          },
-          {
-            "environment": "production",
-            "id": ""
-          }
-        ]
-      },
+      "environments": [
+        {
+          "name": "test",
+          "id": ""
+        },
+        {
+          "name": "staging",
+          "id": ""
+        },
+        {
+          "name": "production",
+          "id": ""
+        }
+      ],
       "item": {
         "files": [
           {
