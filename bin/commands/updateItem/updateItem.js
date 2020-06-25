@@ -18,7 +18,7 @@ module.exports = async function (command) {
           command.reset
         );
         for (const item of helpers.getItems(qConfig, command.environment)) {
-          for (const environment of item.metadata.environments) {
+          for (const environment of item.environments) {
             const result = await helpers.updateItem(
               item.item,
               environment,
@@ -28,7 +28,7 @@ module.exports = async function (command) {
             if (result) {
               console.log(
                 successColor(
-                  `Successfully updated item with id ${environment.id} on ${environment.environment} environment`
+                  `Successfully updated item with id ${environment.id} on ${environment.name} environment`
                 )
               );
             }

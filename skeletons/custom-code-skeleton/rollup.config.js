@@ -15,7 +15,7 @@ const production = !process.env.ROLLUP_WATCH;
 function getOutputs() {
   const outputs = [];
   for (let item of qConfig.items) {
-    for (let environment of item.metadata.environments) {
+    for (let environment of item.environments) {
       outputs.push({
         sourcemap: production ? false : true,
         format: "iife",

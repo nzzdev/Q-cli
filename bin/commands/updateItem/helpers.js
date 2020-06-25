@@ -12,8 +12,8 @@ const config = new Configstore(package.name, {});
 const resourcesHelpers = require("./resourcesHelpers.js");
 
 async function updateItem(item, environment, config, qConfigPath) {
-  const qServer = config.get(`${environment.environment}.qServer`);
-  const accessToken = config.get(`${environment.environment}.accessToken`);
+  const qServer = config.get(`${environment.name}.qServer`);
+  const accessToken = config.get(`${environment.name}.accessToken`);
   const existingItem = await getItem(qServer, accessToken, environment);
   const updatedItem = await getUpdatedItem(
     qServer,
@@ -37,7 +37,7 @@ async function getItem(qServer, accessToken, environment) {
       return await response.json();
     } else {
       throw new Error(
-        `A problem occured while getting item with id ${environment.id} on ${environment.environment} environment. Please make sure that the id is correct, you have an internet connection and try again.`
+        `A problem occured while getting item with id ${environment.id} on ${environment.name} environment. Please make sure that the id is correct, you have an internet connection and try again.`
       );
     }
   } catch (error) {
@@ -79,7 +79,7 @@ async function getUpdatedItem(
       return updatedItem;
     } else {
       throw new Error(
-        `A problem occured while validating item with id ${environment.id} on ${environment.environment} environment: ${validationResult.errorsText}`
+        `A problem occured while validating item with id ${environment.id} on ${environment.name} environment: ${validationResult.errorsText}`
       );
     }
   } catch (error) {
@@ -103,7 +103,7 @@ async function saveItem(qServer, accessToken, updatedItem, environment) {
       return await response.json();
     } else {
       throw new Error(
-        `A problem occured while saving item with id ${environment.id} on ${environment.environment} environment. Please check your connection and try again.`
+        `A problem occured while saving item with id ${environment.id} on ${environment.name} environment. Please check your connection and try again.`
       );
     }
   } catch (error) {
@@ -116,8 +116,8 @@ function getItems(qConfig, environmentFilter) {
   const items = qConfig.items
     .filter((item) => {
       if (environmentFilter) {
-        return item.metadata.environments.some(
-          (environment) => environment.environment === environmentFilter
+        return item.environments.some(
+          (environment) => environment.name === environmentFilter
         );
       }
 
@@ -125,8 +125,8 @@ function getItems(qConfig, environmentFilter) {
     })
     .map((item) => {
       if (environmentFilter) {
-        item.metadata.environments = item.metadata.environments.filter(
-          (environment) => environment.environment === environmentFilter
+        item.environments = item.environments.filter(
+          (environment) => environment.name === environmentFilter
         );
       }
 
@@ -156,13 +156,13 @@ function getEnvironments(qConfig, environmentFilter) {
   try {
     const environments = new Set();
     for (const item of qConfig.items) {
-      for (const environment of item.metadata.environments) {
+      for (const environment of item.environments) {
         if (environmentFilter) {
-          if (environmentFilter === environment.environment) {
-            environments.add(environment.environment);
+          if (environmentFilter === environment.name) {
+            environments.add(environment.name);
           }
         } else {
-          environments.add(environment.environment);
+          environments.add(environment.name);
         }
       }
     }

@@ -11,35 +11,29 @@
       "items": {
         "type": "object",
         "properties": {
-          "metadata": {
-            "type": "object",
-            "properties": {
-              "environments": {
-                "type": "array",
-                "minItems": 1,
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "environment": {
-                      "type": "string",
-                      "description": "Environment of Q item"
-                    },
-                    "id": {
-                      "type": "string",
-                      "description": "Id of Q item"
-                    }
-                  },
-                  "required": ["environment", "id"]
+          "environments": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Environment name of Q item"
+                },
+                "id": {
+                  "type": "string",
+                  "description": "Id of Q item"
                 }
-              }
-            },
-            "required": ["environments"]
+              },
+              "required": ["name", "id"]
+            }
           },
           "item": {
             "type": "object"
           }
         },
-        "required": ["metadata", "item"]
+        "required": ["environments", "item"]
       }
     }
   },

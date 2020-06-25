@@ -182,10 +182,16 @@ The config file has to follow [this json-schema](./bin/commands/updateItem/schem
 {
   "items": [
     {
-      "metadata": {
-        "environment": "staging",
-        "id": "6dcf203a5c5f74b61aeea0cb0ef2ca9f"
-      },
+      "environments": [
+        {
+          "name": "production",
+          "id": "6dcf203a5c5f74b61aeea0cb0eef7e0b"
+        },
+        {
+          "name": "staging",
+          "id": "6dcf203a5c5f74b61aeea0cb0ef2ca9f"
+        }
+      ],
       "item": {
         "title": "Der Konsum in der Schweiz springt wieder an",
         "subtitle": "Wöchentliche Ausgaben mittels Bankkarten in Mio. Fr. im Jahr 2020, zum Vergleich 2019",
@@ -198,10 +204,16 @@ The config file has to follow [this json-schema](./bin/commands/updateItem/schem
       }
     },
     {
-      "metadata": {
-        "environment": "production",
-        "id": "6dcf203a5c5f74b61aeea0cb0ef2edea"
-      },
+      "environments": [
+        {
+          "name": "production",
+          "id": "6dcf203a5c5f74b61aeea0cb0ef2edea"
+        },
+        {
+          "name": "staging",
+          "id": "6dcf203a5c5f74b61aeea0cb0ef68480"
+        }
+      ],
       "item": {
         "title": "Der Lastwagenverkehr in Deutschland nimmt wieder zu",
         "subtitle": "Täglicher Lkw-Maut-Fahrleistungsindex (2015 = 100, saison- und kalenderbereinigt) im Jahr 2020, zum Vergleich 2019\t\t",
