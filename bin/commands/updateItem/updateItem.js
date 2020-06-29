@@ -1,13 +1,15 @@
 const helpers = require("./helpers.js");
 const fs = require("fs");
+const path = require("path");
 const chalk = require("chalk");
 const errorColor = chalk.red;
 const successColor = chalk.green;
 
 module.exports = async function (command) {
   try {
-    if (fs.existsSync(command.config)) {
-      const qConfig = JSON.parse(fs.readFileSync(command.config));
+    const qConfigPath = path.resolve(command.config);
+    if (fs.existsSync(qConfigPath)) {
+      const qConfig = JSON.parse(fs.readFileSync(qConfigPath));
       const validationResult = helpers.validateConfig(qConfig);
       if (validationResult.isValid) {
         const config = await helpers.setupConfig(
@@ -16,13 +18,20 @@ module.exports = async function (command) {
           command.reset
         );
         for (const item of helpers.getItems(qConfig, command.environment)) {
-          const result = await helpers.updateItem(item, config);
-          if (result) {
-            console.log(
-              successColor(
-                `Successfully updated item with id ${item.metadata.id} on ${item.metadata.environment} environment`
-              )
+          for (const environment of item.environments) {
+            const result = await helpers.updateItem(
+              item.item,
+              environment,
+              config,
+              qConfigPath
             );
+            if (result) {
+              console.log(
+                successColor(
+                  `Successfully updated item with id ${environment.id} on ${environment.name} environment`
+                )
+              );
+            }
           }
         }
       } else {
