@@ -128,7 +128,8 @@ async function handleResources(
   accessToken,
   item,
   defaultItem,
-  qConfigPath
+  qConfigPath,
+  environment
 ) {
   try {
     if (item) {
@@ -145,7 +146,8 @@ async function handleResources(
             accessToken,
             item[key],
             defaultItemSubtree,
-            qConfigPath
+            qConfigPath,
+            environment
           );
         } else if (key === "path") {
           const resourcePath = item[key];
@@ -155,7 +157,8 @@ async function handleResources(
               accessToken,
               resourcePath,
               defaultItem,
-              qConfigPath
+              qConfigPath,
+              environment
             );
           } else {
             throw new Error(
@@ -178,9 +181,12 @@ async function getResourceMetadata(
   accessToken,
   resource,
   fileProperties,
-  qConfigPath
+  qConfigPath,
+  environment
 ) {
-  const resourcePath = path.resolve(qConfigPath, resource);
+  const resourcePath = path
+    .resolve(path.dirname(qConfigPath), resource)
+    .replace(/{id}/g, environment.id);
   resource = await uploadResource(qServer, accessToken, resourcePath);
   const statistic = await stat(resourcePath);
   resource.size = statistic.size;

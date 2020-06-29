@@ -18,13 +18,20 @@ module.exports = async function (command) {
           command.reset
         );
         for (const item of helpers.getItems(qConfig, command.environment)) {
-          const result = await helpers.updateItem(item, config, qConfigPath);
-          if (result) {
-            console.log(
-              successColor(
-                `Successfully updated item with id ${item.metadata.id} on ${item.metadata.environment} environment`
-              )
+          for (const environment of item.environments) {
+            const result = await helpers.updateItem(
+              item.item,
+              environment,
+              config,
+              qConfigPath
             );
+            if (result) {
+              console.log(
+                successColor(
+                  `Successfully updated item with id ${environment.id} on ${environment.name} environment`
+                )
+              );
+            }
           }
         }
       } else {

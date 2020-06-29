@@ -11,23 +11,24 @@ const package = require("../../../package.json");
 const config = new Configstore(package.name, {});
 const resourcesHelpers = require("./resourcesHelpers.js");
 
-async function updateItem(item, config, qConfigPath) {
-  const qServer = config.get(`${item.metadata.environment}.qServer`);
-  const accessToken = config.get(`${item.metadata.environment}.accessToken`);
-  const existingItem = await getItem(qServer, accessToken, item);
+async function updateItem(item, environment, config, qConfigPath) {
+  const qServer = config.get(`${environment.name}.qServer`);
+  const accessToken = config.get(`${environment.name}.accessToken`);
+  const existingItem = await getItem(qServer, accessToken, environment);
   const updatedItem = await getUpdatedItem(
     qServer,
     accessToken,
     existingItem,
     item,
+    environment,
     qConfigPath
   );
-  return await saveItem(qServer, accessToken, updatedItem, item);
+  return await saveItem(qServer, accessToken, updatedItem, environment);
 }
 
-async function getItem(qServer, accessToken, item) {
+async function getItem(qServer, accessToken, environment) {
   try {
-    const response = await fetch(`${qServer}item/${item.metadata.id}`, {
+    const response = await fetch(`${qServer}item/${environment.id}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -36,7 +37,7 @@ async function getItem(qServer, accessToken, item) {
       return await response.json();
     } else {
       throw new Error(
-        `A problem occured while getting item with id ${item.metadata.id} on ${item.metadata.environment} environment. Please make sure that the id is correct, you have an internet connection and try again.`
+        `A problem occured while getting item with id ${environment.id} on ${environment.name} environment. Please make sure that the id is correct, you have an internet connection and try again.`
       );
     }
   } catch (error) {
@@ -50,6 +51,7 @@ async function getUpdatedItem(
   accessToken,
   existingItem,
   item,
+  environment,
   qConfigPath
 ) {
   try {
@@ -58,15 +60,17 @@ async function getUpdatedItem(
       existingItem.tool
     );
     const defaultItem = resourcesHelpers.getDefaultItem(toolSchema);
-    item.item = await resourcesHelpers.handleResources(
+    item = JSON.parse(JSON.stringify(item));
+    item = await resourcesHelpers.handleResources(
       qServer,
       accessToken,
-      item.item,
+      item,
       defaultItem,
-      qConfigPath
+      qConfigPath,
+      environment
     );
 
-    const updatedItem = deepmerge(existingItem, item.item, {
+    const updatedItem = deepmerge(existingItem, item, {
       arrayMerge: (destArr, srcArr) => srcArr,
     });
 
@@ -75,7 +79,7 @@ async function getUpdatedItem(
       return updatedItem;
     } else {
       throw new Error(
-        `A problem occured while validating item with id ${item.metadata.id} on ${item.metadata.environment} environment: ${validationResult.errorsText}`
+        `A problem occured while validating item with id ${environment.id} on ${environment.name} environment: ${validationResult.errorsText}`
       );
     }
   } catch (error) {
@@ -84,7 +88,7 @@ async function getUpdatedItem(
   }
 }
 
-async function saveItem(qServer, accessToken, updatedItem, item) {
+async function saveItem(qServer, accessToken, updatedItem, environment) {
   try {
     delete updatedItem.updatedDate;
     const response = await fetch(`${qServer}item`, {
@@ -99,7 +103,7 @@ async function saveItem(qServer, accessToken, updatedItem, item) {
       return await response.json();
     } else {
       throw new Error(
-        `A problem occured while saving item with id ${item.metadata.id} on ${item.metadata.environment} environment. Please check your connection and try again.`
+        `A problem occured while saving item with id ${environment.id} on ${environment.name} environment. Please check your connection and try again.`
       );
     }
   } catch (error) {
@@ -108,14 +112,26 @@ async function saveItem(qServer, accessToken, updatedItem, item) {
   }
 }
 
-function getItems(qConfig, environment) {
-  const items = qConfig.items.filter((item) => {
-    if (environment) {
-      return item.metadata.environment === environment;
-    }
+function getItems(qConfig, environmentFilter) {
+  const items = qConfig.items
+    .filter((item) => {
+      if (environmentFilter) {
+        return item.environments.some(
+          (environment) => environment.name === environmentFilter
+        );
+      }
 
-    return true;
-  });
+      return true;
+    })
+    .map((item) => {
+      if (environmentFilter) {
+        item.environments = item.environments.filter(
+          (environment) => environment.name === environmentFilter
+        );
+      }
+
+      return item;
+    });
 
   return items;
 }
@@ -136,16 +152,18 @@ function validateItem(schema, item) {
   };
 }
 
-function getEnvironments(qConfig, environment) {
+function getEnvironments(qConfig, environmentFilter) {
   try {
     const environments = new Set();
     for (const item of qConfig.items) {
-      if (environment) {
-        if (environment === item.metadata.environment) {
-          environments.add(item.metadata.environment);
+      for (const environment of item.environments) {
+        if (environmentFilter) {
+          if (environmentFilter === environment.name) {
+            environments.add(environment.name);
+          }
+        } else {
+          environments.add(environment.name);
         }
-      } else {
-        environments.add(item.metadata.environment);
       }
     }
 
@@ -153,7 +171,7 @@ function getEnvironments(qConfig, environment) {
       return Array.from(environments);
     } else {
       throw new Error(
-        `No items with environment ${environment} found. Please check your configuration and try again.`
+        `No items with environment ${environmentFilter} found. Please check your configuration and try again.`
       );
     }
   } catch (error) {
@@ -206,10 +224,15 @@ async function setupConfig(qConfig, environmentFilter, reset) {
 }
 
 async function authenticate(environment, qServer) {
-  const username = await promptly.prompt(
-    `Enter your username on ${environment} environment: `,
-    { validator: (username) => username.trim() }
-  );
+  let username = config.get(`${environment}.username`);
+  if (!username) {
+    username = await promptly.prompt(
+      `Enter your username on ${environment} environment: `,
+      { validator: (username) => username.trim() }
+    );
+    config.set(`${environment}.username`, username);
+  }
+
   const password = await promptly.password(
     `Enter your password on ${environment} environment: `,
     {
