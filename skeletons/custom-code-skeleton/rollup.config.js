@@ -12,12 +12,12 @@ import qConfig from "./q.config.json";
 
 const production = !process.env.ROLLUP_WATCH;
 
-function getOutputs() {
-  const outputs = [];
+function getOutputConfigs() {
+  const outputConfigs = [];
   for (let item of qConfig.items) {
     for (let environment of item.environments) {
       if (environment.id !== "") {
-        outputs.push({
+        outputConfigs.push({
           sourcemap: production ? false : true,
           format: "iife",
           name: `window._q_custom_code_${environment.id}.App`,
@@ -27,7 +27,7 @@ function getOutputs() {
     }
   }
 
-  return outputs;
+  return outputConfigs;
 }
 
 function getTemplate(options) {
@@ -86,7 +86,7 @@ function getHtmlOptions() {
 
 export default {
   input: production ? "src/main-prod.js" : "src/main.js",
-  output: getOutputs(),
+  output: getOutputConfigs(),
   plugins: [
     json(),
     svg({ base64: true }),
