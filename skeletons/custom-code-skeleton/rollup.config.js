@@ -16,12 +16,14 @@ function getOutputs() {
   const outputs = [];
   for (let item of qConfig.items) {
     for (let environment of item.environments) {
-      outputs.push({
-        sourcemap: production ? false : true,
-        format: "iife",
-        name: `window._q_custom_code_${environment.id}.App`,
-        file: `public/bundle-${environment.id}.js`,
-      });
+      if (environment.id !== "") {
+        outputs.push({
+          sourcemap: production ? false : true,
+          format: "iife",
+          name: `window._q_custom_code_${environment.id}.App`,
+          file: `public/bundle-${environment.id}.js`,
+        });
+      }
     }
   }
 
