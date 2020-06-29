@@ -37,7 +37,7 @@ function getTemplate(options) {
     <title>${packageConfig.name}</title>
     <link rel="stylesheet" href="https://context-service.st.nzz.ch/stylesheet/all/nzz.ch.css" />
     <link rel="stylesheet" href="https://service.sophie.nzz.ch/bundle/sophie-q@^1,sophie-input@^1,sophie-font@^1,sophie-color@^1,sophie-viz-color@^1,sophie-legend@^1.css" />
-    <link rel="stylesheet" href="bundle.css" />q
+    <link rel="stylesheet" href="bundle.css" />
   </head>
   <!-- we have four different article templates, since the article itself has the same structure in each template
   we can use either of these classes: regular, longformstandard, regular, opinion
