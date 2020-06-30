@@ -229,7 +229,7 @@ The config file has to follow [this json-schema](./bin/commands/updateItem/schem
 }
 ```
 
-The configuration object has a property `items` which contains an object for each Q item. A Q item has a property `metadata` and `item`. The `metadata` object contains a property `environment` and `id`. The `item` contains the data of the Q item. The structure of the item can vary between each graphic type (chart, map, table ect.).
+The configuration object has a property `items` which contains an object for each Q item. A Q item has a property `environments` and `item`. The `environments` array contains an objects with properties `name` and `id` for each environment the item is deployed on. The `item` contains the data of the Q item. The structure of the item can vary between each graphic type (chart, map, table ect.).
 
 [to the top](#table-of-contents)
 
