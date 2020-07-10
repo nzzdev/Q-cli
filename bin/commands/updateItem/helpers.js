@@ -300,6 +300,10 @@ async function getAccessToken(environment, qServer, username, password) {
   try {
     const response = await fetch(`${qServer}authenticate`, {
       method: "POST",
+      header: {
+        "user-agent": "Q Command-line Tool",
+        origin: qServer,
+      },
       body: JSON.stringify({
         username: username,
         password: password,
