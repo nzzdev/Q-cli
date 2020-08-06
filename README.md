@@ -176,6 +176,12 @@ Q update-item -e [env]
 Q update-item -r
 ```
 
+- Credentials can be provided as environment variables to avoid user prompts. The variable names are `Q_ENV_SERVER`, `Q_ENV_USERNAME`, `Q_ENV_PASSWORD`, where `ENV` is the uppercase version of the environment name.
+
+```bash
+Q_TEST_SERVER=https://q-server.st-test.nzz.ch/ Q_TEST_USERNAME=[username] Q_TEST_PASSWORD=[password] Q update-item
+```
+
 The config file has to follow [this json-schema](./bin/commands/updateItem/schema.json). Here an example:
 
 ```json
@@ -229,7 +235,7 @@ The config file has to follow [this json-schema](./bin/commands/updateItem/schem
 }
 ```
 
-The configuration object has a property `items` which contains an object for each Q item. A Q item has a property `metadata` and `item`. The `metadata` object contains a property `environment` and `id`. The `item` contains the data of the Q item. The structure of the item can vary between each graphic type (chart, map, table ect.).
+The configuration object has a property `items` which contains an object for each Q item. A Q item has a property `environments` and `item`. The `environments` array contains an objects with properties `name` and `id` for each environment the item is deployed on. The `item` contains the data of the Q item. The structure of the item can vary between each graphic type (chart, map, table ect.).
 
 [to the top](#table-of-contents)
 

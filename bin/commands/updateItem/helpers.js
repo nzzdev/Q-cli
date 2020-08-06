@@ -185,6 +185,8 @@ async function setupConfig(qConfig, environmentFilter, reset) {
     config.clear();
   }
   for (const environment of getEnvironments(qConfig, environmentFilter)) {
+    await setupConfigFromEnvVars(environment);
+
     if (!config.get(`${environment}.qServer`)) {
       const qServer = await promptly.prompt(
         `Enter the Q-Server url for ${environment} environment: `,
@@ -221,6 +223,36 @@ async function setupConfig(qConfig, environmentFilter, reset) {
   }
 
   return config;
+}
+
+async function setupConfigFromEnvVars(environment) {
+  const environmentPrefix = environment.toUpperCase();
+
+  const qServer = process.env[`Q_${environmentPrefix}_SERVER`];
+  if (qServer) {
+    config.set(`${environment}.qServer`, qServer);
+  }
+  const username = process.env[`Q_${environmentPrefix}_USERNAME`];
+  const password = process.env[`Q_${environmentPrefix}_PASSWORD`];
+  if (qServer && username && password) {
+    const accessToken = await getAccessToken(
+      environment,
+      qServer,
+      username,
+      password
+    );
+
+    if (!accessToken) {
+      console.error(
+        errorColor(
+          `A problem occured while authenticating to the ${environment} environment using environment variables. Please check your credentials and try again.`
+        )
+      );
+      process.exit(1);
+    }
+
+    config.set(`${environment}.accessToken`, accessToken);
+  }
 }
 
 async function authenticate(environment, qServer) {
@@ -268,6 +300,10 @@ async function getAccessToken(environment, qServer, username, password) {
   try {
     const response = await fetch(`${qServer}authenticate`, {
       method: "POST",
+      header: {
+        "user-agent": "Q Command-line Tool",
+        origin: qServer,
+      },
       body: JSON.stringify({
         username: username,
         password: password,
