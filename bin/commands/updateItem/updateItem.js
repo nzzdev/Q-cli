@@ -49,5 +49,11 @@ module.exports = async function (command) {
         )
       );
     }
-  } catch (error) {}
+  } catch (error) {
+    console.error(
+      errorColor(
+        `A problem occured while parsing the config file at ${command.config}. Please make sure it is valid JSON.`
+      )
+    );
+  }
 };
