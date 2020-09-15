@@ -1,6 +1,6 @@
 {
   "name": "@nzz/q-cli",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "Cli tool to setup new Q tools, new Q server implementations and start Q dev server to test developing Q tools",
   "main": "index.js",
   "scripts": {
@@ -21,13 +21,13 @@
   "homepage": "https://github.com/nzzdev/Q-cli#readme",
   "dependencies": {
     "@hapi/boom": "^9.1.0",
-    "@hapi/hapi": "^19.1.1",
-    "@hapi/inert": "^6.0.1",
+    "@hapi/hapi": "^19.2.0",
+    "@hapi/inert": "^6.0.2",
     "@hapi/joi": "^17.1.1",
     "@hapi/mimos": "^5.0.0",
-    "@hapi/vision": "^6.0.0",
+    "@hapi/vision": "^6.0.1",
     "@hapi/wreck": "^17.0.0",
-    "ajv": "^6.12.2",
+    "ajv": "^6.12.5",
     "chalk": "^4.1.0",
     "commander": "^5.1.0",
     "configstore": "^5.0.1",
@@ -35,8 +35,8 @@
     "form-data": "^3.0.0",
     "fs-extra": "^9.0.1",
     "image-size": "^0.8.3",
-    "node-fetch": "^2.6.0",
-    "nunjucks": "^3.2.1",
+    "node-fetch": "^2.6.1",
+    "nunjucks": "^3.2.2",
     "promptly": "^3.0.3",
     "replace-in-file": "^3.4.4"
   }
