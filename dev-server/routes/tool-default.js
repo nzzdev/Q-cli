@@ -84,7 +84,7 @@ module.exports = {
         query: {
           appendItemToPayload: Joi.string().optional()
         },
-        payload: Joi.object(),
+        payload: Joi.string(),
         options: {
           allowUnknown: true
         }
