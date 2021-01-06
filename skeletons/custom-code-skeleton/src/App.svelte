@@ -2,4 +2,10 @@
   export let name;
 </script>
 
-<h1 class="s-font-title">Custom Code {name}</h1>
+<style>
+  .title {
+    color: brown;
+  }
+</style>
+
+<h1 class="title s-font-title">Custom Code {name}</h1>
