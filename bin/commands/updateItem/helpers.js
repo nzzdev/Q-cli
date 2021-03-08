@@ -260,7 +260,7 @@ async function setupConfigFromEnvVars(environment) {
       cookie
     );
 
-    if (!result.accessToken) {
+    if (!result) {
       console.error(
         errorColor(
           `A problem occured while authenticating to the ${environment} environment using environment variables. Please check your credentials and try again.`
@@ -301,12 +301,13 @@ async function authenticate(environment, qServer) {
     cookie
   );
 
-  while (!result.accessToken) {
+  while (!result) {
     console.error(
       errorColor(
         "A problem occured while authenticating. Please check your credentials and try again."
       )
     );
+
     result = await authenticate(environment, qServer);
 
     if (result.accessToken) {
@@ -327,7 +328,7 @@ async function getAccessToken(
   try {
     const response = await fetch(`${qServer}authenticate`, {
       method: "POST",
-      header: {
+      headers: {
         "user-agent": "Q Command-line Tool",
         origin: qServer,
         cookie: cookie,
@@ -337,13 +338,15 @@ async function getAccessToken(
         password: password,
       }),
     });
+
     if (response.ok) {
       const body = await response.json();
       return {
         accessToken: body.access_token,
-        cookie: response.header.cookie,
+        cookie: response.headers.cookie,
       };
     }
+
     return false;
   } catch (error) {
     console.error(
