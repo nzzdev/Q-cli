@@ -14,23 +14,26 @@ const resourcesHelpers = require("./resourcesHelpers.js");
 async function updateItem(item, environment, config, qConfigPath) {
   const qServer = config.get(`${environment.name}.qServer`);
   const accessToken = config.get(`${environment.name}.accessToken`);
-  const existingItem = await getItem(qServer, accessToken, environment);
+  const cookie = config.get(`${environment.name}.cookie`);
+  const existingItem = await getItem(qServer, environment, accessToken, cookie);
   const updatedItem = await getUpdatedItem(
     qServer,
     accessToken,
+    cookie,
     existingItem,
     item,
     environment,
     qConfigPath
   );
-  return await saveItem(qServer, accessToken, updatedItem, environment);
+  return await saveItem(qServer, environment, accessToken, cookie, updatedItem);
 }
 
-async function getItem(qServer, accessToken, environment) {
+async function getItem(qServer, environment, accessToken, cookie) {
   try {
     const response = await fetch(`${qServer}item/${environment.id}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
+        Cookie: cookie,
       },
     });
     if (response.ok) {
@@ -49,6 +52,7 @@ async function getItem(qServer, accessToken, environment) {
 async function getUpdatedItem(
   qServer,
   accessToken,
+  cookie,
   existingItem,
   item,
   environment,
@@ -64,6 +68,7 @@ async function getUpdatedItem(
     item = await resourcesHelpers.handleResources(
       qServer,
       accessToken,
+      cookie,
       item,
       defaultItem,
       qConfigPath,
@@ -88,7 +93,13 @@ async function getUpdatedItem(
   }
 }
 
-async function saveItem(qServer, accessToken, updatedItem, environment) {
+async function saveItem(
+  qServer,
+  environment,
+  accessToken,
+  cookie,
+  updatedItem
+) {
   try {
     delete updatedItem.updatedDate;
     const response = await fetch(`${qServer}item`, {
@@ -97,6 +108,7 @@ async function saveItem(qServer, accessToken, updatedItem, environment) {
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
+        Cookie: cookie,
       },
     });
     if (response.ok) {
@@ -180,6 +192,12 @@ function getEnvironments(qConfig, environmentFilter) {
   }
 }
 
+async function setAuthenticationConfig(environment, qServer) {
+  const result = await authenticate(environment, qServer);
+  config.set(`${environment}.accessToken`, result.accessToken);
+  config.set(`${environment}.cookie`, result.cookie);
+}
+
 async function setupConfig(qConfig, environmentFilter, reset) {
   if (reset) {
     config.clear();
@@ -200,25 +218,23 @@ async function setupConfig(qConfig, environmentFilter, reset) {
       config.set(`${environment}.qServer`, qServer);
     }
 
+    const qServer = config.get(`${environment}.qServer`);
     if (!config.get(`${environment}.accessToken`)) {
-      const qServer = config.get(`${environment}.qServer`);
-      const accessToken = await authenticate(environment, qServer);
-      config.set(`${environment}.accessToken`, accessToken);
+      await setAuthenticationConfig(environment, qServer);
     }
 
     const accessToken = config.get(`${environment}.accessToken`);
-    const qServer = config.get(`${environment}.qServer`);
+    const cookie = config.get(`${environment}.cookie`);
     const isAccessTokenValid = await checkValidityOfAccessToken(
       environment,
       qServer,
-      accessToken
+      accessToken,
+      cookie
     );
 
     // Get a new access token in case its not valid anymore
     if (!isAccessTokenValid) {
-      const qServer = config.get(`${environment}.qServer`);
-      const accessToken = await authenticate(environment, qServer);
-      config.set(`${environment}.accessToken`, accessToken);
+      await setAuthenticationConfig(environment, qServer);
     }
   }
 
@@ -235,14 +251,16 @@ async function setupConfigFromEnvVars(environment) {
   const username = process.env[`Q_${environmentPrefix}_USERNAME`];
   const password = process.env[`Q_${environmentPrefix}_PASSWORD`];
   if (qServer && username && password) {
-    const accessToken = await getAccessToken(
+    const cookie = config.get(`${environment}.cookie`);
+    const result = await getAccessToken(
       environment,
       qServer,
       username,
-      password
+      password,
+      cookie
     );
 
-    if (!accessToken) {
+    if (!result) {
       console.error(
         errorColor(
           `A problem occured while authenticating to the ${environment} environment using environment variables. Please check your credentials and try again.`
@@ -251,7 +269,8 @@ async function setupConfigFromEnvVars(environment) {
       process.exit(1);
     }
 
-    config.set(`${environment}.accessToken`, accessToken);
+    config.set(`${environment}.accessToken`, result.accessToken);
+    config.set(`${environment}.cookie`, result.cookie);
   }
 }
 
@@ -273,46 +292,61 @@ async function authenticate(environment, qServer) {
     }
   );
 
-  let accessToken = await getAccessToken(
+  const cookie = config.get(`${environment}.cookie`);
+  let result = await getAccessToken(
     environment,
     qServer,
     username,
-    password
+    password,
+    cookie
   );
 
-  while (!accessToken) {
+  while (!result) {
     console.error(
       errorColor(
         "A problem occured while authenticating. Please check your credentials and try again."
       )
     );
-    accessToken = await authenticate(environment, qServer);
 
-    if (accessToken) {
+    result = await authenticate(environment, qServer);
+
+    if (result.accessToken) {
       break;
     }
   }
 
-  return accessToken;
+  return result;
 }
 
-async function getAccessToken(environment, qServer, username, password) {
+async function getAccessToken(
+  environment,
+  qServer,
+  username,
+  password,
+  cookie
+) {
   try {
     const response = await fetch(`${qServer}authenticate`, {
       method: "POST",
-      header: {
+      headers: {
         "user-agent": "Q Command-line Tool",
         origin: qServer,
+        cookie: cookie,
       },
       body: JSON.stringify({
         username: username,
         password: password,
       }),
     });
+
     if (response.ok) {
       const body = await response.json();
-      return body.access_token;
+      return {
+        accessToken: body.access_token,
+        cookie: response.headers.cookie,
+      };
     }
+
     return false;
   } catch (error) {
     console.error(
@@ -324,11 +358,17 @@ async function getAccessToken(environment, qServer, username, password) {
   }
 }
 
-async function checkValidityOfAccessToken(environment, qServer, accessToken) {
+async function checkValidityOfAccessToken(
+  environment,
+  qServer,
+  accessToken,
+  cookie
+) {
   try {
     const response = await fetch(`${qServer}user`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
+        Cookie: cookie,
       },
     });
     return response.ok;
