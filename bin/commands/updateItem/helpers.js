@@ -192,6 +192,12 @@ function getEnvironments(qConfig, environmentFilter) {
   }
 }
 
+async function setAuthenticationConfig(environment, qServer) {
+  const result = await authenticate(environment, qServer);
+  config.set(`${environment}.accessToken`, result.accessToken);
+  config.set(`${environment}.cookie`, result.cookie);
+}
+
 async function setupConfig(qConfig, environmentFilter, reset) {
   if (reset) {
     config.clear();
@@ -212,16 +218,13 @@ async function setupConfig(qConfig, environmentFilter, reset) {
       config.set(`${environment}.qServer`, qServer);
     }
 
+    const qServer = config.get(`${environment}.qServer`);
     if (!config.get(`${environment}.accessToken`)) {
-      const qServer = config.get(`${environment}.qServer`);
-      const result = await authenticate(environment, qServer);
-      config.set(`${environment}.accessToken`, result.accessToken);
-      config.set(`${environment}.cookie`, result.cookie);
+      await setAuthenticationConfig(environment, qServer);
     }
 
     const accessToken = config.get(`${environment}.accessToken`);
     const cookie = config.get(`${environment}.cookie`);
-    const qServer = config.get(`${environment}.qServer`);
     const isAccessTokenValid = await checkValidityOfAccessToken(
       environment,
       qServer,
@@ -231,10 +234,7 @@ async function setupConfig(qConfig, environmentFilter, reset) {
 
     // Get a new access token in case its not valid anymore
     if (!isAccessTokenValid) {
-      const qServer = config.get(`${environment}.qServer`);
-      const result = await authenticate(environment, qServer);
-      config.set(`${environment}.accessToken`, result.accessToken);
-      config.set(`${environment}.cookie`, result.cookie);
+      await setAuthenticationConfig(environment, qServer);
     }
   }
 
