@@ -126,6 +126,7 @@ function getDefaultItem(schema) {
 async function handleResources(
   qServer,
   accessToken,
+  cookie,
   item,
   defaultItem,
   qConfigPath,
@@ -144,6 +145,7 @@ async function handleResources(
           item[key] = await handleResources(
             qServer,
             accessToken,
+            cookie,
             item[key],
             defaultItemSubtree,
             qConfigPath,
@@ -155,6 +157,7 @@ async function handleResources(
             item = await getResourceMetadata(
               qServer,
               accessToken,
+              cookie,
               resourcePath,
               defaultItem,
               qConfigPath,
@@ -179,6 +182,7 @@ async function handleResources(
 async function getResourceMetadata(
   qServer,
   accessToken,
+  cookie,
   resource,
   fileProperties,
   qConfigPath,
@@ -187,7 +191,7 @@ async function getResourceMetadata(
   const resourcePath = path
     .resolve(path.dirname(qConfigPath), resource)
     .replace(/{id}/g, environment.id);
-  resource = await uploadResource(qServer, accessToken, resourcePath);
+  resource = await uploadResource(qServer, accessToken, cookie, resourcePath);
   const statistic = await stat(resourcePath);
   resource.size = statistic.size;
   resource.type = mimos.path(resourcePath).type;
@@ -204,7 +208,7 @@ async function getResourceMetadata(
   return resource;
 }
 
-async function uploadResource(qServer, accessToken, resourcePath) {
+async function uploadResource(qServer, accessToken, cookie, resourcePath) {
   try {
     if (fs.existsSync(resourcePath)) {
       const form = new FormData();
@@ -212,6 +216,7 @@ async function uploadResource(qServer, accessToken, resourcePath) {
       form.append("file", stream);
       const headers = form.getHeaders();
       headers.Authorization = `Bearer ${accessToken}`;
+      headers.Cookie = cookie;
 
       const response = await fetch(`${qServer}file`, {
         method: "POST",
