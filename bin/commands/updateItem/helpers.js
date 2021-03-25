@@ -343,7 +343,7 @@ async function getAccessToken(
       const body = await response.json();
       return {
         accessToken: body.access_token,
-        cookie: response.headers.cookie,
+        cookie: response.headers.get("set-cookie"),
       };
     }
 
