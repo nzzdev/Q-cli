@@ -1,7 +1,7 @@
 const fetch = require("node-fetch");
 const deepmerge = require("deepmerge");
 const Ajv = require("ajv");
-const ajv = new Ajv({ schemaId: "auto" });
+const ajv = new Ajv({ schemaId: "auto", removeAdditional: "all" });
 ajv.addMetaSchema(require("ajv/lib/refs/json-schema-draft-04.json"));
 const promptly = require("promptly");
 const chalk = require("chalk");
@@ -81,7 +81,9 @@ async function getUpdatedItem(
 
     const validationResult = validateItem(toolSchema, updatedItem);
     if (validationResult.isValid) {
-      return updatedItem;
+      return deepmerge(existingItem, updatedItem, {
+        arrayMerge: (destArr, srcArr) => srcArr,
+      });
     } else {
       throw new Error(
         `A problem occured while validating item with id ${environment.id} on ${environment.name} environment: ${validationResult.errorsText}`
