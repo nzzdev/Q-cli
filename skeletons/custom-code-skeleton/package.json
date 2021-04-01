@@ -2,7 +2,7 @@
   "name": "custom-code-skeleton",
   "version": "1.0.0",
   "devDependencies": {
-    "@nzz/q-cli": "^1.4.4",
+    "@nzz/q-cli": "1.x",
     "@rollup/plugin-buble": "^0.21.3",
     "@rollup/plugin-commonjs": "^17.0.0",
     "@rollup/plugin-html": "^0.2.0",
