@@ -1,6 +1,6 @@
 {
   "name": "@nzz/q-cli",
-  "version": "1.4.9",
+  "version": "1.4.10",
   "description": "Cli tool to setup new Q tools, new Q server implementations and start Q dev server to test developing Q tools",
   "main": "index.js",
   "scripts": {

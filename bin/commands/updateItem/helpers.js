@@ -1,7 +1,9 @@
 const fetch = require("node-fetch");
 const deepmerge = require("deepmerge");
 const Ajv = require("ajv");
-const ajv = new Ajv({ schemaId: "auto", removeAdditional: "all" });
+// Remove additional properties which are not defined by the json schema
+// See https://ajv.js.org/options.html#removeadditional for details
+const ajv = new Ajv({ schemaId: "auto", removeAdditional: true });
 ajv.addMetaSchema(require("ajv/lib/refs/json-schema-draft-04.json"));
 const promptly = require("promptly");
 const chalk = require("chalk");
@@ -63,6 +65,12 @@ async function getUpdatedItem(
       qServer,
       existingItem.tool
     );
+    // Removes additional properties not defined in the schema on the top level object of the item
+    toolSchema.additionalProperties = false;
+    // If options object is available additional properties not defined in the schema are removed
+    if (toolSchema.properties && toolSchema.properties.options) {
+      toolSchema.properties.options.additionalProperties = false;
+    }
     const defaultItem = resourcesHelpers.getDefaultItem(toolSchema);
     item = JSON.parse(JSON.stringify(item));
     item = await resourcesHelpers.handleResources(
