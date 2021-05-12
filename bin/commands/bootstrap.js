@@ -19,6 +19,9 @@ module.exports = async function (type, name, basedir) {
     files: `${basedir}/**`,
     from: new RegExp(`${type}-skeleton`, "g"),
     to: name,
+    glob: {
+      dot: true, // Include file names starting with a dot
+    },
   };
 
   try {
