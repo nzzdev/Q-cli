@@ -25,7 +25,7 @@
     "@hapi/inert": "^6.0.3",
     "@hapi/joi": "^17.1.1",
     "@hapi/mimos": "^5.0.0",
-    "@hapi/vision": "^6.0.1",
+    "@hapi/vision": "^6.1.0",
     "@hapi/wreck": "^17.1.0",
     "ajv": "^6.12.6",
     "chalk": "^4.1.1",

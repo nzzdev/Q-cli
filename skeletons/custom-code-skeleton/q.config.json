@@ -3,10 +3,6 @@
     {
       "environments": [
         {
-          "name": "test",
-          "id": ""
-        },
-        {
           "name": "staging",
           "id": ""
         },
