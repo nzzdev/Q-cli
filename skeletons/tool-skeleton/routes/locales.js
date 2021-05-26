@@ -1,4 +1,4 @@
-const Joi = require("@hapi/joi");
+const Joi = require("joi");
 const localesDir = __dirname + "/../resources/locales/";
 
 module.exports = {
@@ -9,13 +9,13 @@ module.exports = {
     tags: ["api"],
     validate: {
       params: {
-        lng: Joi.string().required()
-      }
-    }
+        lng: Joi.string().required(),
+      },
+    },
   },
   handler: (request, h) => {
     return h
       .file(localesDir + request.params.lng + "/translation.json")
       .type("application/json");
-  }
+  },
 };
