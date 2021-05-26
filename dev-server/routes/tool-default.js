@@ -1,4 +1,4 @@
-const Joi = require("@hapi/joi");
+const Joi = require("joi");
 const Wreck = require("@hapi/wreck");
 const querystring = require("querystring");
 const fetch = require("node-fetch");
@@ -16,7 +16,7 @@ async function handler(request, h, payload = null) {
     toolResponse = await Wreck.post(
       `${toolBaseUrl}/${request.params.path}?${queryString}`,
       {
-        payload: payload
+        payload: payload,
       }
     );
   } else {
@@ -43,16 +43,16 @@ module.exports = {
     options: {
       validate: {
         params: {
-          path: Joi.string().required()
+          path: Joi.string().required(),
         },
         query: {
-          appendItemToPayload: Joi.string().optional()
+          appendItemToPayload: Joi.string().optional(),
         },
         options: {
-          allowUnknown: true
-        }
+          allowUnknown: true,
+        },
       },
-      cors: true
+      cors: true,
     },
     handler: async (request, h) => {
       let payload = null;
@@ -67,11 +67,11 @@ module.exports = {
         // appendItemToPayload = item id = index in fixtures data array
         const item = fixtureData[request.query.appendItemToPayload];
         payload = {
-          item: item
+          item: item,
         };
       }
       return Reflect.apply(handler, this, [request, h, payload]);
-    }
+    },
   },
   post: {
     path: "/tools/{path*}",
@@ -79,17 +79,17 @@ module.exports = {
     options: {
       validate: {
         params: {
-          path: Joi.string().required()
+          path: Joi.string().required(),
         },
         query: {
-          appendItemToPayload: Joi.string().optional()
+          appendItemToPayload: Joi.string().optional(),
         },
         payload: Joi.string(),
         options: {
-          allowUnknown: true
-        }
+          allowUnknown: true,
+        },
       },
-      cors: true
+      cors: true,
     },
     handler: async (request, h) => {
       if (request.query.appendItemToPayload) {
@@ -105,6 +105,6 @@ module.exports = {
         request.payload.item = item;
       }
       return Reflect.apply(handler, this, [request, h, request.payload]);
-    }
-  }
+    },
+  },
 };
