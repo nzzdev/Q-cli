@@ -1,5 +1,5 @@
 const Hapi = require("@hapi/hapi");
-const Joi = require("@hapi/joi");
+const Joi = require("joi");
 const Path = require("path");
 
 const server = new Hapi.Server({
