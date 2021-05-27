@@ -1,4 +1,4 @@
-# Q-tool <travis-badge> <greenkeeper-badge>
+# tool-skeleton <travis-badge>
 
 **maintainer**: <maintainer>
 
@@ -17,8 +17,8 @@ Short description of tool and link to either [demo](https://editor.q.tools/) or 
 ## Installation
 
 ```
-git clone git@github.com:nzzdev/Q-tool.git
-cd ./Q-xxxx
+git clone git@github.com:nzzdev/tool-skeleton.git
+cd ./tool-skeleton
 nvm use
 npm install
 npm run build
@@ -67,7 +67,7 @@ When changing or implementing...
 
 ## Deployment
 
-We provide automatically built docker images at https://hub.docker.com/r/nzzonline/q-xxx/.
+We provide automatically built docker images at https://hub.docker.com/r/nzzonline/tool-skeleton/.
 There are three options for deployment:
 
 - Use the provided images
@@ -76,7 +76,7 @@ There are three options for deployment:
 
 ### Use the provided docker images
 
-1. Deploy `nzzonline/q-xxx` to a docker environment
+1. Deploy `nzzonline/tool-skeleton` to a docker environment
 2. Set the ENV variables as described in the [configuration section](#configuration)
 
 [to the top](#table-of-contents)
