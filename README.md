@@ -80,8 +80,7 @@ async function getConfig() {
         // additionalRenderingInfo is tool based
         stylesheets: [
           {
-            url:
-              "https://service.sophie.nzz.ch/bundle/sophie-q@1,sophie-font@1,sophie-color@1,sophie-viz-color@1,sophie-input@1.css",
+            url: "https://service.sophie.nzz.ch/bundle/sophie-q@1,sophie-font@1,sophie-color@1,sophie-viz-color@1,sophie-input@1.css",
           },
         ],
       },
@@ -176,11 +175,19 @@ Q update-item -e [env]
 Q update-item -r
 ```
 
-- Credentials can be provided as environment variables to avoid user prompts. The variable names are `Q_ENV_SERVER`, `Q_ENV_USERNAME`, `Q_ENV_PASSWORD`, where `ENV` is the uppercase version of the environment name.
+- Credentials can be provided as environment variables to avoid user prompts. The variable names are `Q_ENV_SERVER`, `Q_ENV_USERNAME`, `Q_ENV_PASSWORD`, `Q_ENV_ACCESSTOKEN`, where `ENV` is the uppercase version of the environment name.
 
 ```bash
 Q_TEST_SERVER=https://q-server.st-test.nzz.ch/ Q_TEST_USERNAME=[username] Q_TEST_PASSWORD=[password] Q update-item
 ```
+
+or
+
+```bash
+Q_TEST_SERVER=https://q-server.st-test.nzz.ch/ Q_TEST_ACCESSTOKEN=[accessToken] Q update-item
+```
+
+Alternatively
 
 The config file has to follow [this json-schema](./bin/commands/updateItem/schema.json). Here an example:
 
