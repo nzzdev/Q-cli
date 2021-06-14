@@ -34,8 +34,9 @@ async function getItem(qServer, environment, accessToken, cookie) {
   try {
     const response = await fetch(`${qServer}item/${environment.id}`, {
       headers: {
+        "user-agent": "Q Command-line Tool",
         Authorization: `Bearer ${accessToken}`,
-        Cookie: cookie,
+        Cookie: cookie ? cookie : "",
       },
     });
     if (response.ok) {
@@ -116,9 +117,10 @@ async function saveItem(
       method: "PUT",
       body: JSON.stringify(updatedItem),
       headers: {
+        "user-agent": "Q Command-line Tool",
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
-        Cookie: cookie,
+        Cookie: cookie ? cookie : "",
       },
     });
     if (response.ok) {
@@ -258,9 +260,12 @@ async function setupConfigFromEnvVars(environment) {
   if (qServer) {
     config.set(`${environment}.qServer`, qServer);
   }
+  const accessToken = process.env[`Q_${environmentPrefix}_ACCESSTOKEN`];
   const username = process.env[`Q_${environmentPrefix}_USERNAME`];
   const password = process.env[`Q_${environmentPrefix}_PASSWORD`];
-  if (qServer && username && password) {
+  if (qServer && accessToken) {
+    config.set(`${environment}.accessToken`, accessToken);
+  } else if (qServer && username && password) {
     const cookie = config.get(`${environment}.cookie`);
     const result = await getAccessToken(
       environment,
@@ -341,7 +346,7 @@ async function getAccessToken(
       headers: {
         "user-agent": "Q Command-line Tool",
         origin: qServer,
-        cookie: cookie,
+        Cookie: cookie ? cookie : "",
       },
       body: JSON.stringify({
         username: username,
@@ -377,8 +382,9 @@ async function checkValidityOfAccessToken(
   try {
     const response = await fetch(`${qServer}user`, {
       headers: {
+        "user-agent": "Q Command-line Tool",
         Authorization: `Bearer ${accessToken}`,
-        Cookie: cookie,
+        Cookie: cookie ? cookie : "",
       },
     });
     return response.ok;
