@@ -227,7 +227,7 @@ async function uploadResource(qServer, accessToken, cookie, resourcePath) {
         return await response.json();
       } else {
         throw new Error(
-          `Error occured while uploading the resource at ${resourcePath}. Please check your connection and try again.`
+          `Error occured while uploading the resource at ${resourcePath}. Please check your connection and try again.\nResponse: ${response.status} - ${response.statusText}`
         );
       }
     } else {
