@@ -223,11 +223,13 @@ async function uploadResource(qServer, accessToken, cookie, resourcePath) {
         headers: headers,
         body: form,
       });
+      const body = await response.json();
+
       if (response.ok) {
-        return await response.json();
+        return body;
       } else {
         throw new Error(
-          `Error occured while uploading the resource at ${resourcePath}. Please check your connection and try again.\nResponse: ${response.status} - ${response.statusText}`
+          `Error occured while uploading the resource at ${resourcePath}. Please check your connection and try again.\nResponse: ${body.statusCode} ${body.error} - ${body.message}`
         );
       }
     } else {
