@@ -84,9 +84,38 @@ async function getUpdatedItem(
       environment
     );
 
-    const updatedItem = deepmerge(existingItem, item, {
-      arrayMerge: (destArr, srcArr) => srcArr,
+    // Merge options:
+    // File of files property will be updated (if file exists on destination)
+    // otherwise there will be append to files array.
+    // All other property will be override from source config.
+    const options = {
+      customMerge: (key) => {
+        if (key === "files") {
+          return (destArr, srcArr) => {
+            if (destArr.length <= 0) {
+              return srcArr;
+            }
+
+            srcArr.forEach((fileObj) => {
+              let destIndex = destArr.findIndex(
+                (destFileObj) =>
+                  destFileObj.file.originalName === fileObj.file.originalName
+              );
+
+              if (destIndex !== -1) {
+                destArr[destIndex] = fileObj;
+              } else {
+                destArr.push(fileObj);
+              }
     });
+            return destArr;
+          };
+        }
+        return (destArr, srcArr) => srcArr;
+      },
+    };
+
+    const updatedItem = deepmerge(existingItem, item, options);
 
     const validationResult = validateItem(toolSchema, updatedItem);
     if (validationResult.isValid) {
