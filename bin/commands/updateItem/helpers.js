@@ -107,7 +107,7 @@ async function getUpdatedItem(
               } else {
                 destArr.push(fileObj);
               }
-    });
+            });
             return destArr;
           };
         }
@@ -119,9 +119,7 @@ async function getUpdatedItem(
 
     const validationResult = validateItem(toolSchema, updatedItem);
     if (validationResult.isValid) {
-      return deepmerge(existingItem, updatedItem, {
-        arrayMerge: (destArr, srcArr) => srcArr,
-      });
+      return updatedItem;
     } else {
       throw new Error(
         `A problem occured while validating item with id ${environment.id} on ${environment.name} environment: ${validationResult.errorsText}`
@@ -198,7 +196,7 @@ function validateConfig(config) {
 }
 
 function validateItem(schema, item) {
-  const isValid = ajv.validate(schema, item);
+  const isValid = ajv.validate(schema, JSON.parse(JSON.stringify(item)));
   return {
     isValid: isValid,
     errorsText: ajv.errorsText(),
