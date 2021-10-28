@@ -86,8 +86,8 @@ async function getUpdatedItem(
 
     // Merge options:
     // File of files property will be updated (if file exists on destination)
-    // otherwise there will be append to files array.
-    // All other property will be override from source config.
+    // If it doesn't exist it is appended to the files array
+    // All other properties are overwritten from source config
     const options = {
       customMerge: (key) => {
         if (key === "files") {
@@ -115,16 +115,18 @@ async function getUpdatedItem(
       },
     };
 
+    // merges existing item with the item defined in q.config.json
     const updatedItem = deepmerge(existingItem, item, options);
-
-    const validationResult = validateItem(toolSchema, updatedItem);
-    if (validationResult.isValid) {
-      return updatedItem;
-    } else {
-      throw new Error(
-        `A problem occured while validating item with id ${environment.id} on ${environment.name} environment: ${validationResult.errorsText}`
-      );
-    }
+    // normalizes the item which removes additional properties not defined in the schema
+    // and validates the item against the schema
+    const normalizedItem = getNormalizedItem(
+      toolSchema,
+      updatedItem,
+      environment
+    );
+    // the normalized item is merged with the existing item. This is done because properties such as _id and _rev
+    // defined in the existing item are removed during normalization, because they are not defined in the schema
+    return deepmerge(existingItem, normalizedItem, options);
   } catch (error) {
     console.error(errorColor(error.message));
     process.exit(1);
@@ -195,12 +197,17 @@ function validateConfig(config) {
   };
 }
 
-function validateItem(schema, item) {
-  const isValid = ajv.validate(schema, JSON.parse(JSON.stringify(item)));
-  return {
-    isValid: isValid,
-    errorsText: ajv.errorsText(),
-  };
+function getNormalizedItem(schema, item, environment) {
+  const isValid = ajv.validate(schema, item);
+  if (!isValid) {
+    throw new Error(
+      `A problem occured while validating item with id ${environment.id} on ${
+        environment.name
+      } environment: ${ajv.errorsText()}`
+    );
+  }
+
+  return item;
 }
 
 function getEnvironments(qConfig, environmentFilter) {
