@@ -84,20 +84,49 @@ async function getUpdatedItem(
       environment
     );
 
-    const updatedItem = deepmerge(existingItem, item, {
-      arrayMerge: (destArr, srcArr) => srcArr,
-    });
+    // Merge options:
+    // File of files property will be updated (if file exists on destination)
+    // If it doesn't exist it is appended to the files array
+    // All other properties are overwritten from source config
+    const options = {
+      customMerge: (key) => {
+        if (key === "files") {
+          return (destArr, srcArr) => {
+            if (destArr.length <= 0) {
+              return srcArr;
+            }
 
-    const validationResult = validateItem(toolSchema, updatedItem);
-    if (validationResult.isValid) {
-      return deepmerge(existingItem, updatedItem, {
-        arrayMerge: (destArr, srcArr) => srcArr,
-      });
-    } else {
-      throw new Error(
-        `A problem occured while validating item with id ${environment.id} on ${environment.name} environment: ${validationResult.errorsText}`
-      );
-    }
+            srcArr.forEach((fileObj) => {
+              let destIndex = destArr.findIndex(
+                (destFileObj) =>
+                  destFileObj.file.originalName === fileObj.file.originalName
+              );
+
+              if (destIndex !== -1) {
+                destArr[destIndex] = fileObj;
+              } else {
+                destArr.push(fileObj);
+              }
+            });
+            return destArr;
+          };
+        }
+        return (destArr, srcArr) => srcArr;
+      },
+    };
+
+    // merges existing item with the item defined in q.config.json
+    const updatedItem = deepmerge(existingItem, item, options);
+    // normalizes the item which removes additional properties not defined in the schema
+    // and validates the item against the schema
+    const normalizedItem = getNormalizedItem(
+      toolSchema,
+      updatedItem,
+      environment
+    );
+    // the normalized item is merged with the existing item. This is done because properties such as _id and _rev
+    // defined in the existing item are removed during normalization, because they are not defined in the schema
+    return deepmerge(existingItem, normalizedItem, options);
   } catch (error) {
     console.error(errorColor(error.message));
     process.exit(1);
@@ -168,12 +197,17 @@ function validateConfig(config) {
   };
 }
 
-function validateItem(schema, item) {
+function getNormalizedItem(schema, item, environment) {
   const isValid = ajv.validate(schema, item);
-  return {
-    isValid: isValid,
-    errorsText: ajv.errorsText(),
-  };
+  if (!isValid) {
+    throw new Error(
+      `A problem occured while validating item with id ${environment.id} on ${
+        environment.name
+      } environment: ${ajv.errorsText()}`
+    );
+  }
+
+  return item;
 }
 
 function getEnvironments(qConfig, environmentFilter) {
