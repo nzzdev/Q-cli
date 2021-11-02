@@ -89,6 +89,7 @@ async function getUpdatedItem(
     // If it doesn't exist it is appended to the files array
     // All other properties are overwritten from source config
     const options = {
+      arrayMerge: (destArr, srcArr) => srcArr,
       customMerge: (key) => {
         if (key === "files") {
           return (destArr, srcArr) => {
@@ -111,7 +112,6 @@ async function getUpdatedItem(
             return destArr;
           };
         }
-        return (destArr, srcArr) => srcArr;
       },
     };
 
