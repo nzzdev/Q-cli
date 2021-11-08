@@ -1,6 +1,6 @@
 # Q cli [![Build Status](https://travis-ci.com/nzzdev/Q-cli.svg?branch=dev)](https://travis-ci.com/nzzdev/Q-cli)
 
-**Maintainer**: [manuelroth](https://github.com/manuelroth)
+**Maintainer**: [Nicolas Staub](https://github.com/fromdusttilldawn)
 
 ## Table of contents
 
