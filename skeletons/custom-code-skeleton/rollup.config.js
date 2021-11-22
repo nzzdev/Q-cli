@@ -1,4 +1,6 @@
-import resolve from "@rollup/plugin-node-resolve";
+import * as fs from "fs";
+import * as path from "path";
+import nodeResolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import buble from "@rollup/plugin-buble";
 import json from "@rollup/plugin-json";
@@ -6,8 +8,11 @@ import svg from "rollup-plugin-svg";
 import html from "@rollup/plugin-html";
 import svelte from "rollup-plugin-svelte";
 import { terser } from "rollup-plugin-terser";
-import css from "rollup-plugin-css-only";
 import livereload from "rollup-plugin-livereload";
+import scss from "rollup-plugin-scss";
+import postcss from "postcss";
+import cssnano from "cssnano";
+import autoprefixer from "autoprefixer";
 import packageConfig from "./package.json";
 import qConfig from "./q.config.json";
 
@@ -85,6 +90,54 @@ function getHtmlOptions() {
   };
 }
 
+function getPostcssPlugins(isProduction) {
+  const postcssPlugins = [autoprefixer];
+
+  if (isProduction) {
+    postcssPlugins.push(cssnano);
+  }
+
+  return postcssPlugins;
+}
+
+function createOutputCssFunction() {
+  const outputCssFunction = (styles, styleNodes) => {
+    const publicDir = "public";
+
+    if (!fs.existsSync(publicDir)) {
+      fs.mkdirSync(publicDir);
+    }
+
+    fs.writeFileSync(`${publicDir}/bundle.css`, styles);
+  };
+
+  return outputCssFunction;
+}
+
+function getSassConfig(isProduction) {
+  const config = {
+    outputStyle: isProduction ? "compressed" : "expanded",
+    // Sourcemap generation (specifically writing the file to system) is currently not supported by rollup-plugin-sass (but soon!)
+    // See: https://github.com/thgh/rollup-plugin-scss/issues/7
+    // outFile: path.join(__dirname, "/public/default.css"), // <- Uncomment after: https://github.com/thgh/rollup-plugin-scss/issues/7
+    sourceMap: !isProduction,
+    sourceMapEmbed: !isProduction, // Remove after: https://github.com/thgh/rollup-plugin-scss/issues/7
+    failOnError: !isProduction,
+    watch: [path.join(__dirname, "/src")],
+    processor: (css) =>
+      postcss(getPostcssPlugins(isProduction))
+        .process(css, {
+          from: path.join(__dirname, "/public/bundle.css"),
+          to: path.join(__dirname, "/public/bundle.css"),
+          map: { inline: true }, // Set to false after: https://github.com/thgh/rollup-plugin-scss/issues/7
+        })
+        .then((result) => result.css),
+    output: createOutputCssFunction(), // TODO: Check if write hashmap function is needed or not
+  };
+
+  return config;
+}
+
 export default {
   input: production ? "src/main-prod.js" : "src/main.js",
   output: getOutputConfigs(),
@@ -97,16 +150,19 @@ export default {
         dev: !production,
       },
     }),
-    // we'll extract any component CSS out into
-    // a separate file - better for performance
-    css({ output: "bundle.css" }),
+
+    // All styles have to be written in .scss files (inside '/src')
+    // Sass files (except partials) have to be imported in main.scss file (Use '@use' instead of '@import')
+    // Partials are placed in '/src/styles' (e.g. _variables.scss, _helpers.scss)
+    // Partials are imported directly in other sass files (e.g. _variables.scss -> '@use "variables"')
+    scss({ ...getSassConfig(production) }),
 
     // If you have external dependencies installed from
     // npm, you'll most likely need these plugins. In
     // some cases you'll need additional configuration —
     // consult the documentation for details:
     // https://github.com/rollup/rollup-plugin-commonjs
-    resolve({ browser: true }),
+    nodeResolve({ browser: true }),
     commonjs(),
 
     // Generate a index.html file when not building for production
@@ -114,7 +170,7 @@ export default {
 
     // Watch the `public` directory and refresh the
     // browser on changes when not in production
-    !production && livereload("public"),
+    !production && livereload({ watch: ["public"], delay: 800 }),
 
     // If we're building for production (npm run build
     // instead of npm run dev), transpile and minify
