@@ -131,7 +131,7 @@ function getSassConfig(isProduction) {
           map: isProduction ? false : { inline: true }, // Set to false after: https://github.com/thgh/rollup-plugin-scss/issues/7
         })
         .then((result) => result.css),
-    output: createOutputCssFunction(), // TODO: Check if write hashmap function is needed or not
+    output: createOutputCssFunction(),
   };
 
   return config;
