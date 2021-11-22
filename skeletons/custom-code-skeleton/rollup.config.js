@@ -2,7 +2,6 @@ import * as fs from "fs";
 import * as path from "path";
 import nodeResolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
-import buble from "@rollup/plugin-buble";
 import json from "@rollup/plugin-json";
 import svg from "rollup-plugin-svg";
 import html from "@rollup/plugin-html";
@@ -129,7 +128,7 @@ function getSassConfig(isProduction) {
         .process(css, {
           from: path.join(__dirname, "/public/bundle.css"),
           to: path.join(__dirname, "/public/bundle.css"),
-          map: { inline: true }, // Set to false after: https://github.com/thgh/rollup-plugin-scss/issues/7
+          map: isProduction ? false : { inline: true }, // Set to false after: https://github.com/thgh/rollup-plugin-scss/issues/7
         })
         .then((result) => result.css),
     output: createOutputCssFunction(), // TODO: Check if write hashmap function is needed or not
@@ -171,15 +170,6 @@ export default {
     // Watch the `public` directory and refresh the
     // browser on changes when not in production
     !production && livereload({ watch: ["public"], delay: 800 }),
-
-    // If we're building for production (npm run build
-    // instead of npm run dev), transpile and minify
-    production &&
-      buble({
-        transforms: {
-          dangerousForOf: true,
-        },
-      }),
     production && terser(),
   ],
   watch: {
