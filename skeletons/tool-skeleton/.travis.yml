@@ -20,6 +20,7 @@ script:
   - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then docker build -t $DOCKER_IMAGE_NAME:$DOCKER_TAG .; fi'
 after_success:
   - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then echo $DOCKER_PASSWORD | docker login -u="$DOCKER_USERNAME" --password-stdin; docker tag $DOCKER_IMAGE_NAME:$DOCKER_TAG nzzonline/$DOCKER_IMAGE_NAME:$DOCKER_TAG; docker push nzzonline/$DOCKER_IMAGE_NAME:$DOCKER_TAG; fi'
-notifications:
-  slack:
-    secure: MIYW+UQYrL+/XUnDdNAYUy7q0KdNd1bit2mVZ2gt/vZS7Z/myv8n7gye9JGdPPRBIoMtuKGsfkDbf+irXvD5weEzEn5MPczvQO0EglunDLI18veao9FiXsb1X3zdahNq5g2aZmwhbJOG8W4oDhcXDYFUxGsfFrHAB4cA+uRH3ONmJbnHm6HdATD9t4UryzCpthHFiSk3a5/qbiXWofQlxUDY9dK8IWTOiIpHxoWhdxuBI8X/UVqDGs2GmG4di4PL2cOnjDOEEtReLUW8W9tZWKKsm+aoiHuHardLzBv2e24DLmzOvWlIENqUmqqRDIhLD3HjExt0N6Sam6PA8Bf/1vMppNXvqU0JiOwPHNTxGPlm6o+vwSwAFAt22+wFSmGF7bbo7NoM/hDbnf+LXHtg6jr3Qej0zJK2mVdy2Ofg6ghpUCjLCyLgz8TWE2bURZpG6x42jc4Gix4m+cAnfgG2Dk97H9YY2T4uerwLjswwcZ08XhgdzymKve9lQgmaesGJoqHq7+aUS0sXNhG3wAZWJlGozQLGP3bhK0rNKvLyqw3i12RGc+zNAm1zdq03F70j3J46PAJpYlI62jMpFy/mCNP5ixqmQrT3nh9u83cQ3VCd6fJU73PSL+l0/YGo1mWjMJZ2+DsiT7lUJvVBQyQtG5HyorISTJdNkYJPknAHngI=
+# TODO: Create token for slack notifications with the slack bot, then insert below & uncomment lines
+# notifications:
+# slack:
+# secure: <Slack-Token>
