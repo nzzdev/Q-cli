@@ -21,7 +21,8 @@
     "@hapi/hapi": "^20.2.0",
     "@hapi/inert": "^6.0.4",
     "ajv": "^8.6.3",
-    "joi": "^17.4.2"
+    "joi": "^17.4.2",
+    "svelte": "^3.44.2"
   },
   "devDependencies": {
     "@hapi/code": "^8.0.3",
@@ -37,6 +38,7 @@
     "rollup": "^2.60.0",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-scss": "^3.0.0",
+    "rollup-plugin-svelte": "^7.1.0",
     "rollup-plugin-terser": "^7.0.2",
     "sass": "^1.43.4"
   }
