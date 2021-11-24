@@ -101,7 +101,7 @@ lab.experiment("stylesheets endpoint", () => {
 });
 
 // all the fixtures render
-lab.experiment("all fixtures render", async () => {
+lab.experiment("all fixtures render", () => {
   const fixtureFiles = glob.sync(
     `${__dirname}/../resources/fixtures/data/*.json`
   );
@@ -141,7 +141,7 @@ lab.experiment("rendering-info", () => {
 });
 
 lab.experiment("assets", () => {
-  it("returnes stylesheet", async () => {
+  it("returns stylesheet", async () => {
     const fixture = fs.readFileSync(
       `${__dirname}/../resources/fixtures/data/basic.json`,
       { encoding: "utf-8" }
@@ -155,7 +155,7 @@ lab.experiment("assets", () => {
       },
     });
     const stylesheetRes = await server.inject(
-      `/stylesheet/${res.result.stylesheets[0].name}`
+      `/stylesheet/${res.result.stylesheets[1].name}`
     );
     expect(stylesheetRes.statusCode).to.be.equal(200);
   });
