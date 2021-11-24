@@ -41,7 +41,7 @@ npx @nzz/q-cli server
 Run the Q tool:
 
 ```
-node index.js
+npm run dev
 ```
 
 [to the top](#table-of-contents)

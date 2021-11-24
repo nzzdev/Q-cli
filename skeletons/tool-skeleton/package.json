@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "rm -rf styles && mkdir styles && node tasks/build.js",
+    "build": "rollup -c",
+    "autobuild": "rollup -c -w",
+    "dev": "run-p autobuild start",
+    "start": "nodemon index.js",
     "test": "lab -a @hapi/code -c -P tests --verbose --leaks"
   },
   "author": "",
@@ -14,20 +17,29 @@
     "url": "https://github.com/github/tool-skeleton.git"
   },
   "dependencies": {
-    "@hapi/boom": "^9.1.1",
-    "@hapi/hapi": "^20.1.3",
-    "@hapi/inert": "^6.0.3",
-    "ajv": "^6.12.6",
-    "joi": "^17.4.0"
+    "@hapi/boom": "^9.1.4",
+    "@hapi/hapi": "^20.2.0",
+    "@hapi/inert": "^6.0.4",
+    "ajv": "^8.6.3",
+    "joi": "^17.4.2",
+    "svelte": "^3.44.2"
   },
   "devDependencies": {
     "@hapi/code": "^8.0.3",
-    "@hapi/lab": "^22.0.5",
-    "autoprefixer": "^10.2.5",
-    "cssnano": "^4.1.11",
+    "@hapi/lab": "^24.3.2",
+    "@rollup/plugin-commonjs": "^21.0.0",
+    "@rollup/plugin-node-resolve": "^13.0.5",
+    "autoprefixer": "^10.4.0",
+    "cssnano": "^5.0.10",
     "glob": "^7.1.7",
-    "postcss": "^8.3.0",
-    "postcss-import": "^14.0.2",
-    "sass": "^1.34.0"
+    "nodemon": "^2.0.13",
+    "npm-run-all": "^4.1.5",
+    "postcss": "^8.3.11",
+    "rollup": "^2.60.0",
+    "rollup-plugin-livereload": "^2.0.5",
+    "rollup-plugin-scss": "^3.0.0",
+    "rollup-plugin-svelte": "^7.1.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "sass": "^1.43.4"
   }
 }

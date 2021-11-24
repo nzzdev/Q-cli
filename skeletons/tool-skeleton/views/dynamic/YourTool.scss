@@ -1,0 +1,5 @@
+@use "variables";
+
+.your-tool__is-working-label {
+  color: variables.$color !important; // Please refrain from using '!important' :)
+}

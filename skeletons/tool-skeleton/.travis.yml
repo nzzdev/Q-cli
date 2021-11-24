@@ -1,0 +1,26 @@
+dist: trusty
+sudo: true
+services:
+  - docker
+language: node_js
+node_js:
+  - "16"
+cache:
+  directories:
+    - node_modules
+install:
+  - npm install
+before_script:
+  # TODO: Rename 'q-your-tool' to 'q-<tool-name>'
+  - DOCKER_IMAGE_NAME="q-your-tool"
+  - DOCKER_TAG=${TRAVIS_BRANCH//[^a-zA-Z0-9\_\-\.]/_}
+script:
+  - npm run build
+  - npm run test
+  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then docker build -t $DOCKER_IMAGE_NAME:$DOCKER_TAG .; fi'
+after_success:
+  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then echo $DOCKER_PASSWORD | docker login -u="$DOCKER_USERNAME" --password-stdin; docker tag $DOCKER_IMAGE_NAME:$DOCKER_TAG nzzonline/$DOCKER_IMAGE_NAME:$DOCKER_TAG; docker push nzzonline/$DOCKER_IMAGE_NAME:$DOCKER_TAG; fi'
+# TODO: Create token for slack notifications with the slack bot, then insert below & uncomment lines
+# notifications:
+# slack:
+# secure: <Slack-Token>

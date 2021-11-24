@@ -26,6 +26,21 @@ nvm use
 npm install
 ```
 
+For testing local changes of Q-cli, one can link the local package to the global installation of Q-cli:
+
+```bash
+cd Q-cli
+npm link
+```
+
+Q commands will now use the local Q-cli.
+
+To unlink, simply install Q-cli again globally:
+
+```bash
+npm install @nzz/q-cli -g
+```
+
 [to the top](#table-of-contents)
 
 ## Functionality
