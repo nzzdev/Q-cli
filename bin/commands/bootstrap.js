@@ -4,6 +4,7 @@ const replaceInFile = require("replace-in-file");
 const chalk = require("chalk");
 const errorColor = chalk.red;
 const successColor = chalk.green;
+const warningColor = chalk.yellow;
 
 module.exports = async function (type, name, basedir) {
   if (fs.existsSync(basedir)) {
@@ -31,6 +32,11 @@ module.exports = async function (type, name, basedir) {
     );
     await replaceInFile(replaceOptions);
     console.log(successColor(`Q ${type} is now bootstrapped in ${basedir}`));
+
+    if (type === "tool")
+      console.log(
+        warningColor("Search for 'TODO:' inside the new tool to get started!")
+      );
   } catch (error) {
     console.error(
       errorColor(

@@ -47,7 +47,6 @@ module.exports = {
         allowUnknown: true,
       },
     },
-    cors: true,
   },
   handler: async function (request, h) {
     try {

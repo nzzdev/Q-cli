@@ -12,9 +12,6 @@ module.exports = [
           password: Joi.string().required(),
         },
       },
-      cors: {
-        credentials: true,
-      },
     },
     handler: async (request, h) => {
       if (
@@ -33,9 +30,6 @@ module.exports = [
     method: "GET",
     config: {
       auth: "q-auth",
-      cors: {
-        credentials: true,
-      },
     },
     handler: (request, h) => {
       if (!request.auth.isAuthenticated) {
@@ -82,9 +76,6 @@ module.exports = [
         options: {
           allowUnknown: true,
         },
-      },
-      cors: {
-        credentials: true,
       },
     },
     handler: async (request, h) => {

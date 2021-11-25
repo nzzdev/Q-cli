@@ -1,6 +1,6 @@
 # Q cli [![Build Status](https://travis-ci.com/nzzdev/Q-cli.svg?branch=dev)](https://travis-ci.com/nzzdev/Q-cli)
 
-**Maintainer**: [manuelroth](https://github.com/manuelroth)
+**Maintainer**: [Nicolas Staub](https://github.com/fromdusttilldawn)
 
 ## Table of contents
 
@@ -24,6 +24,21 @@ git clone git@github.com:nzzdev/Q-cli.git
 cd Q-cli
 nvm use
 npm install
+```
+
+For testing local changes of Q-cli, one can link the local package to the global installation of Q-cli:
+
+```bash
+cd Q-cli
+npm link
+```
+
+Q commands will now use the local Q-cli.
+
+To unlink, simply install Q-cli again globally:
+
+```bash
+npm install @nzz/q-cli -g
 ```
 
 [to the top](#table-of-contents)

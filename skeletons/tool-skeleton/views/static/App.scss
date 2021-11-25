@@ -1,0 +1,5 @@
+@use "variables";
+
+h3 {
+  color: variables.$color !important; // Please refrain from using '!important' :)
+}

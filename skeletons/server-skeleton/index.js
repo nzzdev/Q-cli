@@ -57,9 +57,7 @@ async function start() {
         tools: toolsConfig,
         targets: require("./config/targets.js"),
       },
-      routes: {
-        cors: true,
-      },
+      routes: {},
     };
 
     server = Hapi.server(hapiOptions);

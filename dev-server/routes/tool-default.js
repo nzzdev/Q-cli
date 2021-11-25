@@ -52,7 +52,6 @@ module.exports = {
           allowUnknown: true,
         },
       },
-      cors: true,
     },
     handler: async (request, h) => {
       let payload = null;
@@ -89,7 +88,6 @@ module.exports = {
           allowUnknown: true,
         },
       },
-      cors: true,
     },
     handler: async (request, h) => {
       if (request.query.appendItemToPayload) {
