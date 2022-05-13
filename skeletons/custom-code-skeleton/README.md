@@ -1,15 +1,26 @@
-## Get started
+## Custom code boilerplate
 
-Install the dependencies...
+Install the dependencies
 
 ```bash
 npm install
 ```
 
-...then start [Rollup](https://rollupjs.org):
+#### Running it locally
 
-```bash
-npm run dev
+Regular layout
+```
+npm start
 ```
 
-Navigate to [localhost:5000](http://localhost:5000). You should see your app running. Edit a component file in `src`, save it and see the changes in the browser.
+Longform standard
+```
+npm run start-ls
+```
+
+Longform Visual
+```
+npm run start-lv
+```
+
+Navigate to [http://0.0.0.0:5555](http://0.0.0.0:5555). You should see your app running. Edit a component file in `src`, save it and see the changes in the browser.

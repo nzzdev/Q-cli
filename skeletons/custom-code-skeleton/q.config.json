@@ -4,11 +4,11 @@
       "environments": [
         {
           "name": "staging",
-          "id": ""
+          "id": "staging-id-not-set"
         },
         {
           "name": "production",
-          "id": ""
+          "id": "prod-id-not-set"
         }
       ],
       "item": {
