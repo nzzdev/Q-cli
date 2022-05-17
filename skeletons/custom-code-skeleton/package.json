@@ -2,7 +2,7 @@
   "name": "custom-code-skeleton",
   "version": "1.0.0",
   "devDependencies": {
-    "@nzz/nzz.ch-static": "github:nzzdev/nzz.ch-static#v1.0.0",
+    "@nzz/nzz.ch-static": "github:nzzdev/ed-tech-nzz.ch-static#v1.0.0",
     "@nzz/q-cli": "^1.4.11",
     "@rollup/plugin-alias": "^3.1.9",
     "@rollup/plugin-commonjs": "^21.0.0",
