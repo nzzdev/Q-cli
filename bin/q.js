@@ -6,7 +6,8 @@ const errorColor = chalk.red;
 const version = require("../package.json").version;
 const runServer = require("./commands/server.js");
 const bootstrap = require("./commands/bootstrap.js");
-const updateItem = require("./commands/updateItem/updateItem.js");
+const updateItem = require("./commands/qItem/updateItem/updateItem.js");
+const copyItem = require("./commands/qItem/copyItem/copyItem.js");
 
 async function main() {
   program.version(version).description("Q Toolbox cli");
@@ -97,6 +98,23 @@ async function main() {
     .option("-r, --reset", "reset stored configuration properties")
     .action(async (command) => {
       await updateItem(command);
+    });
+
+  program
+    .command("copy-item")
+    .description("copies an existing q item")
+    .option(
+      "-c, --config [path]",
+      "set config path which defines the q items to be copied. defaults to ./q.config.json",
+      `${process.cwd()}/q.config.json`
+    )
+    .option(
+      "-e, --environment [env]",
+      "set environment where the existing q item is found, defaults to copy all items of all environments defined in config"
+    )
+    .option("-r, --reset", "reset stored configuration properties")
+    .action(async (command) => {
+      await copyItem(command);
     });
 
   await program.parseAsync(process.argv);
