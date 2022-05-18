@@ -1,4 +1,6 @@
-const helpers = require("./helpers.js");
+const schemaService = require("./../schemaService.js");
+const configStore = require("./../configStore.js");
+const itemService = require("./../itemService.js");
 const fs = require("fs");
 const path = require("path");
 const chalk = require("chalk");
@@ -10,21 +12,24 @@ module.exports = async function (command) {
     const qConfigPath = path.resolve(command.config);
     if (fs.existsSync(qConfigPath)) {
       const qConfig = JSON.parse(fs.readFileSync(qConfigPath));
-      const validationResult = helpers.validateConfig(qConfig);
+      const validationResult = schemaService.validateConfig(qConfig);
+
       if (validationResult.isValid) {
-        const config = await helpers.setupConfig(
+        const config = await configStore.setupStore(
           qConfig,
           command.environment,
           command.reset
         );
-        for (const item of helpers.getItems(qConfig, command.environment)) {
+
+        for (const item of itemService.getItems(qConfig, command.environment)) {
           for (const environment of item.environments) {
-            const result = await helpers.updateItem(
+            const result = await itemService.updateItem(
               item.item,
               environment,
               config,
               qConfigPath
             );
+
             if (result) {
               console.log(
                 successColor(
