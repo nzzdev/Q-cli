@@ -164,7 +164,11 @@ Q new-custom-code my-project-name
 Q new-custom-code my-project-name -d my-project-directory
 ```
 
-### Updating existing Q items
+### Q item actions
+
+The `Q` cli can copy and/or update existing Q items.
+
+#### Updating existing Q items
 
 Once `Q` cli installed one can update one or many Q items by executing:
 
@@ -193,18 +197,90 @@ Q update-item -r
 - Credentials can be provided as environment variables to avoid user prompts. The variable names are `Q_ENV_SERVER`, `Q_ENV_USERNAME`, `Q_ENV_PASSWORD`, `Q_ENV_ACCESSTOKEN`, where `ENV` is the uppercase version of the environment name.
 
 ```bash
-Q_TEST_SERVER=https://q-server.st-test.nzz.ch/ Q_TEST_USERNAME=[username] Q_TEST_PASSWORD=[password] Q update-item
+Q_TEST_SERVER=[server_route] Q_TEST_USERNAME=[username] Q_TEST_PASSWORD=[password] Q update-item
 ```
 
 or
 
 ```bash
-Q_TEST_SERVER=https://q-server.st-test.nzz.ch/ Q_TEST_ACCESSTOKEN=[accessToken] Q update-item
+Q_TEST_SERVER=[server_route] Q_TEST_ACCESSTOKEN=[accessToken] Q update-item
 ```
 
-Alternatively
+The config file has to follow [this json-schema](./bin/commands/qItem/updateItem/updateSchema.json). This schema will be extended by the respective tool schema of your Q item.
+Here's an example:
 
-The config file has to follow [this json-schema](./bin/commands/updateItem/schema.json). Here an example:
+```json
+{
+  "items": [
+    {
+      "environments": [
+        // "environments" references the desired q items to be updated, at least 1 environment is required
+        {
+          "name": "production",
+          "id": "6dcf203a5c5f74b61aeea0cb0eef7e0b" // Id of your q item in the production environment
+        },
+        {
+          "name": "staging",
+          "id": "6dcf203a5c5f74b61aeea0cb0ef2ca9f" // Id of your q item in the staging environment
+        }
+      ],
+      "item": {
+        // The actual content you want to update for your referenced q items listed in "environments"
+        "title": "Der Konsum in der Schweiz springt wieder an",
+        "subtitle": "Wöchentliche Ausgaben mittels Bankkarten in Mio. Fr. im Jahr 2020, zum Vergleich 2019",
+        "data": [
+          // "data" represents the data table of your q item inside the q-editor
+          ["Datum", "2020", "2019"],
+          ["2020-01-06", "690004302", "641528028"],
+          ["2020-01-13", "662122373", "617653790"],
+          ["2020-01-20", "688208667", "654303249"]
+        ]
+      }
+    }
+  ]
+}
+```
+
+#### Copy existing Q items
+
+Once `Q` cli installed one can copy one or many Q items by executing:
+
+```bash
+Q copy-item
+```
+
+- The path to the config file can be set by using option `-c` or `--config`. By default the `copy-item` command will look for a config file called `q.config.json` in the current directory
+
+```bash
+Q copy-item -c [path]
+```
+
+- Items of a specified environment can be updated by using the option `-e` or `--environment`. By default the `copy-item` command updates all item specified in the config file
+
+```bash
+Q copy-item -e [env]
+```
+
+- Stored configuration properties like Q-Server url or access tokens can be reset by using option `-r` or `--reset`
+
+```bash
+Q copy-item -r
+```
+
+- Credentials can be provided as environment variables to avoid user prompts. The variable names are `Q_ENV_SERVER`, `Q_ENV_USERNAME`, `Q_ENV_PASSWORD`, `Q_ENV_ACCESSTOKEN`, where `ENV` is the uppercase version of the environment name.
+
+```bash
+Q_TEST_SERVER=[server_route] Q_TEST_USERNAME=[username] Q_TEST_PASSWORD=[password] Q update-item
+```
+
+or
+
+```bash
+Q_TEST_SERVER=[server_route] Q_TEST_ACCESSTOKEN=[accessToken] Q update-item
+```
+
+The config file has to follow [this json-schema](./bin/commands/qItem/updateItem/updateSchema.json). This schema will be extended by the respective tool schema of your Q item.
+Here's an example:
 
 ```json
 {
@@ -213,51 +289,30 @@ The config file has to follow [this json-schema](./bin/commands/updateItem/schem
       "environments": [
         {
           "name": "production",
-          "id": "6dcf203a5c5f74b61aeea0cb0eef7e0b"
+          "id": "6dcf203a5c5f74b61aeea0cb0eef7e0b" // Id of your q item in the production environment
         },
         {
           "name": "staging",
-          "id": "6dcf203a5c5f74b61aeea0cb0ef2ca9f"
+          "id": "6dcf203a5c5f74b61aeea0cb0ef2ca9f" // Id of your q item in the staging environment
         }
       ],
       "item": {
-        "title": "Der Konsum in der Schweiz springt wieder an",
-        "subtitle": "Wöchentliche Ausgaben mittels Bankkarten in Mio. Fr. im Jahr 2020, zum Vergleich 2019",
-        "data": [
-          ["Datum", "2020", "2019"],
-          ["2020-01-06", "690004302", "641528028"],
-          ["2020-01-13", "662122373", "617653790"],
-          ["2020-01-20", "688208667", "654303249"]
-        ]
-      }
-    },
-    {
-      "environments": [
-        {
-          "name": "production",
-          "id": "6dcf203a5c5f74b61aeea0cb0ef2edea"
-        },
-        {
-          "name": "staging",
-          "id": "6dcf203a5c5f74b61aeea0cb0ef68480"
-        }
-      ],
-      "item": {
-        "title": "Der Lastwagenverkehr in Deutschland nimmt wieder zu",
-        "subtitle": "Täglicher Lkw-Maut-Fahrleistungsindex (2015 = 100, saison- und kalenderbereinigt) im Jahr 2020, zum Vergleich 2019\t\t",
-        "data": [
-          ["Datum", "2020", "2019"],
-          ["2020-01-07", "105.9", "112.1"],
-          ["2020-01-08", "108.9", "111.4"],
-          ["2020-01-09", "112.2", "113.5"]
+        "title": "Russische Angriffe auf die Ukraine",
+        "subtitle": "Verzeichnete Angriffe in der ganzen Ukraine",
+        "files": [
+          // Adds or overwrites the listed files in your q item
+          {
+            "loadSyncBeforeInit": false, // Has to be set for the file upload to work
+            "file": {
+              "path": "./angriffsFlaechen.json" // Your local path to your file. The path is relative to where you execute the command.
+            }
+          }
         ]
       }
     }
   ]
 }
 ```
-
-The configuration object has a property `items` which contains an object for each Q item. A Q item has a property `environments` and `item`. The `environments` array contains an objects with properties `name` and `id` for each environment the item is deployed on. The `item` contains the data of the Q item. The structure of the item can vary between each graphic type (chart, map, table ect.).
 
 [to the top](#table-of-contents)
 

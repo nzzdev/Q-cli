@@ -20,106 +20,6 @@ const path = require("path");
 const chalk = require("chalk");
 const errorColor = chalk.red;
 
-async function getToolSchema(qServer, tool) {
-  try {
-    const response = await fetch(`${qServer}tools/${tool}/schema.json`);
-    if (response.ok) {
-      return await response.json();
-    } else {
-      throw new Error(
-        `A problem occured while getting the schema of the ${tool} tool. Please check your connection and try again.`
-      );
-    }
-  } catch (error) {
-    console.error(errorColor(error.message));
-    process.exit(1);
-  }
-}
-
-function getDefaultOrNull(schema) {
-  if (schema.hasOwnProperty("default")) {
-    if (typeof schema.default === "object") {
-      return JSON.parse(JSON.stringify(schema.default));
-    }
-    return schema.default;
-  }
-  return null;
-}
-
-// Returns a default item based on the tool schema
-// The default item is used to derive the file properties of a certain file type
-// These file properties are specified by the tool and are specific to the file type
-// For example an image file has height/width file properties
-function getDefaultItem(schema) {
-  schema = JSON.parse(JSON.stringify(schema));
-  if (schema.type === "array") {
-    let array = [];
-    schema.minItems = 1;
-    for (let i = 0; i < schema.minItems; i++) {
-      let value = getDefaultItem(schema.items);
-      if (value) {
-        if (
-          schema["Q:type"] &&
-          schema["Q:type"] === "files" &&
-          schema["Q:options"] &&
-          schema["Q:options"].fileProperties
-        ) {
-          array.push(Object.assign(value, schema["Q:options"].fileProperties));
-        } else {
-          array.push(value);
-        }
-      }
-    }
-
-    const defaultValue = getDefaultOrNull(schema);
-    if (array === null && defaultValue !== null) {
-      array = defaultValue;
-    }
-    return array;
-  } else if (schema.type === "object") {
-    const defaultValue = getDefaultOrNull(schema);
-    if (defaultValue !== null) {
-      return defaultValue;
-    }
-
-    if (
-      schema["Q:type"] &&
-      schema["Q:type"] === "files" &&
-      schema["Q:options"] &&
-      schema["Q:options"].fileProperties
-    ) {
-      return schema["Q:options"].fileProperties;
-    }
-
-    if (!schema.hasOwnProperty("properties")) {
-      return undefined;
-    }
-    let object = {};
-    Object.keys(schema.properties).forEach((propertyName) => {
-      const property = schema.properties[propertyName];
-      let value = getDefaultItem(property);
-      if (value !== undefined) {
-        object[propertyName] = value;
-      } else if (
-        property["Q:type"] &&
-        property["Q:type"] === "files" &&
-        property["Q:options"] &&
-        property["Q:options"].fileProperties
-      ) {
-        object[propertyName] = property["Q:options"].fileProperties;
-      }
-    });
-    return object;
-  }
-
-  // if this is not an array or object, we just get the default if any
-  const defaultValue = getDefaultOrNull(schema);
-  if (defaultValue !== null) {
-    return defaultValue;
-  }
-  return undefined;
-}
-
 // Recursively traverses the item object
 // If a property called "path" is found, the resource is uploaded
 // and the metadata of that resource is inserted at that place in the item object
@@ -245,6 +145,4 @@ async function uploadResource(qServer, accessToken, cookie, resourcePath) {
 
 module.exports = {
   handleResources: handleResources,
-  getDefaultItem: getDefaultItem,
-  getToolSchema: getToolSchema,
 };
