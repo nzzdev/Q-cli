@@ -241,8 +241,6 @@ Here's an example:
 }
 ```
 
-The configuration object has a property `items` which contains an object for each Q item. A Q item has a property `environments` and `item`. The `environments` array contains an objects with properties `name` and `id` for each environment the item is deployed on. The `item` contains the data of the Q item. The structure of the item can vary between each graphic type (chart, map, table ect.).
-
 #### Copy existing Q items
 
 Once `Q` cli installed one can copy one or many Q items by executing:
@@ -315,8 +313,6 @@ Here's an example:
   ]
 }
 ```
-
-The configuration object has a property `items` which contains an object for each Q item. A Q item has a property `environments` and `item`. The `environments` array contains an objects with properties `name` and `id` for each environment the item is deployed on. The `item` contains the data of the Q item. The structure of the item can vary between each graphic type (chart, map, table ect.).
 
 [to the top](#table-of-contents)
 
