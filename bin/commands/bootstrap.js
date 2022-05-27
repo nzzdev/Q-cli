@@ -33,9 +33,11 @@ module.exports = async function (type, name, basedir) {
     await replaceInFile(replaceOptions);
     console.log(successColor(`Q ${type} is now bootstrapped in ${basedir}`));
 
-    if (type === "tool")
+    if (type === "tool" || type === "et-utils-package")
       console.log(
-        warningColor("Search for 'TODO:' inside the new tool to get started!")
+        warningColor(
+          "Search for 'TODO' inside the new tool/package to get started!"
+        )
       );
   } catch (error) {
     console.error(

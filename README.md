@@ -164,6 +164,24 @@ Q new-custom-code my-project-name
 Q new-custom-code my-project-name -d my-project-directory
 ```
 
+### Creating new ed-tech utility package project
+
+Once `Q` cli is installed one can create the skeleton of a new ed-tech utility package project by executing
+
+```bash
+Q new-et-utils-package package-name
+```
+
+- The directory name where the new ed-tech utility package project is being created defaults to the project name and can be overwritten by using option `-d` or `--dir`
+
+```bash
+Q new-et-utils-package package-name -d my-project-directory
+```
+
+#### Notes
+
+New utility package projects should only be created inside the [ed-tech-utilities](https://github.com/nzzdev/ed-tech-utilities) repository.
+
 ### Q item actions
 
 The `Q` cli can copy and/or update existing Q items.

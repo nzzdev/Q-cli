@@ -84,6 +84,23 @@ async function main() {
     });
 
   program
+    .command("new-et-utils-package")
+    .option(
+      "-d, --dir <path>",
+      "the base directory to bootstrap the new tool in, defaults to the tools name"
+    )
+    .description("bootstrap a new ed-tech utility package")
+    .action(async () => {
+      const name = program.args[1];
+      if (!name) {
+        console.error(errorColor("no package name given"));
+        process.exit(1);
+      }
+      const baseDir = program.dir || name;
+      await bootstrap("et-utils-package", name, baseDir);
+    });
+
+  program
     .command("update-item")
     .description("update q item")
     .option(
