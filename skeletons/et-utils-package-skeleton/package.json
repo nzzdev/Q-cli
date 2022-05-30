@@ -1,11 +1,11 @@
 {
-  "name": "TODO: @nzz/et-utils-<package-name>",
+  "name": "@nzz/et-utils-<package-name>",
   "version": "1.0.0",
-  "description": "TODO: Describe your package",
+  "description": "<package-description>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nzzdev/ed-tech-utilities.git",
-    "directory": "TODO: <package-directory>"
+    "directory": "<package-name>"
   },
   "scripts": {
     "prepublishOnly": "npm run test && npm run clean && npm run build && rollup -c",
@@ -29,6 +29,6 @@
     "rollup-plugin-dts": "^4.2.2",
     "typescript": "^4.6.4"
   },
-  "author": "TODO: Add your name",
+  "author": "<author-name>",
   "license": "MIT"
 }

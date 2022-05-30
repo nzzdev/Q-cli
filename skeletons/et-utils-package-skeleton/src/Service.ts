@@ -1,6 +1,6 @@
 // Note: This is an example file
 function someFunction() {
-  const value = "hello world";
+  const value = "Up, Up, Down, Down, Left, Right, Left, Right, B, A";
 
   return value;
 }

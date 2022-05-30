@@ -169,7 +169,7 @@ Q new-custom-code my-project-name -d my-project-directory
 Once `Q` cli is installed one can create the skeleton of a new ed-tech utility package project by executing
 
 ```bash
-Q new-et-utils-package package-name
+Q new-et-utils-package package-name package-author package-description
 ```
 
 - The directory name where the new ed-tech utility package project is being created defaults to the project name and can be overwritten by using option `-d` or `--dir`

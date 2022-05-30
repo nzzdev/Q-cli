@@ -1,7 +1,7 @@
-TODO: Set package name
-
 # @nzz/et-utils-<package-name>
+
+<package-description>
 
 ## Content
 
-TODO: Describe the content of this package
+TODO: Package documentation

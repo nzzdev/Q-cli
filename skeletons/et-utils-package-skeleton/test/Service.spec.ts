@@ -10,9 +10,9 @@ export { lab };
 describe("Service", () => {
   before(() => {});
 
-  it("should return 'hello world'", () => {
+  it("should return the konami cheatcode", () => {
     const result = someFunction();
-    const expectedResult = "hello world";
+    const expectedResult = "Up, Up, Down, Down, Left, Right, Left, Right, B, A";
 
     expect(result).to.equal(expectedResult);
   });
