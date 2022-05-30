@@ -2,11 +2,19 @@ const fs = require("fs-extra");
 const path = require("path");
 const replaceInFile = require("replace-in-file");
 const chalk = require("chalk");
+const { replace } = require("nunjucks/src/filters");
 const errorColor = chalk.red;
 const successColor = chalk.green;
 const warningColor = chalk.yellow;
 
-module.exports = async function (type, name, basedir) {
+/**
+ *
+ * @param {string} type - Skeleton type
+ * @param {string} name - Name of the project
+ * @param {string} basedir - Base directory name to be created
+ * @param {Array.<{regex: RegExp, replaceWith: string}>} textReplacements
+ */
+module.exports = async function (type, basedir, textReplacements) {
   if (fs.existsSync(basedir)) {
     console.error(
       errorColor(`directory ${basedir} already exists or is not writable`)
@@ -16,21 +24,18 @@ module.exports = async function (type, name, basedir) {
     fs.mkdirSync(basedir);
   }
 
-  const replaceOptions = {
-    files: `${basedir}/**`,
-    from: new RegExp(`${type}-skeleton`, "g"),
-    to: name,
-    glob: {
-      dot: true, // Include file names starting with a dot
-    },
-  };
-
   try {
     await fs.copySync(
       path.join(__dirname, `../../skeletons/${type}-skeleton`),
       basedir
     );
-    await replaceInFile(replaceOptions);
+
+    if (textReplacements) {
+      for (const txtRe of textReplacements) {
+        await replaceText(txtRe.regex, txtRe.replaceWith, basedir);
+      }
+    }
+
     console.log(successColor(`Q ${type} is now bootstrapped in ${basedir}`));
 
     if (type === "tool" || type === "et-utils-package")
@@ -42,10 +47,23 @@ module.exports = async function (type, name, basedir) {
   } catch (error) {
     console.error(
       errorColor(
-        `An unexpected error occured. Please check the entered information and try again. ${JSON.stringify(
+        `An unexpected error occurred. Please check the entered information and try again. ${JSON.stringify(
           error
         )}`
       )
     );
   }
 };
+
+async function replaceText(regex, replaceWith, basedir) {
+  const replaceOptions = {
+    files: `${basedir}/**`, // Replace in all files
+    from: regex,
+    to: replaceWith,
+    glob: {
+      dot: true, // Include file names starting with a dot
+    },
+  };
+
+  return await replaceInFile(replaceOptions);
+}
