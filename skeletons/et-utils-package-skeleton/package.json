@@ -1,0 +1,34 @@
+{
+  "name": "@nzz/et-utils-<package-name>",
+  "version": "1.0.0",
+  "description": "<package-description>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nzzdev/ed-tech-utilities.git",
+    "directory": "<package-name>"
+  },
+  "scripts": {
+    "prepublishOnly": "npm run test && npm run clean && npm run build && rollup -c",
+    "clean": "rimraf dist && rimraf index.js && rimraf index.d.ts",
+    "build": "tsc -p .",
+    "start": "npm run build -- -w",
+    "test": "lab --typescript"
+  },
+  "files": [
+    "index.js",
+    "index.d.ts"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@hapi/code": "^9.0.0",
+    "@hapi/lab": "^25.0.1",
+    "rimraf": "^3.0.2",
+    "rollup": "^2.75.0",
+    "rollup-plugin-dts": "^4.2.2",
+    "typescript": "^4.6.4"
+  },
+  "author": "<author-name>",
+  "license": "MIT"
+}
