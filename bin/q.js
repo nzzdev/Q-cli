@@ -46,7 +46,11 @@ async function main() {
         process.exit(1);
       }
       const baseDir = program.dir || name;
-      await bootstrap("server", name, baseDir);
+      const textReplacements = [
+        { regex: new RegExp(`${type}-skeleton`, "g"), replaceWith: name },
+      ];
+
+      await bootstrap("server", baseDir, textReplacements);
     });
 
   program
@@ -63,7 +67,11 @@ async function main() {
         process.exit(1);
       }
       const baseDir = program.dir || name;
-      await bootstrap("tool", name, baseDir);
+      const textReplacements = [
+        { regex: new RegExp(`${type}-skeleton`, "g"), replaceWith: name },
+      ];
+
+      await bootstrap("tool", baseDir, textReplacements);
     });
 
   program
@@ -80,7 +88,42 @@ async function main() {
         process.exit(1);
       }
       const baseDir = program.dir || name;
-      await bootstrap("custom-code", name, baseDir);
+      const textReplacements = [
+        { regex: new RegExp(`${type}-skeleton`, "g"), replaceWith: name },
+      ];
+
+      await bootstrap("custom-code", baseDir, textReplacements);
+    });
+
+  program
+    .command("new-et-utils-package")
+    .option(
+      "-d, --dir <path>",
+      "the base directory to bootstrap the new tool in, defaults to the tools name"
+    )
+    .description("bootstrap a new ed-tech utility package")
+    .action(async () => {
+      const name = program.args[1];
+      const author = program.args[2] || "TODO: Set package author name";
+      const description =
+        program.args[3] || "TODO: Write a package description";
+
+      if (!name) {
+        console.error(errorColor("no package name given"));
+        process.exit(1);
+      }
+
+      const baseDir = program.dir || name;
+      const textReplacements = [
+        { regex: new RegExp("<package-name>", "g"), replaceWith: name },
+        { regex: new RegExp("<author-name>", "g"), replaceWith: author },
+        {
+          regex: new RegExp("<package-description>", "g"),
+          replaceWith: description,
+        },
+      ];
+
+      await bootstrap("et-utils-package", baseDir, textReplacements);
     });
 
   program
