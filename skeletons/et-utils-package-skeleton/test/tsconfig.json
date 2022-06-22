@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
-    "types": ["jest", "node"]
+    "moduleResolution": "node",
+    "types": ["jest", "node"],
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
   }
 }

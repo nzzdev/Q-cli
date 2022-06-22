@@ -8,16 +8,21 @@
     "directory": "<package-name>"
   },
   "scripts": {
-    "prepublishOnly": "npm run test && npm run clean && npm run build && rollup -c",
-    "clean": "rimraf dist && rimraf index.js && rimraf index.d.ts",
-    "build": "tsc -p .",
-    "start": "npm run build -- -w",
+    "prepublishOnly": "npm run test && npm run clean && npm run buildMjs && npm run buildCjs && ./scripts/package-fixup.sh",
+    "clean": "rimraf dist",
+    "buildMjs": "tsc -p tsconfig.json",
+    "buildCjs": "tsc -p tsconfig-cjs.json",
+    "start": "npm run buildMjs -- -w",
     "test": "jest --config jest.config.ts"
   },
-  "files": [
-    "index.js",
-    "index.d.ts"
-  ],
+  "main": "dist/cjs/index.js",
+  "module": "dist/mjs/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/mjs/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
   "publishConfig": {
     "access": "public"
   },
@@ -26,8 +31,6 @@
     "@types/node": "^16.11.36",
     "jest": "^28.1.0",
     "rimraf": "^3.0.2",
-    "rollup": "^2.75.0",
-    "rollup-plugin-dts": "^4.2.2",
     "ts-jest": "^28.0.3",
     "ts-node": "^10.8.0",
     "typescript": "^4.6.4"
