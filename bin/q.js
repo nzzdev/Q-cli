@@ -47,7 +47,7 @@ async function main() {
       }
       const baseDir = program.dir || name;
       const textReplacements = [
-        { regex: new RegExp(`${type}-skeleton`, "g"), replaceWith: name },
+        { regex: new RegExp(`server-skeleton`, "g"), replaceWith: name },
       ];
 
       await bootstrap("server", baseDir, textReplacements);
@@ -68,7 +68,7 @@ async function main() {
       }
       const baseDir = program.dir || name;
       const textReplacements = [
-        { regex: new RegExp(`${type}-skeleton`, "g"), replaceWith: name },
+        { regex: new RegExp(`tool-skeleton`, "g"), replaceWith: name },
       ];
 
       await bootstrap("tool", baseDir, textReplacements);
@@ -89,7 +89,7 @@ async function main() {
       }
       const baseDir = program.dir || name;
       const textReplacements = [
-        { regex: new RegExp(`${type}-skeleton`, "g"), replaceWith: name },
+        { regex: new RegExp(`custom-code-skeleton`, "g"), replaceWith: name },
       ];
 
       await bootstrap("custom-code", baseDir, textReplacements);
