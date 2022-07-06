@@ -2,7 +2,6 @@ const fs = require("fs-extra");
 const path = require("path");
 const replaceInFile = require("replace-in-file");
 const chalk = require("chalk");
-const { replace } = require("nunjucks/src/filters");
 const errorColor = chalk.red;
 const successColor = chalk.green;
 const warningColor = chalk.yellow;

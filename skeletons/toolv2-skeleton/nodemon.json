@@ -1,0 +1,4 @@
+{
+    "watch": ["src/**/*", "resources/**/*"],
+    "ext": "ts, js, css, svelte, json"
+}
