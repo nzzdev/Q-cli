@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "[tool-name]",
+  "properties": {
+    "title": {
+      "title": "Titel",
+      "type": "string"
+    },
+    "subtitle": {
+      "title": "Untertitel",
+      "type": "string"
+    }
+  },
+  "options": {
+    "title": "Optionen",
+    "type": "object",
+    "properties": {
+      "showSearch": {
+        "title": "Suche anzeigen",
+        "type": "boolean",
+        "default": false,
+        "Q:options": {
+          "availabilityChecks": [
+            {
+              "type": "ToolEndpoint",
+              "config": {
+                "endpoint": "option-availability/showSearch",
+                "fields": [
+                  "options"
+                ]
+              }
+            }
+          ],
+          "notificationChecks": [
+            {
+              "type": "ToolEndpoint",
+              "config": {
+                "endpoint": "notification/exampleNotification",
+                "fields": [
+                  "options"
+                ]
+              },
+              "priority": {
+                "type": "medium",
+                "value": 2
+              }
+            }
+          ],
+          "dynamicSchema": {
+            "type": "ToolEndpoint",
+            "config": {
+              "endpoint": "dynamic-schema/exampleDynamicSchema",
+              "fields": [
+                "options"
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "title"
+  ]
+}

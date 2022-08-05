@@ -1,0 +1,10 @@
+{
+    "Title": "Titre",
+    "Untertitel": "Sous-titre",
+    "notifications": {
+        "exampleNotification": {
+            "title": "Title",
+            "body": "body."
+        }
+    }
+}
