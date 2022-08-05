@@ -91,9 +91,6 @@ The tool structure follows the general structure of each Q tool. Further informa
 ### Options
 
 All options should be listed and explained. The varieties should be listed. If there's a visual aspect, a printscreen would be nice. The options should be listed as they are named in the `schema`
-The printscreen can be implemented as following:
-
-<img src="./doc/card-layout.png" width=300 height=355>
 
 [to the top](#table-of-contents)
 

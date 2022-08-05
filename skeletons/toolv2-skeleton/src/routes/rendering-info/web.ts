@@ -99,7 +99,7 @@ const route: ServerRoute = {
             var target = document.querySelector('#${id}_container');
             target.innerHTML = "";
             var props = ${JSON.stringify(props)};
-            new window.q_table({
+            new window.[tool_name]({
               "target": target,
               "props": {
                 props: props
