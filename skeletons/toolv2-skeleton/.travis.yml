@@ -1,0 +1,30 @@
+dist: trusty
+sudo: true
+services:
+  - docker
+language: node_js
+node_js:
+  - '16'
+cache:
+  directories:
+    - node_modules
+install:
+  - npm set-script postinstall ""
+  - npm install
+before_script:
+  - DOCKER_IMAGE_NAME="[tool-name]"
+  - DOCKER_TAG=${TRAVIS_BRANCH//[^a-zA-Z0-9\_\-\.]/_}
+script:
+  - npm run lint
+  - npm run ts-check
+  - npm run svelte-check
+  - npm run build
+  - npm run jest
+  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then docker build -t $DOCKER_IMAGE_NAME:$DOCKER_TAG .; fi'
+after_success:
+  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then echo $DOCKER_PASSWORD | docker login -u="$DOCKER_USERNAME" --password-stdin; docker tag $DOCKER_IMAGE_NAME:$DOCKER_TAG nzzonline/$DOCKER_IMAGE_NAME:$DOCKER_TAG; docker push nzzonline/$DOCKER_IMAGE_NAME:$DOCKER_TAG; fi'
+
+# TODO: Create token for slack notifications, then insert below & uncomment lines
+#notifications:
+  #slack:
+    #secure: <Slack-Token>

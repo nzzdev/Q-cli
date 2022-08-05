@@ -61,17 +61,42 @@ async function main() {
     )
     .description("bootstrap a new tool")
     .action(async (command) => {
-      const name = command.args[0];
+      let name = command.args[0];
+
       if (!name) {
         console.error(errorColor("no toolname given"));
         process.exit(1);
       }
+
+      // Make sure the name matches the spec.
+      if (!name.match(/^(Q-|q-)\w+/g)) {
+        console.error(errorColor("Tool must be named according to this format: Q-[a-z+]"));
+        process.exit(1);
+      }
+
+      // Capitalize first letter.
+      name = name[0].toUpperCase() + name.substring(1).toLowerCase();
+
+      let nameNodashes = name.replace(/\-/g, '');
+      toolnameCamelCase = nameNodashes[0].toUpperCase() + nameNodashes[1].toUpperCase() + nameNodashes.substring(2);
+
       const baseDir = program.dir || name;
       const textReplacements = [
-        { regex: new RegExp(`tool-skeleton`, "g"), replaceWith: name },
+        // deprecated.
+        { regex: /tool-skeleton/g, replaceWith: name },
+
+        // Replace all instance of tool name with underscore.
+        { regex: /\[tool_name\]/g, replaceWith: name.toLowerCase().replace(/\-/g, '_') },
+
+        // Replace all instances with minuses.
+        { regex: /\[Tool-name\]/g, replaceWith: name },
+        { regex: /\[tool-name\]/g, replaceWith: name.toLowerCase() },
+
+        // Replace all CamelCase instances.
+        { regex: /\[ToolName\]/g, replaceWith: toolnameCamelCase},
       ];
 
-      await bootstrap("tool", baseDir, textReplacements);
+      await bootstrap("toolv2", baseDir, textReplacements);
     });
 
   program

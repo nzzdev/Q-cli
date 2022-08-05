@@ -1,0 +1,48 @@
+{
+    "extends": "@tsconfig/svelte/tsconfig.json",
+    "compilerOptions": {
+        "sourceMap": false,
+        "strict": true,
+        "baseUrl": ".",
+        "paths": {
+            "@src/*": [
+                "src/*"
+            ],
+            "@cps/*": [
+                "src/components/*"
+            ],
+            "@rs/*": [
+                "resources/*"
+            ],
+            "@helpers/*": [
+                "src/helpers/*"
+            ]
+        },
+        "allowSyntheticDefaultImports": true,
+        "declaration": false,
+        "esModuleInterop": true,
+        "module": "es2020",
+        "moduleResolution": "node",
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "target": "ES2015",
+        "resolveJsonModule": true,
+        "types": [
+            "node",
+            "svelte",
+            "jest"
+        ],
+        "lib": [
+            "DOM"
+        ]
+    },
+    "ts-node": {
+        "esm": true,
+        "experimentalSpecifierResolution": true
+    },
+    "include": [
+        "src",
+        "resources",
+        "tests"
+    ]
+}
