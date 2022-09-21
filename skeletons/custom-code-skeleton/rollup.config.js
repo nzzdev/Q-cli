@@ -15,6 +15,7 @@ import qConfig from "./q.config.json";
 import typescript from '@rollup/plugin-typescript';
 import image from '@rollup/plugin-image';
 import alias from '@rollup/plugin-alias';
+import sveltePreprocess from 'svelte-preprocess';
 import { createContentWidthQElement, createFullwidthQElement, getHtml, createSubtitle, createParagraph  } from '@nzz/nzz.ch-static';
 
 // Which nzz layout to use?
@@ -144,6 +145,7 @@ export default {
     json(),
     image(),
     svelte({
+      preprocess: sveltePreprocess(),
       compilerOptions: {
         // enable run-time checks when not in production
         dev: !production,
