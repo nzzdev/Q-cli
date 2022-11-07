@@ -194,10 +194,18 @@ async function getUpdatedItem(
     const toolSchema = await schemaService.getToolSchema(
       qServer,
       existingItem.tool
-    );
-    // Removes additional properties not defined in the schema on the top level object of the item
-    toolSchema.additionalProperties = false;
-    // If options object is available additional properties not defined in the schema are removed
+      );
+      // Removes additional properties not defined in the schema on the top level object of the item
+      toolSchema.additionalProperties = false;
+
+      if(existingItem.customSchema) {
+        toolSchema.properties = {...toolSchema.properties, ...existingItem.customSchema}
+      }
+
+      if(existingItem.customSchemaDefinitions) {
+        toolSchema.definitions = {...toolSchema.definitions, ...existingItem.customSchemaDefinitions}
+      }
+      // If options object is available additional properties not defined in the schema are removed
     if (toolSchema.properties && toolSchema.properties.options) {
       toolSchema.properties.options.additionalProperties = false;
     }
@@ -271,6 +279,8 @@ async function saveItem(
 ) {
   try {
     delete updatedItem.updatedDate;
+    console.log("updateItem")
+    console.log(JSON.stringify(updateItem))
     const response = await fetch(`${qServer}item`, {
       method: "PUT",
       body: JSON.stringify(updatedItem),
