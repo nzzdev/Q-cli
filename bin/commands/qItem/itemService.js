@@ -279,8 +279,6 @@ async function saveItem(
 ) {
   try {
     delete updatedItem.updatedDate;
-    console.log("updateItem")
-    console.log(JSON.stringify(updateItem))
     const response = await fetch(`${qServer}item`, {
       method: "PUT",
       body: JSON.stringify(updatedItem),
