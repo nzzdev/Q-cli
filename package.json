@@ -1,6 +1,7 @@
 {
   "name": "@nzz/q-cli",
-  "version": "1.9.2",
+  "version": "1.9.3",
+  "prettier": "@nzz/et-utils-config-prettier",
   "description": "Cli tool to setup new Q tools, new Q server implementations and start Q dev server to test developing Q tools",
   "main": "index.js",
   "scripts": {
@@ -21,7 +22,7 @@
   "homepage": "https://github.com/nzzdev/Q-cli#readme",
   "dependencies": {
     "@hapi/boom": "^9.1.1",
-    "@hapi/hapi": "^20.1.3",
+    "@hapi/hapi": "^20.3.0",
     "@hapi/inert": "^6.0.3",
     "@hapi/mimos": "^5.0.0",
     "@hapi/vision": "^6.1.0",
@@ -30,14 +31,17 @@
     "chalk": "^4.1.1",
     "commander": "^5.1.0",
     "configstore": "^5.0.1",
-    "deepmerge": "^4.2.2",
+    "deepmerge": "^4.3.1",
     "form-data": "^3.0.0",
     "fs-extra": "^9.0.1",
     "image-size": "^0.8.3",
-    "joi": "^17.4.0",
-    "node-fetch": "^2.6.1",
+    "joi": "^17.9.1",
+    "node-fetch": "^2.6.9",
     "nunjucks": "^3.2.2",
     "promptly": "^3.2.0",
     "replace-in-file": "^3.4.4"
+  },
+  "devDependencies": {
+    "@nzz/et-utils-config-prettier": "^1.0.6"
   }
 }

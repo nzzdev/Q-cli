@@ -9,7 +9,8 @@
     "declaration": false,
     "paths": {
       "@src": ["./src/"],
-      "@interfaces": ["./src/interfaces.ts"]
+      "@interfaces": ["./src/interfaces.ts"],
+      "@enums": ["./src/enums.ts"]
     }
   }
 }
