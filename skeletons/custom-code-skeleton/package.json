@@ -4,7 +4,7 @@
   "prettier": "@nzz/et-utils-config-prettier",
   "devDependencies": {
     "@nzz/et-utils-config-prettier": "^1.0.6",
-    "@nzz/nzz.ch-static": "github:nzzdev/ed-tech-nzz.ch-static#v1.0.0",
+    "@nzz/nzz.ch-static": "github:nzzdev/ed-tech-nzz.ch-static#v1.2.0",
     "@nzz/q-cli": "^1.4.11",
     "@rollup/plugin-alias": "^3.1.9",
     "@rollup/plugin-commonjs": "^21.0.0",
@@ -39,6 +39,7 @@
     "start-regular": "LAYOUT=regular run-p serve rollup",
     "start-ls": "LAYOUT=longform-standard run-p serve rollup",
     "start-lv": "LAYOUT=longform-visual run-p serve rollup",
+    "start-hlv": "LAYOUT=headless-longform-visual run-p serve rollup",
     "rollup": "rollup -c -w",
     "serve": "sirv public --dev --port 5555 --host 0.0.0.0"
   }
