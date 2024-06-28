@@ -18,13 +18,6 @@ const screenshot = {
     ) {
       scripts.push({ url: `${process.env.Q_SERVER_BASE_URL}/files/system.js` });
     }
-    if (renderingInfo.loaderConfig && renderingInfo.loaderConfig.polyfills) {
-      scripts.push({
-        url: `https://cdn.polyfill.io/v2/polyfill.min.js?features=${renderingInfo.loaderConfig.polyfills.join(
-          ","
-        )}`
-      });
-    }
     if (renderingInfo.scripts && Array.isArray(renderingInfo.scripts)) {
       for (let script of renderingInfo.scripts) {
         script = resolvePath(script);

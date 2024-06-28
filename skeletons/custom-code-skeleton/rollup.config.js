@@ -77,12 +77,6 @@ function getHtmlOptions() {
         customCssLinks: [
           'https://service.sophie.nzz.ch/bundle/sophie-q@^1,sophie-input@^1,sophie-font@^1,sophie-color@^1,sophie-viz-color@^1,sophie-legend@^1.css',
         ],
-
-        // Links to other js filed that need to be loaded.
-        // Will be appended at the end of the body, but before the built js file for the app.
-        customJsLinks: [
-          'https://cdn.polyfill.io/v2/polyfill.min.js?features=Map,URL,Promise,fetch,URLSearchParams,Array.prototype.find,Array.prototype.findIndex,Object.entries,Array.prototype.includes,CustomEvent,Array.from,String.prototype.startsWith&flags=gated&unknown=polyfill',
-        ],
       });
     },
   };
