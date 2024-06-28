@@ -4,7 +4,7 @@
   "prettier": "@nzz/et-utils-config-prettier",
   "devDependencies": {
     "@nzz/et-utils-config-prettier": "^1.0.6",
-    "@nzz/nzz.ch-static": "github:nzzdev/ed-tech-nzz.ch-static#v1.0.0",
+    "@nzz/nzz.ch-static": "github:nzzdev/ed-tech-nzz.ch-static#v1.3.0",
     "@nzz/q-cli": "^1.4.11",
     "@rollup/plugin-alias": "^3.1.9",
     "@rollup/plugin-commonjs": "^21.0.0",
