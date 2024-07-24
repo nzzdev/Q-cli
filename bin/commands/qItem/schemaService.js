@@ -25,6 +25,7 @@ async function getToolSchema(qServer, tool) {
 
 function getSchemaPathFor(commandName) {
   const pathFor = {
+    createCustomCodeItem: "./createCustomCodeItem/schema.json",
     copyItem: "./copyItem/copySchema.json",
     updateItem: "./updateItem/updateSchema.json",
   };
