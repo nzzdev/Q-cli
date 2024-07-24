@@ -8,6 +8,7 @@ const runServer = require("./commands/server.js");
 const bootstrap = require("./commands/bootstrap.js");
 const updateItem = require("./commands/qItem/updateItem/updateItem.js");
 const copyItem = require("./commands/qItem/copyItem/copyItem.js");
+const createCustomCodeItem = require("./commands/qItem/createCustomCodeItem/createCustomCodeItem.js");
 
 async function main() {
   program.version(version).description("Q Toolbox cli");
@@ -183,6 +184,27 @@ async function main() {
     .option("-r, --reset", "reset stored configuration properties")
     .action(async (command) => {
       await copyItem(command);
+    });
+
+  program
+    .command("create-custom-code-item")
+    .description("creates a new q custom code item in the db and adds it to the q config file")
+    .option(
+      "-c, --config [path]",
+      "set config path to q.config.json. defaults to ./q.config.json",
+      `${process.cwd()}/q.config.json`
+    )
+    .option(
+      "-e, --environment [env]",
+      "set environment where the new q custom code item should be created in"
+    )
+    .option(
+      "-t, --title [title]",
+      "set title of the new q custom code item"
+    )
+    .option("-r, --reset", "reset stored configuration properties")
+    .action(async (command) => {
+      await createCustomCodeItem(command);
     });
 
   await program.parseAsync(process.argv);
