@@ -3,6 +3,8 @@ const promptly = require("promptly");
 const Configstore = require("configstore");
 const package = require("./../../../package.json");
 const configStore = new Configstore(package.name, {});
+const chalk = require("chalk");
+const errorColor = chalk.red;
 
 async function setAuthenticationConfig(environment, qServer) {
   const result = await authenticate(environment, qServer);
