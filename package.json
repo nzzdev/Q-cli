@@ -1,6 +1,6 @@
 {
   "name": "@nzz/q-cli",
-  "version": "1.10.1",
+  "version": "1.10.2",
   "prettier": "@nzz/et-utils-config-prettier",
   "description": "Cli tool to setup new Q tools, new Q server implementations and start Q dev server to test developing Q tools",
   "main": "index.js",
