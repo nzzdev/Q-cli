@@ -6,6 +6,7 @@
 
 - [Installation](#installation)
 - [Development](#development)
+- [Github Actions](#github-actions)
 - [Functionality](#functionality)
 - [License](#license)
 
@@ -14,8 +15,6 @@
 ```bash
 npm install -g @nzz/q-cli
 ```
-
-[to the top](#table-of-contents)
 
 ## Development
 
@@ -39,6 +38,26 @@ To unlink, simply install Q-cli again globally:
 
 ```bash
 npm install @nzz/q-cli -g
+```
+
+## Github actions
+
+To use the q-cli in github actions there are special access tokens provided. You can find them in 1password (LivingDocs Public API Access Tokens).
+
+There is an entire [thread](https://3.basecamp.com/3500782/buckets/1333707/documents/2903809795#__recording_3878674488) in basecamp on how this solution works.
+
+Example code for a github action to update on all environments. You can check the functionality section if you only want to update a specific environment.
+
+You will need to set the secrets in github unders **settings > secrets & variables > actions > New repository secret**
+
+```
+- name: Run Q cli
+  run: Q update-item
+  env:
+    Q_STAGING_SERVER: ${{ secrets.Q_STAGING_SERVER }}
+    Q_STAGING_ACCESSTOKEN: ${{ secrets.Q_STAGING_ACCESSTOKEN }}
+    Q_PRODUCTION_SERVER: ${{ secrets.Q_PRODUCTION_SERVER }}
+    Q_PRODUCTION_ACCESSTOKEN: ${{ secrets.Q_PRODUCTION_ACCESSTOKEN }}
 ```
 
 [to the top](#table-of-contents)
