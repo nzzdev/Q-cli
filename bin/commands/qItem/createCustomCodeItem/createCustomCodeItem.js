@@ -41,7 +41,18 @@ module.exports = async function (command) {
     // Create a new custom code item
     const title = command.title || 'Custom Code item created by Q-cli';
     const newItem = await itemService.createItem(
-      { assetGroups: [], data: [], files: [], title: title, tool: 'custom_code' },
+      {
+        acronym: 'Visuals',
+        assetGroups: [],
+        data: [],
+        department: 'Visuals',
+        files: [],
+        options: {
+          previewDisabled: false,
+        },
+        title: title,
+        tool: 'custom_code',
+      },
       { name: environmentName },
       config
     );
