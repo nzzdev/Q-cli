@@ -15,6 +15,7 @@
     "@rollup/plugin-typescript": "^8.3.2",
     "@tsconfig/svelte": "^3.0.0",
     "autoprefixer": "^10.4.0",
+    "cross-env": "^7.0.3",
     "cssnano": "^5.0.10",
     "npm-run-all": "^4.1.5",
     "postcss": "^8.3.11",
@@ -36,10 +37,10 @@
     "update-test": "npm run build && Q update-item -e test",
     "build": "rollup -c",
     "start": "npm run start-regular",
-    "start-regular": "LAYOUT=regular run-p serve rollup",
-    "start-ls": "LAYOUT=longform-standard run-p serve rollup",
-    "start-lv": "LAYOUT=longform-visual run-p serve rollup",
-    "start-hlv": "LAYOUT=headless-longform-visual run-p serve rollup",
+    "start-regular": "cross-env LAYOUT=regular run-p serve rollup",
+    "start-ls": "cross-env LAYOUT=longform-standard run-p serve rollup",
+    "start-lv": "cross-env LAYOUT=longform-visual run-p serve rollup",
+    "start-hlv": "cross-env LAYOUT=headless-longform-visual run-p serve rollup",
     "rollup": "rollup -c -w",
     "serve": "sirv public --dev --port 5555 --host 0.0.0.0"
   }
